@@ -2,6 +2,8 @@
 // All records are fictional and reset on page reload.
 export function createFleetDemo({t,render,toast}) {
   let nextDriver=209,nextVehicle=109;
+  const shifts=[{id:'SHIFT-300',name:'Omer Levi',started:'08:00',ended:null},{id:'SHIFT-301',name:'Gal Azulay',started:'08:15',ended:null},{id:'SHIFT-302',name:'Ronen Shalev',started:'09:00',ended:null},{id:'SHIFT-303',name:'Dana Amir',started:'08:30',ended:null}];
+  let nextShift=304;
   const drivers=[
     {id:'DR-201',name:'Omer Levi',phone:'050-100-2020',status:'on_trip'},
     {id:'DR-202',name:'Gal Azulay',phone:'050-100-2030',status:'on_trip'},
@@ -32,7 +34,7 @@ export function createFleetDemo({t,render,toast}) {
       updated:'Статус обновлён',demoNote:'Демонстрационные данные · изменения действуют только в этой вкладке',
       booking:'Заявка',route:'Маршрут',noPending:'Нет заказов, ожидающих назначения',
       validPhone:'Укажите имя и телефон',validVehicle:'Укажите название, госномер и вместимость',
-      noVehicles:'Нет подходящих свободных автомобилей',noDrivers:'Нет свободных водителей',seat:'мест'},
+      noVehicles:'Нет подходящих свободных автомобилей',noDrivers:'Нет свободных водителей',seat:'мест',shiftTitle:'Смены водителей',shiftDesc:'Кто на линии, когда начал и завершил работу',started:'Начало',ended:'Окончание',openShift:'На смене',offShift:'Вне смены',noShifts:'Нет записей о сменах',shiftAction:'Управление сменами'},
     en:{driverTitle:'Driver roster',vehicleTitle:'Fleet registry',dispatchTitle:'Dispatch operations',
       addDriver:'Add driver',addVehicle:'Add vehicle',name:'Name',phone:'Phone',
       plate:'Registration',capacity:'Seats',driver:'Driver',vehicle:'Vehicle',status:'Status',
@@ -48,7 +50,7 @@ export function createFleetDemo({t,render,toast}) {
       updated:'Status updated',demoNote:'Illustrative records · changes are local to this browser tab',
       booking:'Booking',route:'Route',noPending:'No bookings waiting for assignment',
       validPhone:'Enter a name and phone number',validVehicle:'Enter the vehicle, plate and capacity',
-      noVehicles:'No suitable available vehicles',noDrivers:'No available drivers',seat:'seats'},
+      noVehicles:'No suitable available vehicles',noDrivers:'No available drivers',seat:'seats',shiftTitle:'Driver shifts',shiftDesc:'Availability, start and end times',started:'Started',ended:'Ended',openShift:'On shift',offShift:'Off shift',noShifts:'No recorded shifts',shiftAction:'Manage shifts'},
     he:{driverTitle:'רשימת נהגים',vehicleTitle:'רשימת כלי רכב',dispatchTitle:'ניהול הזמנות',
       addDriver:'הוספת נהג',addVehicle:'הוספת רכב',name:'שם',phone:'טלפון',
       plate:'מספר רישוי',capacity:'מושבים',driver:'נהג',vehicle:'רכב',status:'סטטוס',
@@ -64,7 +66,7 @@ export function createFleetDemo({t,render,toast}) {
       updated:'הסטטוס עודכן',demoNote:'נתונים להמחשה בלבד · השינויים מקומיים ללשונית זו',
       booking:'הזמנה',route:'מסלול',noPending:'אין הזמנות הממתינות לשיבוץ',
       validPhone:'הזינו שם ומספר טלפון',validVehicle:'הזינו סוג רכב, מספר ומספר מושבים',
-      noVehicles:'אין רכבים זמינים מתאימים',noDrivers:'אין נהגים זמינים',seat:'מקומות'}
+      noVehicles:'אין רכבים זמינים מתאימים',noDrivers:'אין נהגים זמינים',seat:'מקומות',shiftTitle:'משמרות נהגים',shiftDesc:'זמינות, שעת התחלה וסיום',started:'תחילה',ended:'סיום',openShift:'במשמרת',offShift:'לא במשמרת',noShifts:'אין משמרות',shiftAction:'ניהול משמרות'}
   };
   const tr=(key)=>lang[t()]?.[key]??lang.ru[key]??key;
   function element(tag,cls,text) {
@@ -118,7 +120,7 @@ export function createFleetDemo({t,render,toast}) {
   function driverForm(){
     dialog(tr('addDriver'),[{key:'name',label:'name'},{key:'phone',label:'phone',type:'tel',max:32}],values=>{
       if(values.name.length<2||values.phone.length<3){toast(tr('validPhone'));return false;}
-      drivers.push({id:'DR-'+(++nextDriver),name:values.name,phone:values.phone,status:'available'});
+      drivers.push({id:'DR-'+(++nextDriver),name:values.name,phone:values.phone,status:'offline'});
       toast(tr('driverSaved'));render();
     });
   }
@@ -139,7 +141,9 @@ export function createFleetDemo({t,render,toast}) {
     const actions=element('div','ops-entry-actions');
     if(type==='driver'&&item.status!=='on_trip'){
       actions.append(button(item.status==='offline'?tr('enable'):tr('disable'),()=>{
-        item.status=item.status==='offline'?'available':'offline';render();toast(tr('updated'));
+        if(item.status==='offline'){item.status='available';shifts.unshift({id:'SHIFT-'+nextShift++,name:item.name,started:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),ended:null});}
+        else{item.status='offline';const open=shifts.find(x=>x.name===item.name&&x.ended===null);if(open)open.ended=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
+        render();toast(tr('updated'));
       }));
     }
     if(type==='vehicle'&&item.status!=='in_service'){
@@ -224,5 +228,20 @@ export function createFleetDemo({t,render,toast}) {
     }
     container.append(list);
   }
-  return {renderFleet:fleet,renderDispatch:dispatch,drivers,vehicles};
+  function renderShifts(root){
+    const heading=element('div','ops-heading');
+    const title=element('div');title.append(element('h3',null,tr('shiftTitle')),element('p',null,tr('shiftDesc')));
+    heading.append(title);root.append(heading);
+    summary(root,[[drivers.filter(x=>x.status==='available'||x.status==='on_trip').length,tr('openShift')],[drivers.filter(x=>x.status==='offline').length,tr('offShift')],[shifts.length,tr('registered')]]);
+    const list=element('div','ops-list');
+    shifts.forEach(s=>{
+      const row=element('div','ops-entry');
+      const identity=element('div','ops-entry-identity');identity.append(element('strong',null,s.name),element('small',null,tr('started')+' · '+s.started));
+      row.append(identity,element('span','ops-state '+(s.ended?'offline':'available'),s.ended?tr('offShift'):tr('openShift')),element('span','ops-shift-end',s.ended?tr('ended')+' · '+s.ended:'—'));
+      list.append(row);
+    });
+    root.append(list);
+    const hint=element('p','ops-empty',tr('shiftAction')+': '+tr('driverTitle'));root.append(hint);
+  }
+  return {renderFleet:fleet,renderDispatch:dispatch,renderShifts,drivers,vehicles,shifts};
 }
