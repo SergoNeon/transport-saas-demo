@@ -11,6 +11,7 @@ This repository contains public STATIC FRONTEND ONLY, with entirely fictional da
 - **Eight transport directions:** individual passenger transfers, group/bus transport, freight, parcel delivery, moving services, refrigerated logistics, heavy-haulage and vehicle recovery.
 - Interactive service-specific order forms: passenger counts, cargo kilograms/volume/pallets, refrigeration temperatures or towing vehicle condition.
 - One combined fictional order journal, plus the original dispatcher, drivers, fleet, shifts and team interfaces.
+- **Dispatch calendar:** reserve future crew/vehicle time slots, prevent overlapping assignments, release reservations and simulate departure without connecting to a production system.
 - This is a universal carrier and logistics platform — **not just a taxi dispatch app**.
 
 ## Important

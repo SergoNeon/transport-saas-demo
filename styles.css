@@ -132,3 +132,19 @@ body[dir=rtl] .transport-filter.active{box-shadow:inset -3px 0 0 #ab383b}
 .transport-no-vehicle{display:inline-block;color:#e3b283;background:#332923;border:1px solid #604435;border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.55}
 .transport-assignment{max-width:245px;color:#bcb9b6;font-size:11px;line-height:1.5}
 @media(max-width:850px){.transport-job-actions .ops-select{flex:1 1 44%;min-width:110px;max-width:none}.transport-job-actions{justify-content:flex-start}}
+
+/* Fleet dispatch calendar — restrained operation-first layout */
+.schedule-timeline{display:flex;flex-direction:column;gap:11px;margin:15px 0 23px}
+.schedule-entry{display:grid;grid-template-columns:minmax(140px,.9fr) minmax(180px,1.65fr) minmax(160px,1fr);align-items:center;gap:14px;background:#1e2024;border:1px solid #373a3f;border-inline-start:3px solid #a1373d;border-radius:8px;padding:16px}
+.schedule-time strong,.schedule-info strong{display:block;color:#f0e9df;font-size:13px;font-weight:760}
+.schedule-time small,.schedule-info small{display:block;color:#a5a8ad;line-height:1.7;font-size:11px;margin-top:6px}
+.schedule-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:7px}
+.schedule-actions button{padding:9px 12px;font-size:11px}
+.schedule-dialog{width:min(530px,calc(100% - 22px))}
+.schedule-dialog .fleet-form label{font-size:12px;color:#d1d2d5;display:block;margin:16px 0}
+.schedule-dialog .ops-select{min-width:unset;width:100%;max-width:none;margin-top:9px}
+.schedule-subtitle{font-size:12px;color:#b4b7bb;line-height:1.7}
+.schedule-dialog .ops-note{margin:18px 0}
+@media(max-width:900px){.schedule-entry{grid-template-columns:1fr 1fr}.schedule-actions{grid-column:1/3;justify-content:flex-start}}
+@media(max-width:540px){.schedule-entry{grid-template-columns:1fr;gap:8px}.schedule-actions{grid-column:auto}.schedule-time small{margin-top:3px}}
+body[dir=rtl] .schedule-entry{border-inline-start-color:#a1373d}
