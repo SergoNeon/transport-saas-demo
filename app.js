@@ -2,12 +2,13 @@ import {createFleetDemo} from './fleet-demo.js';
 import {createTeamDemo} from './team-demo.js';
 import {createTransportDemo} from './transport-demo.js';
 import {createCalendarDemo} from './calendar-demo.js';
+import {createRouteDemo} from './route-demo.js';
 // Interactive UI demonstrator — FICTIONAL DATA ONLY.
 // Not connected to backend, maps, payment provider or passenger database.
 const translations = {
   ru: {
     workspace:"Демонстрационная компания",workspaceTitle:"РАБОЧАЯ ОБЛАСТЬ",settingsTitle:"СИСТЕМА",
-    dashboard:"Панель управления",transport:"Все перевозки",transportDetail:"Грузы, пассажиры, доставка, переезды и специализированная логистика.",calendar:"Календарь рейсов",calendarDetail:"Распределение будущих перевозок по времени и экипажам.",bookings:"Заказы",dispatch:"Диспетчерская",drivers:"Водители",fleet:"Автопарк",shifts:"Смены",team:"Команда",customers:"Клиенты и CRM",
+    dashboard:"Панель управления",transport:"Все перевозки",transportDetail:"Грузы, пассажиры, доставка, переезды и специализированная логистика.",calendar:"Календарь рейсов",calendarDetail:"Распределение будущих перевозок по времени и экипажам.",routes:"Маршруты и документы",routesDetail:"Остановки, задержки и отметки вручения.",bookings:"Заказы",dispatch:"Диспетчерская",drivers:"Водители",fleet:"Автопарк",shifts:"Смены",team:"Команда",customers:"Клиенты и CRM",
     finance:"Финансы",analytics:"Аналитика",settings:"Настройки",trial:"ПРОБНЫЙ ПЕРИОД",trialTime:"30 дней бесплатно",
     demoOnboard:"Создать демо-компанию →",
     trialHint:"Без банковской карты. Автоматических списаний нет.",plans:"Посмотреть тарифы ↗",admin:"Владелец компании · DEMO",
@@ -39,7 +40,7 @@ const translations = {
   },
   en: {
     workspace:"Demo transport company",workspaceTitle:"WORKSPACE",settingsTitle:"SYSTEM",
-    dashboard:"Overview",transport:"All transport",transportDetail:"Cargo, passenger trips, deliveries, moves and specialist logistics.",calendar:"Dispatch calendar",calendarDetail:"Upcoming jobs, crews and availability by time slot.",bookings:"Bookings",dispatch:"Dispatch center",drivers:"Drivers",fleet:"Fleet",shifts:"Shifts",team:"Team",customers:"Customers & CRM",
+    dashboard:"Overview",transport:"All transport",transportDetail:"Cargo, passenger trips, deliveries, moves and specialist logistics.",calendar:"Dispatch calendar",calendarDetail:"Upcoming jobs, crews and availability by time slot.",routes:"Routes & documents",routesDetail:"Multi-stop progress, delays and delivery acknowledgements.",bookings:"Bookings",dispatch:"Dispatch center",drivers:"Drivers",fleet:"Fleet",shifts:"Shifts",team:"Team",customers:"Customers & CRM",
     finance:"Finance",analytics:"Analytics",settings:"Settings",trial:"FREE TRIAL",trialTime:"30 days free",
     demoOnboard:"Create a demo company →",
     trialHint:"No card required. No automatic charges.",plans:"Explore plans ↗",admin:"Company owner · DEMO",
@@ -71,7 +72,7 @@ const translations = {
   },
   he: {
     workspace:"חברת הדגמה",workspaceTitle:"סביבת עבודה",settingsTitle:"מערכת",
-    dashboard:"לוח בקרה",transport:"כל סוגי ההובלה",transportDetail:"מטענים, נוסעים, שליחויות והובלה מיוחדת.",calendar:"יומן הובלות",calendarDetail:"תכנון נסיעות עתידיות ושיבוץ צוותים.",bookings:"הזמנות",dispatch:"מרכז סדרנות",drivers:"נהגים",fleet:"צי רכבים",shifts:"משמרות",team:"צוות",customers:"לקוחות ו-CRM",
+    dashboard:"לוח בקרה",transport:"כל סוגי ההובלה",transportDetail:"מטענים, נוסעים, שליחויות והובלה מיוחדת.",calendar:"יומן הובלות",calendarDetail:"תכנון נסיעות עתידיות ושיבוץ צוותים.",routes:"מסלולים ומסמכים",routesDetail:"עצירות, עיכובים ורישום מסירה.",bookings:"הזמנות",dispatch:"מרכז סדרנות",drivers:"נהגים",fleet:"צי רכבים",shifts:"משמרות",team:"צוות",customers:"לקוחות ו-CRM",
     finance:"כספים",analytics:"ניתוח נתונים",settings:"הגדרות",trial:"תקופת ניסיון",trialTime:"30 ימים בחינם",
     demoOnboard:"יצירת חברת הדגמה ←",
     trialHint:"ללא כרטיס אשראי. ללא חיוב אוטומטי.",plans:"לצפייה בחבילות ↗",admin:"בעל החברה · הדגמה",
@@ -190,7 +191,7 @@ function renderQueue() {
 }
 function detailSection() {
   const keys = {
-    transport:["bookingDetail","▰"],calendar:["calendarDetail","◷"],shifts:["driversDetail","◷"],team:["settingDetail","♧"],
+    transport:["bookingDetail","▰"],calendar:["calendarDetail","◷"],routes:["routesDetail","▤"],shifts:["driversDetail","◷"],team:["settingDetail","♧"],
     bookings:["bookingDetail","▤"],dispatch:["dispatchDetail","⌖"],
     drivers:["driversDetail","◉"],fleet:["fleetDetail","▱"],
     customers:["customersDetail","♙"],finance:["financeDetail","₪"],
@@ -207,6 +208,7 @@ function detailSection() {
   if (section === "team") { teamDemo.renderTeam(detail); return; }
   if (section === "transport") { transportDemo.renderHub(detail); return; }
   if (section === "calendar") { calendarDemo.renderCalendar(detail); return; }
+  if (section === "routes") { routeDemo.renderRoutes(detail); return; }
   if (section === "dispatch") { fleetDemo.renderDispatch(detail,bookings); return; }
   if (section === "bookings") {
     const wrap = document.createElement("div"); wrap.className = "table-scroll"; wrap.style.marginTop = "25px";
@@ -301,8 +303,9 @@ $("#bookingForm").addEventListener("submit",(event)=>{
 });
 const fleetDemo=createFleetDemo({t:()=>locale,render,toast});
 const teamDemo=createTeamDemo({locale:()=>locale,render,toast});
-const transportDemo=createTransportDemo({locale:()=>locale,rerender:render,notify:toast,fleet:fleetDemo,getCalendar:()=>calendarDemo});
+const transportDemo=createTransportDemo({locale:()=>locale,rerender:render,notify:toast,fleet:fleetDemo,getCalendar:()=>calendarDemo,getRoutes:()=>routeDemo});
 const calendarDemo=createCalendarDemo({locale:()=>locale,notify:toast,rerender:render,fleet:fleetDemo,jobs:transportDemo.jobs});
+const routeDemo=createRouteDemo({locale:()=>locale,notify:toast,rerender:render,jobs:transportDemo.jobs});
 setLocale(["ru","he","en"].includes(sessionStorage.getItem("transport_demo_locale"))?sessionStorage.getItem("transport_demo_locale"):"ru");
 const demoCompany=sessionStorage.getItem("transport_demo_company");
 if(demoCompany&&demoCompany.trim())$(".workspace strong").textContent=demoCompany.slice(0,65);

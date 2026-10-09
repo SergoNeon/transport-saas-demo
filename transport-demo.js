@@ -21,7 +21,7 @@ ru:{
  desc_private_transfer:'Аэропорты, такси, VIP',desc_group_transport:'Автобусы, шаттлы, экскурсии',desc_freight:'Фуры, паллеты, склады',desc_parcel:'Посылки, последняя миля',desc_moving:'Квартиры, офисы, грузчики',
  desc_refrigerated:'Холодовая цепь, продукты',desc_heavy_haul:'Тяжёлые и крупные грузы',desc_vehicle_recovery:'Эвакуация авто и техники',
  totalJobs:'Заказов в системе',sectors:'Направлений',activeJobs:'В работе',kg:'кг',persons:'чел.',palletUnit:'паллет',
- permit:'Негабаритные грузы: разрешения и маршрут проверяются отдельно',booked:'В календаре',calendarPlan:'В календарь →',chooseDriver:'Выберите водителя',chooseVehicle:'Выберите транспорт',assignFleet:'Назначить экипаж',in_progress:'Выполняется',startService:'Начать перевозку',completeService:'Завершить перевозку',cancelService:'Отменить',noCompatible:'Нет подходящих свободных машин или водителей',lockedPermit:'Для негабаритного груза требуется независимая проверка разрешения',assignmentDone:'Машина и водитель назначены',resourceBlocked:'Транспорт или водитель недоступны',serviceDone:'Перевозка завершена, экипаж свободен'
+ permit:'Негабаритные грузы: разрешения и маршрут проверяются отдельно',booked:'В календаре',routeIncomplete:'Сначала завершите контрольные точки маршрута',calendarPlan:'В календарь →',chooseDriver:'Выберите водителя',chooseVehicle:'Выберите транспорт',assignFleet:'Назначить экипаж',in_progress:'Выполняется',startService:'Начать перевозку',completeService:'Завершить перевозку',cancelService:'Отменить',noCompatible:'Нет подходящих свободных машин или водителей',lockedPermit:'Для негабаритного груза требуется независимая проверка разрешения',assignmentDone:'Машина и водитель назначены',resourceBlocked:'Транспорт или водитель недоступны',serviceDone:'Перевозка завершена, экипаж свободен'
 },
 en:{
  title:'All transport. One dispatch platform.',intro:'Manage passenger rides, freight, courier delivery and specialist logistics in a single workspace.',
@@ -39,7 +39,7 @@ en:{
  desc_private_transfer:'Airport, executive, on demand',desc_group_transport:'Coaches, shuttles, tours',desc_freight:'Trucks, pallets, distribution',desc_parcel:'Packages, last mile',desc_moving:'Homes, offices, crews',
  desc_refrigerated:'Cold chain and perishables',desc_heavy_haul:'Oversized and heavy loads',desc_vehicle_recovery:'Tow trucks and recovery',
  totalJobs:'All jobs',sectors:'Service categories',activeJobs:'In progress',kg:'kg',persons:'pax',palletUnit:'pallets',
- permit:'Oversize shipments need separate permit and route review',booked:'Scheduled',calendarPlan:'Add to calendar →',chooseDriver:'Select driver',chooseVehicle:'Select vehicle',assignFleet:'Assign crew',in_progress:'In transit',startService:'Start service',completeService:'Complete service',cancelService:'Cancel',noCompatible:'No matching free vehicles or drivers',lockedPermit:'Heavy haul requires independently verified permit clearance',assignmentDone:'Driver and vehicle assigned',resourceBlocked:'Crew or vehicle unavailable',serviceDone:'Transport job completed; resources released'
+ permit:'Oversize shipments need separate permit and route review',booked:'Scheduled',routeIncomplete:'Complete tracked route stops first',calendarPlan:'Add to calendar →',chooseDriver:'Select driver',chooseVehicle:'Select vehicle',assignFleet:'Assign crew',in_progress:'In transit',startService:'Start service',completeService:'Complete service',cancelService:'Cancel',noCompatible:'No matching free vehicles or drivers',lockedPermit:'Heavy haul requires independently verified permit clearance',assignmentDone:'Driver and vehicle assigned',resourceBlocked:'Crew or vehicle unavailable',serviceDone:'Transport job completed; resources released'
 },
 he:{
  title:'כל סוגי ההובלה. מערכת אחת.',intro:'ניהול הסעות נוסעים, הובלת מטענים, משלוחים ושירותי הובלה מיוחדים באותו ממשק.',
@@ -57,7 +57,7 @@ he:{
  desc_private_transfer:'שדה תעופה ושירות אישי',desc_group_transport:'אוטובוסים ושאטלים',desc_freight:'משאיות ומשטחים',desc_parcel:'חבילות ומשלוח עד הבית',desc_moving:'דירות, משרדים וסבלים',
  desc_refrigerated:'מזון וקירור',desc_heavy_haul:'ציוד גדול וכבד',desc_vehicle_recovery:'גרר וחילוץ רכבים',
  totalJobs:'הזמנות',sectors:'סוגי שירות',activeJobs:'בטיפול',kg:'ק״ג',persons:'נוסעים',palletUnit:'משטחים',
- permit:'מטען חורג דורש בדיקת היתר ומסלול בנפרד',booked:'בלוח השנה',calendarPlan:'הוספה ליומן ←',chooseDriver:'בחירת נהג',chooseVehicle:'בחירת רכב',assignFleet:'שיבוץ צוות',in_progress:'בביצוע',startService:'התחלת הובלה',completeService:'סיום הובלה',cancelService:'ביטול',noCompatible:'אין רכבים או נהגים מתאימים וזמינים',lockedPermit:'מטען חורג מחייב אישור היתר בלתי תלוי',assignmentDone:'הנהג והרכב שובצו',resourceBlocked:'נהג או רכב אינם זמינים',serviceDone:'ההובלה הושלמה, הצוות התפנה'
+ permit:'מטען חורג דורש בדיקת היתר ומסלול בנפרד',booked:'בלוח השנה',routeIncomplete:'יש להשלים תחילה את כל נקודות המסלול',calendarPlan:'הוספה ליומן ←',chooseDriver:'בחירת נהג',chooseVehicle:'בחירת רכב',assignFleet:'שיבוץ צוות',in_progress:'בביצוע',startService:'התחלת הובלה',completeService:'סיום הובלה',cancelService:'ביטול',noCompatible:'אין רכבים או נהגים מתאימים וזמינים',lockedPermit:'מטען חורג מחייב אישור היתר בלתי תלוי',assignmentDone:'הנהג והרכב שובצו',resourceBlocked:'נהג או רכב אינם זמינים',serviceDone:'ההובלה הושלמה, הצוות התפנה'
 }
 };
 const initial=[
@@ -70,7 +70,7 @@ const initial=[
  {id:'TX-4907',type:'heavy_haul',client:'Atlas Engineering',from:'Ashkelon',to:'Beersheba',summary:{weightKg:38000},status:'waiting',amount:8900},
  {id:'TX-4908',type:'vehicle_recovery',client:'Road Assistance',from:'Highway 4',to:'Petah Tikva',summary:{vehicleType:'Light van'},status:'completed',amount:680}
 ];
-export function createTransportDemo({locale,notify,rerender,fleet={drivers:[],vehicles:[],shifts:[]},getCalendar=()=>null}){
+export function createTransportDemo({locale,notify,rerender,fleet={drivers:[],vehicles:[],shifts:[]},getCalendar=()=>null,getRoutes=()=>null}){
  const jobs=structuredClone(initial).map((j,i)=>({...j,status:j.status==='completed'?'completed':'waiting',scheduledAt:new Date(Date.now()+(i+1)*86400000).toISOString()}));
  let selected='all',nextId=4908;
  const t=k=>dictionary[locale()]?.[k]||dictionary.ru[k]||k;
@@ -92,6 +92,7 @@ export function createTransportDemo({locale,notify,rerender,fleet={drivers:[],ve
   job.driverName=driver.name;job.vehicleName=vehicle.name;job.status='assigned';notify(t('assignmentDone'));rerender();
  }
  function step(job,next){
+  if(next==='completed'&&getRoutes()&&!getRoutes().canComplete(job)){notify(t('routeIncomplete'));return;}
   if(next==='completed'||next==='canceled'){release(job);getCalendar()?.release(job);}
   job.status=next;notify(next==='completed'?t('serviceDone'):t('assignmentDone'));rerender();
  }

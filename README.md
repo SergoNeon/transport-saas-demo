@@ -12,6 +12,7 @@ This repository contains public STATIC FRONTEND ONLY, with entirely fictional da
 - Interactive service-specific order forms: passenger counts, cargo kilograms/volume/pallets, refrigeration temperatures or towing vehicle condition.
 - One combined fictional order journal, plus the original dispatcher, drivers, fleet, shifts and team interfaces.
 - **Dispatch calendar:** reserve future crew/vehicle time slots, prevent overlapping assignments, release reservations and simulate departure without connecting to a production system.
+- **Routes & documents:** fictional multi-stop cargo/passenger itineraries, sequential progress updates, manually reported delays/ETAs, operator-recorded delivery receipt references and a printable non-legal route sheet. No digital signatures, recipient verification or GPS.
 - This is a universal carrier and logistics platform — **not just a taxi dispatch app**.
 
 ## Important
