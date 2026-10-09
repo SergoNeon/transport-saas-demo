@@ -1,7 +1,7 @@
 // Browser-only transport operations demonstration; never accesses production APIs.
 // All records are fictional and reset on page reload.
 export function createFleetDemo({t,render,toast}) {
-  let nextDriver=209,nextVehicle=109;
+  let nextDriver=209,nextVehicle=115;
   const shifts=[{id:'SHIFT-300',name:'Omer Levi',started:'08:00',ended:null},{id:'SHIFT-301',name:'Gal Azulay',started:'08:15',ended:null},{id:'SHIFT-302',name:'Ronen Shalev',started:'09:00',ended:null},{id:'SHIFT-303',name:'Dana Amir',started:'08:30',ended:null}];
   let nextShift=304;
   const drivers=[
@@ -16,6 +16,12 @@ export function createFleetDemo({t,render,toast}) {
     {id:'VH-102',name:'Toyota Camry',plate:'445-88-991',capacity:4,status:'available'},
     {id:'VH-103',name:'Mercedes V-Class',plate:'298-67-882',capacity:7,status:'available'},
     {id:'VH-104',name:'Skoda Superb',plate:'900-22-551',capacity:4,status:'in_service'},
+    {id:'VH-106',name:'MAN TGL 14t',plate:'906-11-106',capacity:3,status:'available',kind:'truck',payloadCapacityKg:14000,cargoVolumeM3:45},
+    {id:'VH-107',name:'Thermo King 5t',plate:'907-11-107',capacity:3,status:'available',kind:'refrigerated',payloadCapacityKg:5000,cargoVolumeM3:30,minTempC:-26,maxTempC:12},
+    {id:'VH-108',name:'Recovery Unit',plate:'908-11-108',capacity:3,status:'available',kind:'recovery'},
+    {id:'VH-109',name:'Heavy Haul Tractor',plate:'909-11-109',capacity:3,status:'available',kind:'heavy',payloadCapacityKg:50000,cargoVolumeM3:95},
+    {id:'VH-110',name:'Transit Delivery Van',plate:'910-11-110',capacity:3,status:'available',kind:'van',payloadCapacityKg:1500,cargoVolumeM3:16},
+    {id:'VH-111',name:'Mercedes Tourismo Coach',plate:'911-11-111',capacity:55,status:'available',kind:'passenger'},
     {id:'VH-105',name:'VW Caddy',plate:'454-90-101',capacity:6,status:'maintenance'}
   ];
   const lang={
@@ -95,7 +101,8 @@ export function createFleetDemo({t,render,toast}) {
     const controls={};
     for(const field of fields){
       const label=element('label',null,tr(field.label));
-      const input=element('input');
+      const input=field.options?element('select','ops-select'):element('input');
+      if(field.options){for(const [value,title]of field.options){const option=element('option',null,title);option.value=value;input.append(option);}}
       input.name=field.key;
       input.required=true;
       input.maxLength=field.max||60;
@@ -125,17 +132,28 @@ export function createFleetDemo({t,render,toast}) {
     });
   }
   function vehicleForm(){
-    dialog(tr('addVehicle'),[{key:'name',label:'vehicle'},{key:'plate',label:'plate',max:22},{key:'capacity',label:'capacity',type:'number',min:'1'}],values=>{
+    const names={ru:{kind:'Тип транспорта',payload:'Грузоподъёмность, кг',volume:'Объём, м³',tempMin:'Температура мин., °C',tempMax:'Температура макс., °C'},
+      en:{kind:'Vehicle category',payload:'Payload, kg',volume:'Cargo volume, m³',tempMin:'Min temp, °C',tempMax:'Max temp, °C'},
+      he:{kind:'סוג רכב',payload:'מטען מרבי, ק״ג',volume:'נפח מטען, מ״ק',tempMin:'טמפרטורת מינימום, °C',tempMax:'טמפרטורת מקסימום, °C'}};
+    const translate=key=>names[t()]?.[key]??names.ru[key];
+    dialog(tr('addVehicle'),[{key:'name',label:'vehicle'},{key:'plate',label:'plate',max:22},{key:'capacity',label:'capacity',type:'number',min:'1'},
+      {key:'kind',label:'vehicle',options:[['passenger','Passenger / Авто'],['van','Van / Фургон'],['truck','Truck / Грузовик'],['refrigerated','Cold chain / Рефрижератор'],['heavy','Heavy haul / Негабарит'],['recovery','Recovery / Эвакуатор']]},
+      {key:'payload',label:'capacity',type:'number',min:'0'},{key:'volume',label:'capacity',type:'number',min:'0'},
+      {key:'tempMin',label:'capacity',type:'number'},{key:'tempMax',label:'capacity',type:'number'}],values=>{
       const cap=Number(values.capacity);
       if(values.name.length<2||values.plate.length<3||!Number.isInteger(cap)||cap<1||cap>80){toast(tr('validVehicle'));return false;}
-      vehicles.push({id:'VH-'+(++nextVehicle),name:values.name,plate:values.plate.toUpperCase(),capacity:cap,status:'available'});
+      const kind=values.kind||'passenger',payload=values.payload?Number(values.payload):null,volume=values.volume?Number(values.volume):null;
+      if(kind!=='passenger'&&kind!=='recovery'&&(!Number.isFinite(payload)||payload===null||payload<=0)){toast(tr('validVehicle'));return false;}
+      if(kind==='refrigerated'&&(!values.tempMin||!values.tempMax||Number(values.tempMin)>Number(values.tempMax))){toast(tr('validVehicle'));return false;}
+      vehicles.push({id:'VH-'+(++nextVehicle),name:values.name,plate:values.plate.toUpperCase(),capacity:cap,status:'available',kind,
+        payloadCapacityKg:payload,cargoVolumeM3:volume,minTempC:values.tempMin===''?null:Number(values.tempMin),maxTempC:values.tempMax===''?null:Number(values.tempMax)});
       toast(tr('vehicleSaved'));render();
     });
   }
   function actionRow(item,type){
     const wrap=element('div','ops-entry');
     const id=element('div','ops-entry-identity');
-    id.append(element('strong',null,item.name),element('small',null,type==='driver'?item.phone:item.plate+' · '+item.capacity+' '+tr('seat')));
+    id.append(element('strong',null,item.name),element('small',null,type==='driver'?item.phone:item.plate+' · '+item.capacity+' '+tr('seat')+(item.payloadCapacityKg?' · '+item.payloadCapacityKg+' kg':'')));
     const meta=element('div','ops-entry-status');
     const state=element('span','ops-state '+item.status,tr(item.status));meta.append(state);
     const actions=element('div','ops-entry-actions');

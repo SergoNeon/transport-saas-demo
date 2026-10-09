@@ -299,7 +299,7 @@ $("#bookingForm").addEventListener("submit",(event)=>{
 });
 const fleetDemo=createFleetDemo({t:()=>locale,render,toast});
 const teamDemo=createTeamDemo({locale:()=>locale,render,toast});
-const transportDemo=createTransportDemo({locale:()=>locale,rerender:render,notify:toast});
+const transportDemo=createTransportDemo({locale:()=>locale,rerender:render,notify:toast,fleet:fleetDemo});
 setLocale(["ru","he","en"].includes(sessionStorage.getItem("transport_demo_locale"))?sessionStorage.getItem("transport_demo_locale"):"ru");
 const demoCompany=sessionStorage.getItem("transport_demo_company");
 if(demoCompany&&demoCompany.trim())$(".workspace strong").textContent=demoCompany.slice(0,65);
