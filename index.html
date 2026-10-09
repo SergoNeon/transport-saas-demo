@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101113">
+  <meta name="description" content="Demo interface for Transport SaaS — a modern B2B transportation management platform.">
+  <title>Transport Control — Operator Workspace (Demo)</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Sidebar">
+      <div class="brand"><div class="brand-mark">T<span>.</span></div><div><strong>TRANSPORT</strong><small>OPERATOR PLATFORM</small></div></div>
+      <div class="workspace"><span class="avatar">NA</span><div><strong>Northline Mobility</strong><small data-i18n="workspace">Демонстрационная компания</small></div><span class="chevron">⌄</span></div>
+      <div class="nav-label" data-i18n="workspaceTitle">РАБОЧАЯ ОБЛАСТЬ</div>
+      <nav class="nav" id="primaryNav">
+        <button class="nav-button selected" data-section="dashboard"><span class="nav-icon">▦</span><span data-i18n="dashboard">Панель управления</span></button>
+        <button class="nav-button" data-section="bookings"><span class="nav-icon">▤</span><span data-i18n="bookings">Заказы</span><span class="nav-count" id="navOrders">5</span></button>
+        <button class="nav-button" data-section="dispatch"><span class="nav-icon">⌖</span><span data-i18n="dispatch">Диспетчерская</span></button>
+        <button class="nav-button" data-section="drivers"><span class="nav-icon">◉</span><span data-i18n="drivers">Водители</span></button>
+        <button class="nav-button" data-section="fleet"><span class="nav-icon">▱</span><span data-i18n="fleet">Автопарк</span></button>
+        <button class="nav-button" data-section="customers"><span class="nav-icon">♙</span><span data-i18n="customers">Клиенты и CRM</span></button>
+        <button class="nav-button" data-section="finance"><span class="nav-icon">▥</span><span data-i18n="finance">Финансы</span></button>
+        <button class="nav-button" data-section="analytics"><span class="nav-icon">▥</span><span data-i18n="analytics">Аналитика</span></button>
+      </nav>
+      <div class="nav-label lower" data-i18n="settingsTitle">СИСТЕМА</div>
+      <nav class="nav">
+        <button class="nav-button" data-section="settings"><span class="nav-icon">⚙</span><span data-i18n="settings">Настройки</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="trial-status"><div class="trial-tag"><span class="dot"></span><span data-i18n="trial">ПРОБНЫЙ ПЕРИОД</span></div><strong data-i18n="trialTime">30 дней бесплатно</strong><p data-i18n="trialHint">Без банковской карты. Автоматических списаний нет.</p><div class="trial-track"><span></span></div><button id="planButton" data-i18n="plans">Посмотреть тарифы ↗</button><a class="trial-cta" href="./register.html" data-i18n="demoOnboard">Создать демо-компанию →</a></div>
+        <div class="signed-in"><span class="user-avatar">SC</span><div><strong>System Control</strong><small data-i18n="admin">Владелец компании · DEMO</small></div></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="crumb"><span data-i18n="operations">Операции</span><span class="crumb-divider">/</span><strong id="crumbCurrent" data-i18n="dashboard">Панель управления</strong></div><div class="top-actions"><div class="locale-group" role="group" aria-label="Language"><button class="locale selected" data-locale="ru">RU</button><button class="locale" data-locale="he">HE</button><button class="locale" data-locale="en">EN</button></div><span class="today" id="today"></span><span class="top-avatar">SC</span></div></header>
+      <div class="content">
+        <div class="hero-head"><div><div class="eyebrow"><span class="live-dot"></span><span data-i18n="live">DEMO · ОПЕРАЦИОННЫЙ ЦЕНТР</span></div><h1 id="pageTitle" data-i18n="title">Все перевозки. Одна система.</h1><p id="pageSubtitle" data-i18n="subtitle">Планируйте рейсы, управляйте автопарком и контролируйте заказы.</p></div><button class="primary-btn" id="newBookingTop"><span class="plus">+</span><span data-i18n="newBooking">Новый заказ</span></button></div>
+        <div class="demo-warning"><strong data-i18n="demoTag">ИНТЕРАКТИВНОЕ ДЕМО</strong><span data-i18n="demoDesc">Все данные вымышлены. Заказы на этом экране не отправляются реальным водителям.</span></div>
+        <section id="dashboardView">
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span data-i18n="todayRides">Заказов за сегодня</span><span class="stat-symbol">▤</span></div><div class="stat-number" id="statBookings">24</div><div class="stat-foot"><span class="up">↗ 12.8%</span><span data-i18n="vsYesterday">к предыдущему дню</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span data-i18n="availableDrivers">Водителей на линии</span><span class="stat-symbol">◉</span></div><div class="stat-number">18<span class="stat-suffix">/ 27</span></div><div class="stat-foot"><span class="lightdot"></span><span data-i18n="activeShift">Активная смена</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span data-i18n="completed">Выполнено поездок</span><span class="stat-symbol">↗</span></div><div class="stat-number" id="statCompleted">16</div><div class="stat-foot"><span class="up">↗ 8.4%</span><span data-i18n="vsYesterday">к предыдущему дню</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span data-i18n="revenue">Выручка перевозчика</span><span class="stat-symbol">₪</span></div><div class="stat-number">₪48,290</div><div class="stat-foot"><span class="muted">—</span><span data-i18n="sampleMoney">Демонстрационные суммы</span></div></article>
+          </div>
+          <div class="feature-grid">
+            <section class="panel map-panel"><div class="panel-heading"><div><h2 data-i18n="operationsMap">Операционная карта</h2><p data-i18n="mapHint">Демонстрация расположения транспорта</p></div><span class="live-pill"><span></span>DEMO LIVE</span></div>
+              <div class="map-stage" aria-label="Stylized demo dispatch map">
+                <svg viewBox="0 0 730 350" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Abstract street grid, not live tracking">
+                  <rect width="730" height="350" fill="#171b1f"/>
+                  <path d="M0 45L730 160M0 125L730 238M0 210L730 322M0 300L580 0M100 350L710 0M360 350L730 160" stroke="#2e343b" stroke-width="18" fill="none"/>
+                  <path d="M0 45L730 160M0 125L730 238M0 210L730 322M0 300L580 0M100 350L710 0M360 350L730 160" stroke="#22272b" stroke-width="11" fill="none"/>
+                  <path d="M24 0L460 350M206 0L640 350M410 0L730 250" stroke="#333a42" stroke-width="9" fill="none"/>
+                  <path d="M24 0L460 350M206 0L640 350M410 0L730 250" stroke="#20272b" stroke-width="4" fill="none"/>
+                  <path d="M0 156Q150 82 280 140T730 110" fill="none" stroke="#375660" stroke-width="19"/>
+                  <path d="M0 156Q150 82 280 140T730 110" fill="none" stroke="#1d323c" stroke-width="11"/>
+                  <path d="M115 0L270 350M560 0L665 350" fill="none" stroke="#454135" stroke-width="2" stroke-dasharray="4 12"/>
+                  <g fill="#252c31"><rect x="65" y="180" width="75" height="45" rx="5"/><rect x="490" y="220" width="70" height="48" rx="5"/><rect x="460" y="20" width="50" height="42" rx="5"/></g>
+                </svg>
+                <div class="map-pin pin-a">↗</div><div class="map-pin pin-b">↗</div><div class="map-pin pin-c busy">↗</div><div class="map-pin pin-d">↗</div><div class="map-pin pin-e busy">↗</div>
+                <div class="map-legend"><span><i class="green-pin"></i><span data-i18n="available">Свободен</span></span><span><i class="gold-pin"></i><span data-i18n="onRide">В поездке</span></span></div>
+                <div class="map-corner">ILLUSTRATIVE MAP · NO LIVE GPS</div>
+              </div>
+            </section>
+            <section class="panel activity-panel"><div class="panel-heading"><div><h2 data-i18n="dispatchQueue">Очередь диспетчера</h2><p data-i18n="queueHint">Заказы, требующие внимания</p></div><span class="number-circle" id="queueCount">3</span></div><div class="queue" id="queueList"></div><button class="text-action" id="queueAction" data-i18n="allBookings">Посмотреть все заказы →</button></section>
+          </div>
+          <section class="panel orders-panel"><div class="panel-heading orders-heading"><div><h2 data-i18n="recentBookings">Последние заказы</h2><p data-i18n="recentHint">Операции транспортной компании</p></div><button class="outline-btn" id="viewAll" data-i18n="viewAll">Все заказы →</button></div><div class="table-scroll"><table><thead><tr><th data-i18n="bookingNum">ЗАКАЗ</th><th data-i18n="route">МАРШРУТ</th><th data-i18n="client">КЛИЕНТ</th><th data-i18n="driver">ВОДИТЕЛЬ</th><th data-i18n="amount">СУММА</th><th data-i18n="status">СТАТУС</th><th></th></tr></thead><tbody id="bookingRows"></tbody></table></div></section>
+        </section>
+        <section id="detailView" hidden><div class="panel detail-panel"><div class="detail-head"><div class="detail-icon" id="detailIcon">▦</div><div><h2 id="detailTitle">Модуль</h2><p id="detailDescription">Демонстрация функционального раздела</p></div></div><div id="detailContent"></div></div></section>
+        <footer>TRANSPORT OPERATOR PLATFORM <span>•</span> DEMO BUILD 0.1 <span>•</span> NO REAL OPERATIONS</footer>
+      </div>
+    </main>
+  </div>
+  <dialog id="bookingDialog" aria-labelledby="bookingDialogTitle"><form id="bookingForm" method="dialog"><div class="modal-header"><div><div class="eyebrow" data-i18n="newOrderEyebrow">DISPATCH / BOOKING</div><h2 id="bookingDialogTitle" data-i18n="createBooking">Создать заказ</h2></div><button class="close-btn" type="button" id="cancelDialog" aria-label="Close">×</button></div><label><span data-i18n="client">Клиент</span><input id="customerInput" required maxlength="60" placeholder="Имя клиента"></label><label><span data-i18n="pickup">Откуда</span><input id="pickupInput" required maxlength="120" placeholder="Адрес подачи"></label><label><span data-i18n="dropoff">Куда</span><input id="dropoffInput" required maxlength="120" placeholder="Адрес назначения"></label><div class="form-grid"><label><span data-i18n="passengers">Пассажиры</span><input id="passengerInput" type="number" min="1" max="8" value="1" required></label><label><span data-i18n="price">Стоимость, ₪</span><input id="priceInput" type="number" min="0" max="100000" value="120" step="1" required></label></div><div class="modal-actions"><button type="button" class="outline-btn" id="discardBooking" data-i18n="cancel">Отмена</button><button type="submit" class="primary-btn" data-i18n="saveBooking">Сохранить заказ</button></div></form></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
