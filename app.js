@@ -1,3 +1,4 @@
+import {createFleetDemo} from './fleet-demo.js';
 // Interactive UI demonstrator — FICTIONAL DATA ONLY.
 // Not connected to backend, maps, payment provider or passenger database.
 const translations = {
@@ -7,8 +8,8 @@ const translations = {
     finance:"Финансы",analytics:"Аналитика",settings:"Настройки",trial:"ПРОБНЫЙ ПЕРИОД",trialTime:"30 дней бесплатно",
     demoOnboard:"Создать демо-компанию →",
     trialHint:"Без банковской карты. Автоматических списаний нет.",plans:"Посмотреть тарифы ↗",admin:"Владелец компании · DEMO",
-    operations:"Операции",live:"DEMO · ОПЕРАЦИОННЫЙ ЦЕНТР",title:"Все перевозки. Одна система.",
-    subtitle:"Планируйте рейсы, управляйте автопарком и контролируйте заказы.",newBooking:"Новый заказ",demoTag:"ИНТЕРАКТИВНОЕ ДЕМО",
+    operations:"Операции",live:"DEMO · ОПЕРАЦИОННЫЙ ЦЕНТР",title:"Операционный центр перевозок",
+    subtitle:"Заказы, экипажи и доступность транспорта в одной диспетчерской.",newBooking:"Новый заказ",demoTag:"ИНТЕРАКТИВНОЕ ДЕМО",
     demoDesc:"Все данные вымышлены. Заказы на этом экране не отправляются реальным водителям.",todayRides:"Заказов за сегодня",availableDrivers:"Водителей на линии",
     completed:"Выполнено поездок",revenue:"Выручка перевозчика",vsYesterday:"к предыдущему дню",activeShift:"Активная смена",
     sampleMoney:"Демонстрационные суммы",operationsMap:"Операционная карта",mapHint:"Демонстрация расположения транспорта",
@@ -39,8 +40,8 @@ const translations = {
     finance:"Finance",analytics:"Analytics",settings:"Settings",trial:"FREE TRIAL",trialTime:"30 days free",
     demoOnboard:"Create a demo company →",
     trialHint:"No card required. No automatic charges.",plans:"Explore plans ↗",admin:"Company owner · DEMO",
-    operations:"Operations",live:"DEMO · OPERATIONS CONTROL",title:"All transport. One system.",
-    subtitle:"Schedule rides, coordinate your fleet, and manage every booking.",newBooking:"New booking",demoTag:"INTERACTIVE DEMO",
+    operations:"Operations",live:"DEMO · OPERATIONS CONTROL",title:"Transport operations",
+    subtitle:"Bookings, crews and vehicle availability in one dispatch workspace.",newBooking:"New booking",demoTag:"INTERACTIVE DEMO",
     demoDesc:"All data is fictional. Orders are not sent to real drivers.",todayRides:"Bookings today",availableDrivers:"Drivers online",
     completed:"Completed rides",revenue:"Carrier revenue",vsYesterday:"vs yesterday",activeShift:"On active shift",
     sampleMoney:"Illustrative amounts",operationsMap:"Operations map",mapHint:"Illustrative vehicle positions",
@@ -71,8 +72,8 @@ const translations = {
     finance:"כספים",analytics:"ניתוח נתונים",settings:"הגדרות",trial:"תקופת ניסיון",trialTime:"30 ימים בחינם",
     demoOnboard:"יצירת חברת הדגמה ←",
     trialHint:"ללא כרטיס אשראי. ללא חיוב אוטומטי.",plans:"לצפייה בחבילות ↗",admin:"בעל החברה · הדגמה",
-    operations:"תפעול",live:"הדגמה · מרכז בקרה",title:"כל ההסעות. מערכת אחת.",
-    subtitle:"תכנון נסיעות, ניהול צי רכבים ושליטה בהזמנות.",newBooking:"הזמנה חדשה",demoTag:"הדגמה אינטראקטיבית",
+    operations:"תפעול",live:"הדגמה · מרכז בקרה",title:"מרכז תפעול ההסעות",
+    subtitle:"הזמנות, נהגים ורכבים זמינים במרכז בקרה אחד.",newBooking:"הזמנה חדשה",demoTag:"הדגמה אינטראקטיבית",
     demoDesc:"כל הנתונים בדיוניים. ההזמנות אינן נשלחות לנהגים אמיתיים.",todayRides:"הזמנות היום",availableDrivers:"נהגים זמינים",
     completed:"נסיעות שהושלמו",revenue:"הכנסות המפעיל",vsYesterday:"בהשוואה לאתמול",activeShift:"משמרת פעילה",
     sampleMoney:"סכומים להמחשה",operationsMap:"מפת פעילות",mapHint:"מיקומי רכבים להמחשה",
@@ -135,7 +136,7 @@ function actionCell(row, booking) {
   button.type = "button";
   button.className = "small-action";
   button.textContent = booking.status === "pending" ? t("assign") : t("finish");
-  button.addEventListener("click", () => advanceBooking(booking.id));
+  button.addEventListener("click", () => navigate("dispatch"));
   td.append(button);
   return td;
 }
@@ -197,7 +198,9 @@ function detailSection() {
   $("#detailIcon").textContent = d[1];
   const detail = $("#detailContent");
   detail.replaceChildren();
-  if (section === "bookings" || section === "dispatch") {
+  if (section === "drivers" || section === "fleet") { fleetDemo.renderFleet(detail,section); return; }
+  if (section === "dispatch") { fleetDemo.renderDispatch(detail,bookings); return; }
+  if (section === "bookings") {
     const wrap = document.createElement("div"); wrap.className = "table-scroll"; wrap.style.marginTop = "25px";
     const table = document.createElement("table");
     const header = document.createElement("thead");
@@ -286,6 +289,7 @@ $("#bookingForm").addEventListener("submit",(event)=>{
   bookings.unshift({id:"TR-"+(++nextId),pickup,dropoff,customer,driver:"",amount,status:"pending",time,passengers});
   $("#bookingForm").reset();$("#bookingDialog").close();render();toast(t("newSaved"));
 });
+const fleetDemo=createFleetDemo({t:()=>locale,render,toast});
 setLocale(["ru","he","en"].includes(sessionStorage.getItem("transport_demo_locale"))?sessionStorage.getItem("transport_demo_locale"):"ru");
 const demoCompany=sessionStorage.getItem("transport_demo_company");
 if(demoCompany&&demoCompany.trim())$(".workspace strong").textContent=demoCompany.slice(0,65);
