@@ -119,3 +119,8 @@ body[dir=rtl] .ops-assigned{text-align:left}
 @media(max-width:480px){.sector-card{min-height:125px;padding:12px}.sector-card strong{font-size:11px}.transport-overview-head h2{font-size:23px}.transport-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px}.transport-filter{flex:none}.transport-job{padding:12px}.transport-sector-summary .ops-kpi{padding:10px}}
 body[dir=rtl] .sector-card{text-align:right}
 body[dir=rtl] .transport-job-actions{justify-content:flex-start}
+
+/* Understated red brand accents complement dark panels and warm-gold typography. */
+#transportOverview{border-top:2px solid #a6383c}
+.transport-filter.active{box-shadow:inset 3px 0 0 #ab383b}
+body[dir=rtl] .transport-filter.active{box-shadow:inset -3px 0 0 #ab383b}

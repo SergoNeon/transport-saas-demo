@@ -8,7 +8,10 @@ This repository contains public STATIC FRONTEND ONLY, with entirely fictional da
 - Onboarding / 30 days free: https://sergoneon.github.io/transport-saas-demo/register.html
 - Interactive dispatch dashboard: https://sergoneon.github.io/transport-saas-demo/
 - Languages: Russian, Hebrew (RTL), English.
-- Features to try: create example bookings, assign demo drivers, change ride status, switch between modules.
+- **Eight transport directions:** individual passenger transfers, group/bus transport, freight, parcel delivery, moving services, refrigerated logistics, heavy-haulage and vehicle recovery.
+- Interactive service-specific order forms: passenger counts, cargo kilograms/volume/pallets, refrigeration temperatures or towing vehicle condition.
+- One combined fictional order journal, plus the original dispatcher, drivers, fleet, shifts and team interfaces.
+- This is a universal carrier and logistics platform — **not just a taxi dispatch app**.
 
 ## Important
 The 30-day trial in the real API is stored and enforced server-side in the PRIVATE core. This GitHub Pages site is a visual demonstration only: no production signups, backend connection, actual payments or GPS tracking. The company name entered on the preview is kept only in the browser tab sessionStorage; no email or password is collected.
