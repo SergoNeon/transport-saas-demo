@@ -1,16 +1,17 @@
 import {createFleetDemo} from './fleet-demo.js';
 import {createTeamDemo} from './team-demo.js';
+import {createTransportDemo} from './transport-demo.js';
 // Interactive UI demonstrator — FICTIONAL DATA ONLY.
 // Not connected to backend, maps, payment provider or passenger database.
 const translations = {
   ru: {
     workspace:"Демонстрационная компания",workspaceTitle:"РАБОЧАЯ ОБЛАСТЬ",settingsTitle:"СИСТЕМА",
-    dashboard:"Панель управления",bookings:"Заказы",dispatch:"Диспетчерская",drivers:"Водители",fleet:"Автопарк",shifts:"Смены",team:"Команда",customers:"Клиенты и CRM",
+    dashboard:"Панель управления",transport:"Все перевозки",transportDetail:"Грузы, пассажиры, доставка, переезды и специализированная логистика.",bookings:"Заказы",dispatch:"Диспетчерская",drivers:"Водители",fleet:"Автопарк",shifts:"Смены",team:"Команда",customers:"Клиенты и CRM",
     finance:"Финансы",analytics:"Аналитика",settings:"Настройки",trial:"ПРОБНЫЙ ПЕРИОД",trialTime:"30 дней бесплатно",
     demoOnboard:"Создать демо-компанию →",
     trialHint:"Без банковской карты. Автоматических списаний нет.",plans:"Посмотреть тарифы ↗",admin:"Владелец компании · DEMO",
-    operations:"Операции",live:"DEMO · ОПЕРАЦИОННЫЙ ЦЕНТР",title:"Операционный центр перевозок",
-    subtitle:"Заказы, экипажи и доступность транспорта в одной диспетчерской.",newBooking:"Новый заказ",demoTag:"ИНТЕРАКТИВНОЕ ДЕМО",
+    operations:"Операции",live:"DEMO · ОПЕРАЦИОННЫЙ ЦЕНТР",title:"Все перевозки. Одна система.",
+    subtitle:"Пассажиры, грузы, доставка и спецтранспорт в одной диспетчерской.",newBooking:"Новый заказ",demoTag:"ИНТЕРАКТИВНОЕ ДЕМО",
     demoDesc:"Все данные вымышлены. Заказы на этом экране не отправляются реальным водителям.",todayRides:"Заказов за сегодня",availableDrivers:"Водителей на линии",
     completed:"Выполнено поездок",revenue:"Выручка перевозчика",vsYesterday:"к предыдущему дню",activeShift:"Активная смена",
     sampleMoney:"Демонстрационные суммы",operationsMap:"Операционная карта",mapHint:"Демонстрация расположения транспорта",
@@ -37,12 +38,12 @@ const translations = {
   },
   en: {
     workspace:"Demo transport company",workspaceTitle:"WORKSPACE",settingsTitle:"SYSTEM",
-    dashboard:"Overview",bookings:"Bookings",dispatch:"Dispatch center",drivers:"Drivers",fleet:"Fleet",shifts:"Shifts",team:"Team",customers:"Customers & CRM",
+    dashboard:"Overview",transport:"All transport",transportDetail:"Cargo, passenger trips, deliveries, moves and specialist logistics.",bookings:"Bookings",dispatch:"Dispatch center",drivers:"Drivers",fleet:"Fleet",shifts:"Shifts",team:"Team",customers:"Customers & CRM",
     finance:"Finance",analytics:"Analytics",settings:"Settings",trial:"FREE TRIAL",trialTime:"30 days free",
     demoOnboard:"Create a demo company →",
     trialHint:"No card required. No automatic charges.",plans:"Explore plans ↗",admin:"Company owner · DEMO",
-    operations:"Operations",live:"DEMO · OPERATIONS CONTROL",title:"Transport operations",
-    subtitle:"Bookings, crews and vehicle availability in one dispatch workspace.",newBooking:"New booking",demoTag:"INTERACTIVE DEMO",
+    operations:"Operations",live:"DEMO · OPERATIONS CONTROL",title:"Every shipment. Every passenger.",
+    subtitle:"Passengers, freight, couriers and specialist transport in one workspace.",newBooking:"New booking",demoTag:"INTERACTIVE DEMO",
     demoDesc:"All data is fictional. Orders are not sent to real drivers.",todayRides:"Bookings today",availableDrivers:"Drivers online",
     completed:"Completed rides",revenue:"Carrier revenue",vsYesterday:"vs yesterday",activeShift:"On active shift",
     sampleMoney:"Illustrative amounts",operationsMap:"Operations map",mapHint:"Illustrative vehicle positions",
@@ -69,12 +70,12 @@ const translations = {
   },
   he: {
     workspace:"חברת הדגמה",workspaceTitle:"סביבת עבודה",settingsTitle:"מערכת",
-    dashboard:"לוח בקרה",bookings:"הזמנות",dispatch:"מרכז סדרנות",drivers:"נהגים",fleet:"צי רכבים",shifts:"משמרות",team:"צוות",customers:"לקוחות ו-CRM",
+    dashboard:"לוח בקרה",transport:"כל סוגי ההובלה",transportDetail:"מטענים, נוסעים, שליחויות והובלה מיוחדת.",bookings:"הזמנות",dispatch:"מרכז סדרנות",drivers:"נהגים",fleet:"צי רכבים",shifts:"משמרות",team:"צוות",customers:"לקוחות ו-CRM",
     finance:"כספים",analytics:"ניתוח נתונים",settings:"הגדרות",trial:"תקופת ניסיון",trialTime:"30 ימים בחינם",
     demoOnboard:"יצירת חברת הדגמה ←",
     trialHint:"ללא כרטיס אשראי. ללא חיוב אוטומטי.",plans:"לצפייה בחבילות ↗",admin:"בעל החברה · הדגמה",
-    operations:"תפעול",live:"הדגמה · מרכז בקרה",title:"מרכז תפעול ההסעות",
-    subtitle:"הזמנות, נהגים ורכבים זמינים במרכז בקרה אחד.",newBooking:"הזמנה חדשה",demoTag:"הדגמה אינטראקטיבית",
+    operations:"תפעול",live:"הדגמה · מרכז בקרה",title:"כל סוגי ההובלה. מערכת אחת.",
+    subtitle:"הסעות, מטענים, משלוחים והובלה מיוחדת במערכת אחת.",newBooking:"הזמנה חדשה",demoTag:"הדגמה אינטראקטיבית",
     demoDesc:"כל הנתונים בדיוניים. ההזמנות אינן נשלחות לנהגים אמיתיים.",todayRides:"הזמנות היום",availableDrivers:"נהגים זמינים",
     completed:"נסיעות שהושלמו",revenue:"הכנסות המפעיל",vsYesterday:"בהשוואה לאתמול",activeShift:"משמרת פעילה",
     sampleMoney:"סכומים להמחשה",operationsMap:"מפת פעילות",mapHint:"מיקומי רכבים להמחשה",
@@ -188,7 +189,7 @@ function renderQueue() {
 }
 function detailSection() {
   const keys = {
-    shifts:["driversDetail","◷"],team:["settingDetail","♧"],
+    transport:["bookingDetail","▰"],shifts:["driversDetail","◷"],team:["settingDetail","♧"],
     bookings:["bookingDetail","▤"],dispatch:["dispatchDetail","⌖"],
     drivers:["driversDetail","◉"],fleet:["fleetDetail","▱"],
     customers:["customersDetail","♙"],finance:["financeDetail","₪"],
@@ -203,6 +204,7 @@ function detailSection() {
   if (section === "drivers" || section === "fleet") { fleetDemo.renderFleet(detail,section); return; }
   if (section === "shifts") { fleetDemo.renderShifts(detail); return; }
   if (section === "team") { teamDemo.renderTeam(detail); return; }
+  if (section === "transport") { transportDemo.renderHub(detail); return; }
   if (section === "dispatch") { fleetDemo.renderDispatch(detail,bookings); return; }
   if (section === "bookings") {
     const wrap = document.createElement("div"); wrap.className = "table-scroll"; wrap.style.marginTop = "25px";
@@ -255,6 +257,8 @@ function render() {
   $("#navOrders").textContent = String(bookings.length);
   renderTable($("#bookingRows"), bookings.slice().reverse().slice(0, 5));
   renderQueue();
+  const overview=$("#transportOverview");overview.replaceChildren();
+  if(section==="dashboard")transportDemo.overview(overview,()=>navigate("transport"));
   if (section !== "dashboard") detailSection();
 }
 function navigate(next) {section=next;render();window.scrollTo({top:0,behavior:"smooth"});}
@@ -272,7 +276,7 @@ function toast(message) {
   const box=$("#toast");box.textContent=message;box.classList.add("show");
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove("show"),3000);
 }
-function openBooking(){ $("#bookingDialog").showModal();$("#customerInput").focus(); }
+function openBooking(){ transportDemo.openForm('freight'); }
 $$("#primaryNav button, .sidebar nav button").forEach((btn)=>btn.addEventListener("click",()=>navigate(btn.dataset.section)));
 $$("[data-locale]").forEach((btn)=>btn.addEventListener("click",()=>setLocale(btn.dataset.locale)));
 $("#newBookingTop").addEventListener("click",openBooking);
@@ -295,6 +299,7 @@ $("#bookingForm").addEventListener("submit",(event)=>{
 });
 const fleetDemo=createFleetDemo({t:()=>locale,render,toast});
 const teamDemo=createTeamDemo({locale:()=>locale,render,toast});
+const transportDemo=createTransportDemo({locale:()=>locale,rerender:render,notify:toast});
 setLocale(["ru","he","en"].includes(sessionStorage.getItem("transport_demo_locale"))?sessionStorage.getItem("transport_demo_locale"):"ru");
 const demoCompany=sessionStorage.getItem("transport_demo_company");
 if(demoCompany&&demoCompany.trim())$(".workspace strong").textContent=demoCompany.slice(0,65);
