@@ -10,6 +10,7 @@ const port=Number(process.env.PORT || 18439);
 const assets=new Map([
  ['/', ['index.html','text/html; charset=utf-8']],
  ['/index.html', ['index.html','text/html; charset=utf-8']],
+ ['/admin.html', ['admin.html','text/html; charset=utf-8']],
  ['/secure.js', ['secure.js','text/javascript; charset=utf-8']],
  ['/styles.css', ['styles.css','text/css; charset=utf-8']]
 ]);
