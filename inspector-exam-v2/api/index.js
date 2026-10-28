@@ -4,6 +4,16 @@ const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.D
 const H=s=>crypto.createHmac('sha256',process.env.EXAM_HMAC_SECRET||'').update(String(s)).digest('hex');
 const token=()=>crypto.randomBytes(32).toString('base64url');
 const hashPassword=(p,s)=>crypto.scryptSync(p,s,64).toString('hex');
+// Numeric 6-24 digit PINs are enabled only on the isolated synthetic-data staging server.
+// Personnel production must retain a stronger policy until a security/privacy review.
+const passwordRule=()=>process.env.EXAM_TEST_ONLY==='1'
+  ? {type:'digits',minLength:6,maxLength:24}
+  : {type:'text',minLength:14,maxLength:128};
+const validAdminPassword=p=>typeof p==='string'&&(
+  passwordRule().type==='digits'
+    ? /^\d{6,24}$/.test(p)
+    : p.length>=14&&p.length<=128
+);
 const eq=(a,b)=>{try{const x=Buffer.from(a,'hex'),y=Buffer.from(b,'hex');return x.length===y.length&&x.length>0&&crypto.timingSafeEqual(x,y)}catch{return false}};
 const cookie=(name,value,maxAge)=>`${name}=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 const clean=(v,n=120)=>String(v||'').trim().slice(0,n);
@@ -21,14 +31,15 @@ export default async function handler(req,res){res.setHeader('Cache-Control','no
 const path=String(req.query.path||'').replace(/^\/+|\/+$/g,'') || req.url.split('?')[0].replace(/^\/api\/?/,'');const method=req.method;const b=requestJSON(req);
 try{
 if(path==='health'&&method==='GET'){const r=await db('SELECT (SELECT count(*) FROM exam_question_bank) AS questions');return res.status(200).json({ok:true,questions:Number(r.rows[0].questions),ready:Number(r.rows[0].questions)===30})}
+if(path==='password-policy'&&method==='GET')return res.json(passwordRule());
 if(path==='setup'&&method==='POST'){
 if(!process.env.EXAM_SETUP_SECRET||clean(b.setupSecret,200)!==process.env.EXAM_SETUP_SECRET)return fail(res,403,'גישה נדחתה');
 const exists=await db('SELECT count(*)::integer n FROM exam_admins');if(exists.rows[0].n!==0)return fail(res,409,'המערכת כבר הוגדרה');
 const username=clean(b.username,40).toLowerCase(),password=String(b.password||''),name=clean(b.name);
-if(!/^[a-z0-9._-]{3,40}$/.test(username)||password.length<14||name.length<2)return fail(res,400,'פרטי הקמה אינם תקינים');
+if(!/^[a-z0-9._-]{3,40}$/.test(username)||!validAdminPassword(password)||name.length<2)return fail(res,400,'פרטי הקמה אינם תקינים');
 const salt=crypto.randomBytes(16).toString('hex');await db('INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password) VALUES ($1,$2,$3,$4,$5,false)',[username,name,'owner',salt,hashPassword(password,salt)]);return res.json({ok:true})}
 if(path==='admin-login'&&method==='POST'){
-const username=clean(b.username,40).toLowerCase(),password=String(b.password||'');if(!(await limit('admin',username+':'+(req.headers['x-forwarded-for']||'').split(',')[0],8)))return fail(res,429,'יותר מדי ניסיונות. נסו שוב מאוחר יותר');
+const username=clean(b.username,40).toLowerCase(),password=String(b.password||'');if(!(await limit('admin',username+':'+(req.headers['x-forwarded-for']||'').split(',')[0],8))||!(await limit('admin-account',username,8)))return fail(res,429,'יותר מדי ניסיונות. נסו שוב מאוחר יותר');
 const r=await db('SELECT * FROM exam_admins WHERE username=$1 AND is_active=true',[username]);const a=r.rows[0];if(!a||!eq(hashPassword(password,a.password_salt),a.password_hash))return fail(res,401,'שם משתמש או סיסמה שגויים');
 const t=token();await db(`INSERT INTO exam_staff_sessions(staff_id,session_digest,expires_at) VALUES($1,$2,now()+interval '8 hours')`,[a.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_admin',t,28800));return res.json({ok:true,name:a.display_name,role:a.role,mustChangePassword:a.must_change_password})}
 if(path==='admin-logout'&&method==='POST'){const s=getCookies(req).afikim_admin;if(s)await db('DELETE FROM exam_staff_sessions WHERE session_digest=$1',[H(s)]);res.setHeader('Set-Cookie',cookie('afikim_admin','',0));return res.json({ok:true})}
@@ -47,7 +58,7 @@ if(!c)return fail(res,401,'הקוד אינו תואם לתעודת הזהות, �
 const t=token();await db(`DELETE FROM exam_candidate_sessions WHERE candidate_id=$1`,[c.id]);await db(`INSERT INTO exam_candidate_sessions(candidate_id,session_digest,expires_at) VALUES($1,$2,now()+interval '2 hours')`,[c.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_worker',t,7200));return res.json({ok:true,name:c.name})}
 const a=await admin(req);if(path==='admin-me'&&method==='GET')return a?res.json({admin:a}):fail(res,401,'נדרשת כניסה של מנהל');
 if(path==='admin-password'&&method==='POST'){
-if(!a)return fail(res,401,'נדרשת כניסה');const r=await db('SELECT * FROM exam_admins WHERE id=$1',[a.id]);const user=r.rows[0];if(!eq(hashPassword(String(b.current||''),user.password_salt),user.password_hash)||String(b.next||'').length<14)return fail(res,400,'סיסמה לא תקינה');const salt=crypto.randomBytes(16).toString('hex');await db('UPDATE exam_admins SET password_salt=$2,password_hash=$3,must_change_password=false WHERE id=$1',[a.id,salt,hashPassword(b.next,salt)]);await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1 AND session_digest<>$2',[a.id,H(getCookies(req).afikim_admin)]);return res.json({ok:true})}
+if(!a)return fail(res,401,'נדרשת כניסה');const r=await db('SELECT * FROM exam_admins WHERE id=$1',[a.id]);const user=r.rows[0];if(!eq(hashPassword(String(b.current||''),user.password_salt),user.password_hash))return fail(res,400,'הסיסמה הנוכחית שגויה');const nextPassword=String(b.next||'');if(!validAdminPassword(nextPassword))return fail(res,400,process.env.EXAM_TEST_ONLY==='1'?'יש להזין סיסמה חדשה של 6 עד 24 ספרות':'הסיסמה חייבת להכיל לפחות 14 תווים');if(eq(hashPassword(nextPassword,user.password_salt),user.password_hash))return fail(res,400,'יש לבחור סיסמה שונה מהסיסמה הנוכחית');const salt=crypto.randomBytes(16).toString('hex');await db('UPDATE exam_admins SET password_salt=$2,password_hash=$3,must_change_password=false WHERE id=$1',[a.id,salt,hashPassword(b.next,salt)]);await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1 AND session_digest<>$2',[a.id,H(getCookies(req).afikim_admin)]);return res.json({ok:true})}
 if(path==='admin-staff-list'&&method==='GET'){
 if(!a||a.role!=='owner'||a.must_change_password)return fail(res,403,'גישה למנהל המערכת בלבד');
 const r=await db("SELECT id,username,display_name,role,is_active,created_at FROM exam_admins ORDER BY created_at");
@@ -55,7 +66,7 @@ return res.json({items:r.rows.map(x=>({id:x.id,staffNumber:x.username,display_na
 if(path==='admin-staff-create'&&method==='POST'){
 if(!a||a.role!=='owner'||a.must_change_password)return fail(res,403,'גישה למנהל המערכת בלבד');
 const username=clean(b.staffNumber||b.username,40),name=clean(b.display_name||b.name,90),password=String(b.password||''),role=clean(b.role,30);
-if(!/^\d{4,10}$/.test(username)||name.length<2||password.length<14||password.length>128||!['manager','hr'].includes(role))return fail(res,400,'פרטי איש צוות אינם תקינים');
+if(!/^\d{4,10}$/.test(username)||name.length<2||!validAdminPassword(password)||!['manager','hr'].includes(role))return fail(res,400,process.env.EXAM_TEST_ONLY==='1'?'הסיסמה הזמנית חייבת לכלול 6 עד 24 ספרות':'פרטי איש צוות אינם תקינים');
 const salt=crypto.randomBytes(16).toString('hex');
 try{
 const r=await db("INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password,is_active) VALUES($1,$2,$3,$4,$5,true,true) RETURNING id,username,display_name,role,is_active,created_at",[username,name,role,salt,hashPassword(password,salt)]);
