@@ -43,7 +43,7 @@ const creds=JSON.parse(fs.readFileSync('/etc/afikim-exam/staging-credentials.jso
   await page.locator('#manager-username').fill(creds.owner.username);
   await page.locator('#manager-password').fill(creds.owner.password);
   await page.locator('#manager-login-form button[type=submit]').click();
-  const path=await Promise.race([page.locator('#manager-staff-form').waitFor({timeout:15000}).then(()=> 'staff'),page.locator('#manager-password-form').waitFor({timeout:15000}).then(()=> 'change')]);
+  const path=await Promise.race([page.locator('[data-panel="staff"]').waitFor({timeout:15000}).then(async()=>{await page.locator('[data-panel="staff"]').click();await page.locator('#manager-staff-create').waitFor();return 'staff'}),page.locator('#manager-change-password').waitFor({timeout:15000}).then(()=> 'change')]);
   if(path==='staff')console.log('PASS Owner account can add other managers and HR staff');
   else console.log('OWNER FIRST LOGIN PASSWORD CHANGE REQUIRED; cannot access staff form before rotation');
   await context.close();
