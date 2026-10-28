@@ -83,7 +83,25 @@ if(!active)await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1',[id]);
 await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_toggled',jsonb_build_object('target',$2::uuid,'active',$3::boolean))",[a.id,id,active]);
 return res.json({staff:{id:r.rows[0].id,staffNumber:r.rows[0].username,display_name:r.rows[0].display_name,role:r.rows[0].role,is_active:r.rows[0].is_active}})}
 if(path==='admin-list'&&method==='GET'){
-if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const r=await db('SELECT * FROM exam_candidates WHERE ($1::text = \'owner\' OR assigned_by = $2) ORDER BY created_at DESC LIMIT 200',[a.role,a.id]);return res.json({items:r.rows.map(summary)})}
+if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');
+const search=clean(req.query.search,100),state=clean(req.query.state,30)||'all';
+if(!['all','assigned','in_progress','pending','accepted','rejected','follow_up'].includes(state))return fail(res,400,'מסנן אינו תקין');
+const hasPaging=req.query.page!==undefined||req.query.size!==undefined;
+const requestedSize=Number(req.query.size),requestedPage=Number(req.query.page);
+const size=hasPaging?(Number.isInteger(requestedSize)&&requestedSize>=1?Math.min(requestedSize,50):20):200;
+const page=hasPaging?(Number.isInteger(requestedPage)&&requestedPage>=1?Math.min(requestedPage,10000):1):1;
+const condition="($1::text='owner' OR assigned_by=$2) AND ($3::text='' OR name ILIKE '%'||$3||'%') AND ($4::text='all' OR ($4::text='pending' AND status='submitted' AND reviewer_decision IS NULL) OR ($4::text IN ('assigned','in_progress') AND status=$4) OR ($4::text IN ('accepted','rejected','follow_up') AND reviewer_decision=$4))";
+const args=[a.role,a.id,search,state];
+const [records,count,stats]=await Promise.all([
+ db("SELECT * FROM exam_candidates WHERE "+condition+" ORDER BY created_at DESC LIMIT $5 OFFSET $6",[...args,size,(page-1)*size]),
+ db("SELECT count(*)::integer n FROM exam_candidates WHERE "+condition,args),
+ db(`SELECT count(*)::integer AS total,
+ count(*) FILTER(WHERE status IN ('assigned','in_progress'))::integer AS active,
+ count(*) FILTER(WHERE status='submitted' AND reviewer_decision IS NULL)::integer AS pending,
+ count(*) FILTER(WHERE reviewer_decision='accepted')::integer AS accepted
+ FROM exam_candidates WHERE ($1::text='owner' OR assigned_by=$2)`,[a.role,a.id])
+]);
+return res.json({items:records.rows.map(summary),pagination:{page,size,total:count.rows[0].n,pages:Math.max(1,Math.ceil(count.rows[0].n/size))},stats:stats.rows[0]})}
 if(path==='admin-assign'&&method==='POST'){
 if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const name=clean(b.name),doc=clean(b.document,30);if(name.length<2||!validDoc(doc))return fail(res,400,'נדרש שם מלא ומספר תעודה תקין');const code=crypto.randomBytes(18).toString('hex').toUpperCase();const r=await db(`INSERT INTO exam_candidates(name,identity_digest,identity_last4,access_digest,expires_at,assigned_by) VALUES($1,$2,$3,$4,now()+interval '7 days',$5) RETURNING *`,[name,H(doc),doc.slice(-4),H(code),a.id]);await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action) VALUES($1,$2,'assigned')`,[a.id,r.rows[0].id]);return res.json({candidate:summary(r.rows[0]),code})}
 if(path==='admin-detail'&&method==='GET'){
@@ -95,7 +113,7 @@ const c=row.rows[0];
 const questions=c.status==='submitted'?await db(`SELECT q.id,q.section,q.prompt,q.choices,q.answer_index,q.explanation,x.selected_option FROM exam_question_bank q LEFT JOIN exam_candidate_answers x ON x.question_id=q.id AND x.candidate_id=$1 ORDER BY q.id`,[id]):{rows:[]};
 return res.json({candidate:summary(c),questions:questions.rows.map(q=>({id:q.id,section:q.section,question:q.prompt,options:q.choices,correctOption:q.answer_index,selectedOption:q.selected_option,correct:q.selected_option===q.answer_index,explanation:q.explanation}))})}
 if(path==='admin-review'&&method==='POST'){
-if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const id=clean(b.id,64),decision=clean(b.decision,30),notes=clean(b.notes,1000);if(!['accepted','rejected','follow_up'].includes(decision)||notes.length<3)return fail(res,400,'נדרשים החלטה ונימוק');
+if(!a||a.must_change_password||!['owner','manager'].includes(a.role))return fail(res,403,'נדרשת הרשאת מנהל');const id=clean(b.id,64),decision=clean(b.decision,30),notes=clean(b.notes,1000);if(!['accepted','rejected','follow_up'].includes(decision)||notes.length<3)return fail(res,400,'נדרשים החלטה ונימוק');
 const r=await db(`UPDATE exam_candidates SET reviewer_decision=$2,reviewer_notes=$3,reviewed_by=$4,reviewed_at=now() WHERE id=$1 AND status='submitted' AND reviewer_decision IS NULL AND ($5::text='owner' OR assigned_by=$4) RETURNING *`,[id,decision,notes,a.id,a.role]);if(!r.rowCount)return fail(res,409,'הבדיקה טרם הוגשה או שכבר התקבלה החלטה');await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action,detail) VALUES($1,$2,'reviewed',jsonb_build_object('decision',$3::text))`,[a.id,id,decision]);return res.json({candidate:summary(r.rows[0])})}
 const w=await worker(req);if(path==='worker-me'&&method==='GET')return w?res.json({candidate:{id:w.id,name:w.name,status:w.status,submittedAt:w.submitted_at,startedAt:w.started_at},remainingSeconds:w.started_at?Math.max(0,Math.floor((new Date(w.started_at).getTime()+w.time_limit_seconds*1000-Date.now())/1000)):w.time_limit_seconds}):fail(res,401,'נדרשת כניסה למבחן');
 if(path==='worker-questions'&&method==='GET'){
