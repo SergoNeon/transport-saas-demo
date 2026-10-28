@@ -81,7 +81,24 @@ const check=(r,status,label)=>{assert.equal(r.status,status,label+' got '+r.stat
   await page.locator('#entry button[type=submit]').click();
   await page.locator('#change-password-admin').waitFor({timeout:20000});
   console.log('PASS new six-digit manager password works after logout and fresh login');
-  console.log('PASS END_TO_END: manager account creation + six-digit numeric password save + PostgreSQL + re-login');
+  await page.locator('#change-password-admin').click();
+  await page.locator('#change-pass').waitFor({timeout:15000});
+  let laterPin=randomPin();while(laterPin===managerNewPin)laterPin=randomPin();
+  await page.locator('#current').fill(managerNewPin);
+  await page.locator('#next').fill(laterPin);
+  await page.locator('#change-pass button[type=submit]').click();
+  await page.locator('#change-password-admin').waitFor({timeout:15000});
+  row=await pool.query('SELECT password_salt,password_hash FROM exam_admins WHERE id=$1',[managerId]);
+  assert.equal(crypto.scryptSync(laterPin,row.rows[0].password_salt,64).toString('hex'),row.rows[0].password_hash);
+  console.log('PASS voluntary later PIN change saved through dashboard and PostgreSQL');
+  await page.locator('#logout-admin').click();
+  await page.locator('#login-pass').waitFor({timeout:15000});
+  await page.locator('#login-user').fill(managerNumber);
+  await page.locator('#login-pass').fill(laterPin);
+  await page.locator('#entry button[type=submit]').click();
+  await page.locator('#change-password-admin').waitFor({timeout:15000});
+  console.log('PASS newest six-digit manager password authenticates after a second change');
+  console.log('PASS END_TO_END: account creation + forced and voluntary six-digit PIN change + PostgreSQL + re-login');
   await context.close();
  } finally {
   if(browser)await browser.close();
