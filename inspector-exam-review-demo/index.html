@@ -324,6 +324,170 @@ button:disabled {cursor:not-allowed;opacity:.5}
 .demo-reset p{width:100%;margin:3px 0;font-size:13px;font-weight:700}
 @media(max-width:700px){.topbar{padding:13px 16px}.afikim-logo{width:112px;height:36px}.afikim-brand{gap:8px}.afikim-brand .brand-copy{padding-inline-start:9px}.afikim-brand .brand-copy strong{font-size:13px}.afikim-brand .brand-copy small{font-size:10px}.training-chip{display:none}.demo-banner{padding:14px;gap:9px}.demo-banner>span{min-width:0;flex-basis:100%}}
 
+/* Electra Afikim review portal -- responsive operational layout v3 */
+:root{
+  --ink:#122f3e;--muted:#607383;--accent:#087f72;--accent-dark:#08695f;
+  --navy:#102d40;--background:#f4f7f9;--line:#dfe8ec;
+  --shadow:0 10px 28px rgba(24,49,61,.045);
+}
+html{overflow-x:clip}
+body{overflow-x:clip;background:var(--background)}
+button,input,textarea,select{font-family:inherit}
+button:active:not(:disabled){transform:translateY(1px)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #57b9ac;outline-offset:3px}
+.app-shell{min-height:100dvh;max-width:100%}
+.topbar{min-height:76px;padding:12px max(22px,calc((100vw - 1160px)/2));border-top:4px solid #168f7d;border-bottom:1px solid #e4eaee;box-shadow:0 2px 15px rgba(11,46,58,.025)}
+.afikim-brand{gap:17px;min-width:0}
+.afikim-logo{height:48px;width:210px;max-width:38vw;object-position:right center}
+.afikim-brand .brand-copy{border-inline-start:1px solid #d9e4e8;padding-inline-start:17px;gap:5px}
+.afikim-brand .brand-copy strong{font-size:16px;font-weight:800;line-height:1.2;letter-spacing:0}
+.afikim-brand .brand-copy small{font-size:11px;font-weight:600;line-height:1.3}
+.training-chip{background:#edf7f4;color:#156c63;border:1px solid #d1e5df;padding:9px 13px;letter-spacing:0}
+.secure-main{width:min(1160px,calc(100% - 44px));padding:24px 0 48px;min-width:0}
+.demo-banner{border:1px solid #dce8e5;background:#eff7f5;border-radius:12px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:13px;min-height:52px;margin-bottom:27px;padding:10px 14px;color:#325a59}
+.demo-banner>strong{display:inline-flex;align-items:center;background:#dcefe9;color:#0b6657;border-radius:6px;padding:6px 10px;font-size:11px;white-space:normal}
+.demo-banner>span{font-size:12px;line-height:1.5;min-width:0}
+.demo-banner>button{font-size:12px;white-space:nowrap;border-radius:8px;min-height:32px;background:transparent}
+.demo-reset{grid-column:1/-1;display:flex;justify-content:flex-end;border-top:1px solid #dce8e5;padding-top:12px}
+.demo-reset p{flex:1;width:auto;margin:0}
+.secure-heading{margin:0 0 23px}
+.secure-label{display:block;color:#157f73;font-size:11px;font-weight:800;letter-spacing:.2px;margin-bottom:10px}
+.secure-heading h1{font-size:clamp(27px,3.3vw,39px);line-height:1.22;letter-spacing:-.6px;margin:0 0 9px;font-weight:850}
+.secure-heading p{font-size:14px;line-height:1.6;color:#71808f;max-width:680px;margin:0}
+.secure-card{min-width:0;max-width:100%;border:1px solid #e0e7ec;border-radius:16px;padding:23px;background:#fff;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.secure-card h2{font-size:19px;letter-spacing:-.2px;font-weight:800;margin:0 0 10px;line-height:1.3}
+.secure-card>p{font-size:13px;line-height:1.6;margin:0 0 20px;color:#6a7c88}
+.secure-card form{gap:13px}
+.secure-field{gap:7px;font-size:13px;color:#273e50}
+.secure-field input,.secure-field textarea,.secure-field select,.secure-section-head input{min-width:0;width:100%;min-height:48px;border-radius:9px;border:1px solid #cbd9e1;box-shadow:none;color:var(--ink);background:#fff;padding:11px 13px;font-size:14px}
+.secure-field input:focus,.secure-field textarea:focus,.secure-field select:focus{border-color:#129485;box-shadow:0 0 0 3px #d9f2ec;outline:0}
+.secure-card .primary-btn{min-height:47px;box-shadow:none;background:#078579;font-size:14px;font-weight:800}
+.secure-card .primary-btn:hover{background:#076f65;box-shadow:none}
+.secure-card .secondary-btn{min-height:43px}
+.secure-help{font-size:12px!important;color:#81909c!important;line-height:1.6!important;margin-top:15px!important}
+.secure-tabs{gap:4px;padding:5px;border-radius:12px;border:1px solid #dfe8ec;background:#ecf1f3;margin:0 0 15px;max-width:100%;width:100%}
+.secure-tabs button{flex:1;min-width:0;min-height:44px;border:0;border-radius:8px;background:transparent;font-size:13px;color:#516775;padding:8px 12px}
+.secure-tabs button:hover{background:#f8fcfd}
+.secure-tabs .active{background:var(--navy);color:#fff;box-shadow:0 2px 6px rgba(16,45,64,.11)}
+.secure-tabs .active:hover{background:var(--navy)}
+.secure-main:has(#entry){width:min(515px,calc(100% - 36px));padding-top:22px}
+.secure-main:has(#entry) .secure-heading{text-align:center;margin-bottom:22px}
+.secure-main:has(#entry) .secure-heading p{font-size:14px;line-height:1.55;margin:auto}
+.secure-main:has(#entry) .secure-card{max-width:none;padding:26px}
+.secure-main:has(#entry) .demo-banner{margin-bottom:34px}
+.secure-main:has(#entry) .secure-heading h1{font-size:clamp(26px,4vw,35px)}
+.demo-quick{gap:8px;border:1px solid #e1eaed;background:#f7fafb;padding:14px;border-radius:10px;color:#435967;font-size:12px}
+.demo-quick>strong{font-size:13px}
+.demo-quick>span{line-height:1.7;direction:auto;overflow-wrap:anywhere}
+.demo-quick button{min-height:36px;font-size:12px;border-color:#d3e2e6}
+.secure-toolbar{align-items:stretch;justify-content:space-between;gap:14px;margin:0 0 20px}
+.secure-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;flex:1;min-width:0}
+.secure-stats>div{display:flex;flex-direction:column;justify-content:center;gap:4px;background:white;border:1px solid #e1e8ed;border-radius:13px;padding:15px 18px;min-width:0;min-height:86px;box-shadow:0 3px 12px rgba(16,40,60,.025)}
+.secure-stats b{font-size:28px;line-height:1.15;font-variant-numeric:tabular-nums;color:#18394a}
+.secure-stats span{font-size:12px;line-height:1.3;color:#687c8b}
+#logout-admin{min-height:40px;align-self:start;font-weight:750;white-space:nowrap}
+.secure-grid{grid-template-columns:minmax(265px,318px) minmax(0,1fr);align-items:start;gap:17px}
+.secure-grid>.secure-card{min-width:0}
+.secure-grid>.secure-card:first-child{position:relative;border-top:3px solid #0d867b}
+.secure-grid>.secure-card:first-child form{gap:14px}
+.secure-section-head{margin:0 0 16px;gap:14px;align-items:center}
+.secure-section-head h2{margin:0;white-space:nowrap}
+.secure-section-head input{max-width:248px;font-size:13px;min-height:42px}
+.table-wrap{min-width:0;max-width:100%;overflow-x:auto;overflow-y:auto;max-height:700px}
+.secure-card table{font-size:12px;table-layout:auto}
+.secure-card th,.secure-card td{padding:13px 9px;vertical-align:middle}
+.secure-card th{font-size:11px;font-weight:800;color:#647b8b;background:#f5f8fa}
+.secure-card td{color:#294456;line-height:1.45}
+.secure-card td:first-child{font-weight:800}
+.secure-card tbody tr:hover{background:#f9fbfc}
+.secure-card tbody tr:last-child td{border-bottom:0}
+.small-action{min-height:36px;border-radius:9px;padding:8px 11px;white-space:nowrap;letter-spacing:0;font-size:12px}
+.invitation{border:1px solid #b6dfd0;background:#effaf4;padding:17px;border-radius:12px}
+.invitation p{color:#34585d;line-height:1.5}
+.invitation code{font-size:13px;word-break:break-all}
+.feedback{border:1px solid #cde7d8;color:#216951;border-radius:10px;line-height:1.6;font-size:13px;margin:0 0 16px}
+.feedback.error{border-color:#f4d0ca;color:#8c332d}
+.exam-secure{width:min(100%,780px);max-width:100%!important;margin:auto;padding:30px}
+.exam-secure h2{font-size:clamp(20px,2.3vw,26px);line-height:1.5;margin:22px 0}
+.exam-top{align-items:center}
+.exam-top strong{font-size:13px;color:#477084}
+.exam-top #clock{font-size:17px;font-weight:900;font-variant-numeric:tabular-nums;color:#156e67}
+.answer-grid button{min-height:62px;font-size:14px;line-height:1.6}
+.form-actions{align-items:center}
+.form-actions>*{flex:0 1 auto}
+.site-footer{width:min(1160px,calc(100% - 44px));font-size:11px;border-top:1px solid #e2e8ed;color:#7a8e9b}
+@media(max-width:1050px){
+ .secure-grid{grid-template-columns:minmax(0,1fr)}
+ .secure-grid>.secure-card:first-child{position:static}
+ .secure-toolbar{flex-direction:column-reverse}
+ #logout-admin{align-self:flex-end}
+ .secure-section-head input{max-width:320px}
+}
+@media(max-width:650px){
+ .topbar{min-height:66px;padding:10px 16px;border-top-width:3px;gap:8px}
+ .afikim-brand{gap:10px;flex:1;min-width:0}
+ .afikim-logo{width:128px;max-width:38vw;height:36px}
+ .afikim-brand .brand-copy{padding-inline-start:10px;gap:3px}
+ .afikim-brand .brand-copy strong{font-size:12px;line-height:1.35}
+ .afikim-brand .brand-copy small{font-size:10px;line-height:1.35}
+ .header-side{display:none}
+ .secure-main,.secure-main:has(#entry){width:calc(100% - 28px);padding:14px 0 33px}
+ .demo-banner{display:flex;flex-wrap:wrap;gap:8px 10px;margin:0 0 22px;padding:10px 11px;border-radius:10px;min-height:0}
+ .demo-banner>strong{font-size:10px;padding:5px 8px;white-space:nowrap}
+ .demo-banner>span{flex:1;flex-basis:190px;font-size:11px;min-width:0}
+ .demo-banner>button{min-height:30px;font-size:11px;padding:6px 9px;margin-inline-start:auto}
+ .demo-reset{justify-content:stretch;align-items:stretch}
+ .demo-reset p{width:100%;flex-basis:100%;font-size:12px}
+ .secure-heading,.secure-main:has(#entry) .secure-heading{text-align:right;margin:0 0 17px}
+ .secure-heading h1,.secure-main:has(#entry) .secure-heading h1{font-size:25px;letter-spacing:-.4px;line-height:1.25;margin:0 0 8px}
+ .secure-heading p,.secure-main:has(#entry) .secure-heading p{font-size:13px;line-height:1.55;margin:0}
+ .secure-label{font-size:10px;margin-bottom:7px}
+ .secure-card,.secure-main:has(#entry) .secure-card{padding:19px 16px;border-radius:14px}
+ .secure-card h2{font-size:17px}
+ .secure-card>p{font-size:12px;margin-bottom:15px}
+ .secure-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .secure-stats>div{padding:12px;min-height:78px;border-radius:11px}
+ .secure-stats b{font-size:24px}
+ .secure-stats span{font-size:11px}
+ #logout-admin{min-height:36px;padding:6px 12px;font-size:12px}
+ .secure-grid{gap:12px}
+ .secure-tabs{margin-bottom:13px}
+ .secure-tabs button{font-size:13px;min-height:42px}
+ .demo-quick{margin-top:17px;padding:13px;gap:8px}
+ .secure-section-head{align-items:stretch;display:flex;flex-direction:column;gap:11px}
+ .secure-section-head input{max-width:none;min-height:46px}
+ .table-wrap{max-height:none;overflow:visible}
+ .secure-card table,.secure-card tbody,.secure-card tr{display:block;width:100%;border:0}
+ .secure-card thead{display:none}
+ .secure-card tbody{display:grid;gap:10px}
+ .secure-card tbody tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px 10px;border:1px solid #dfe9ed;border-radius:12px;padding:15px;background:#fff;min-width:0}
+ .secure-card tbody td{display:flex;flex-direction:column;align-items:stretch;gap:5px;line-height:1.4;font-size:13px;white-space:normal;overflow-wrap:anywhere;border:0!important;padding:0;min-width:0}
+ .secure-card tbody td::before{content:attr(data-label);font-size:10px;font-weight:650;color:#748794}
+ .secure-card tbody td:first-child{grid-column:1/-1;font-size:16px;line-height:1.35;border-bottom:1px solid #edf1f3!important;padding-bottom:11px}
+ .secure-card tbody td:first-child::before{display:none}
+ .secure-card tbody td:nth-child(7){grid-column:1/-1;margin-top:3px}
+ .secure-card tbody td:nth-child(7)::before{display:none}
+ .secure-card tbody td:nth-child(7) .small-action{width:100%;min-height:43px;justify-content:center;font-size:13px}
+ .secure-card tbody tr:has(td[colspan]){display:block}
+ .secure-card tbody tr:has(td[colspan]) td{display:block;text-align:center;padding:12px;font-weight:500}
+ .secure-card tbody tr:has(td[colspan]) td::before{display:none}
+ .secure-card tbody tr:hover{background:#fff}
+ .exam-secure{padding:21px 16px}
+ .exam-secure h2{font-size:19px;line-height:1.45;margin:19px 0}
+ .exam-top strong{font-size:11px}
+ .exam-top #clock{font-size:16px}
+ .answer-grid button{font-size:13px;min-height:58px;padding:12px 10px;gap:10px}
+ .answer-grid button span{width:30px;height:30px}
+ .form-actions{gap:10px}
+ .form-actions button{flex:1;min-width:0;font-size:12px;padding:0 10px}
+ .site-footer{width:calc(100% - 28px);font-size:10px;line-height:1.5}
+}
+@media(max-width:360px){
+ .afikim-logo{width:116px}.afikim-brand .brand-copy small{display:none}
+ .demo-banner>button{margin-inline-start:0}
+ .secure-stats>div{min-height:72px;padding:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
 </head><body>
 <header class="topbar">
@@ -872,7 +1036,7 @@ const btn=(label,type='submit')=>`<button type="${type}" class="primary-btn">${l
 const field=(label,id,type='text',extra='')=>`<label class="secure-field"><span>${label}</span><input id="${id}" type="${type}" required ${extra}></label>`;
 function tabs(){return `<nav class="secure-tabs"><button id="nav-worker" class="${location.hash==='#worker'?'active':''}" type="button">כניסת עובד</button><button id="nav-admin" class="${location.hash==='#admin'?'active':''}" type="button">כניסת מנהל</button></nav>`}
 function startPage(){const isAdmin=location.hash==='#admin';root.innerHTML=frame(isAdmin?'כניסה למערכת הניהול':'בחינה אישית לעובד',isAdmin?'גישה למנהלים ולאחראים מורשים בלבד':'היכנסו עם קוד המבחן שקיבלתם ממנהל ופרטי המסמך שנרשמו בעת יצירת המבחן (TEST בלבד)',`${tabs()}<div class="secure-card"><form id="entry">${isAdmin?field('שם משתמש','login-user','text','autocomplete="username"')+field('סיסמה','login-pass','password','autocomplete="current-password"'):field('קוד הזמנה','login-code','text','autocomplete="off"')+field('מספר תעודה / דרכון','login-doc','text','autocomplete="off"')}${btn(isAdmin?'כניסה לניהול':'כניסה למבחן')}</form><p class="secure-help">הדגמה בדפדפן הזה בלבד. אין להקליד שמות או מספרי מסמך אמיתיים. רק נתוני TEST מותרים.</p><div class="demo-quick"><strong>פרטי כניסה להדגמה</strong><span>${isAdmin?'מנהל: demo · סיסמה: demo2026':'עובד: DEMO2026WORKER · תעודה: TEST654321'}</span><button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div></div>`);document.querySelector('#demo-fill').onclick=()=>{if(isAdmin){document.querySelector('#login-user').value='demo';document.querySelector('#login-pass').value='demo2026'}else{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'}};document.querySelector('#nav-worker').onclick=()=>{location.hash='worker';startPage()};document.querySelector('#nav-admin').onclick=()=>{location.hash='admin';startPage()};document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{if(isAdmin){const x=await api('admin-login','POST',{username:document.querySelector('#login-user').value,password:document.querySelector('#login-pass').value});admin=x;await loadAdmin()}else{const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()}}catch(e){notice(e.message,'error')}}}
-async function loadAdmin(){const me=await api('admin-me');admin=me.admin;if(admin.must_change_password){root.innerHTML=frame('עדכון סיסמה','יש להחליף סיסמה זמנית כדי להמשיך',`<div class="secure-card"><form id="change-pass">${field('סיסמה נוכחית','current','password')}${field('סיסמה חדשה, לפחות 14 תווים','next','password')}${btn('שמירה')}</form></div>`);document.querySelector('#change-pass').onsubmit=async e=>{e.preventDefault();try{await api('admin-password','POST',{current:document.querySelector('#current').value,next:document.querySelector('#next').value});await loadAdmin()}catch(err){notice(err.message,'error')}};return}const r=await api('admin-list');let rows=r.items;const counters={total:rows.length,pending:rows.filter(x=>x.status==='assigned'||x.status==='in_progress').length,submitted:rows.filter(x=>x.status==='submitted'&&!x.decision).length,approved:rows.filter(x=>x.decision==='accepted').length};const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בירור נוסף'};root.innerHTML=frame('לוח ניהול בחינות',`שלום ${escape(admin.display_name)} · תוצאות הבחינה לעיון מנהל בלבד`, `<div class="secure-toolbar"><div class="secure-stats"><div><b>${counters.total}</b><span>סה״כ בחינות</span></div><div><b>${counters.pending}</b><span>ממתינים / בבחינה</span></div><div><b>${counters.submitted}</b><span>ממתינים להחלטה</span></div><div><b>${counters.approved}</b><span>אושרו</span></div></div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div><div class="secure-grid"><section class="secure-card"><h2>יצירת מבחן אישי</h2><p>הזינו את פרטי העובד. הקוד יופיע פעם אחת בלבד לאחר יצירת ההזמנה.</p><form id="assign">${field('שם מלא של העובד','worker-name','text','autocomplete="off"')}${field('מספר תעודה / דרכון','worker-doc','text','autocomplete="off"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div></section><section class="secure-card wide"><div class="secure-section-head"><h2>רשימת נבחנים</h2><input id="search" type="search" placeholder="חיפוש לפי שם" aria-label="חיפוש לפי שם"></div><div class="table-wrap"><table><thead><tr><th>שם</th><th>תעודה</th><th>סטטוס</th><th>ציון</th><th>החלטה</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="candidate-rows"></tbody></table></div></section></div>`);const renderRows=()=>{const query=document.querySelector('#search').value.trim();const filtered=rows.filter(x=>x.name.includes(query));document.querySelector('#candidate-rows').innerHTML=filtered.map(x=>`<tr><td>${escape(x.name)}</td><td>••••${escape(x.identityLast4)}</td><td>${translate[x.status]||escape(x.status)}</td><td>${x.score===null?'—':x.correctCount+'/30 · '+x.score+'%'}</td><td>${translate[x.decision]||'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td>${x.status==='submitted'&&!x.decision?`<button type="button" class="small-action" data-review="${x.id}">קבלת החלטה</button>`:'—'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">אין רשומות</td></tr>';document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>review(rows.find(x=>x.id===b.dataset.review)))};renderRows();document.querySelector('#search').oninput=renderRows;document.querySelector('#logout-admin').onclick=async()=>{await api('admin-logout','POST');admin=null;startPage()};document.querySelector('#assign').onsubmit=async e=>{e.preventDefault();try{const x=await api('admin-assign','POST',{name:document.querySelector('#worker-name').value,document:document.querySelector('#worker-doc').value});latestCode=x.code;document.querySelector('#worker-doc').value='';const text=`מבחן הדגמה - אלקטרה אפיקים\nשם: ${x.candidate.name}\nקוד: ${x.code}\nקישור: ${location.origin}/#worker\nיש להזין את מספר התעודה שנרשם אצל המנהל.`;document.querySelector('#invitation').innerHTML=`<div class="invitation"><strong>הזמנה נוצרה בהצלחה</strong><p>קוד אישי: <code>${x.code}</code></p><button id="copy-invite" type="button" class="secondary-btn">העתקת הזמנה</button><p>קוד בדיקה בלבד. עובד בדפדפן הזה ולא ניתן להעביר אותו למכשיר אחר.</p></div>`;document.querySelector('#copy-invite').onclick=()=>navigator.clipboard.writeText(text).then(()=>notice('ההזמנה הועתקה'));notice('ההזמנה נוצרה; יש לשתף את הקוד בערוץ מאובטח');}catch(err){notice(err.message,'error')}}}
+async function loadAdmin(){const me=await api('admin-me');admin=me.admin;if(admin.must_change_password){root.innerHTML=frame('עדכון סיסמה','יש להחליף סיסמה זמנית כדי להמשיך',`<div class="secure-card"><form id="change-pass">${field('סיסמה נוכחית','current','password')}${field('סיסמה חדשה, לפחות 14 תווים','next','password')}${btn('שמירה')}</form></div>`);document.querySelector('#change-pass').onsubmit=async e=>{e.preventDefault();try{await api('admin-password','POST',{current:document.querySelector('#current').value,next:document.querySelector('#next').value});await loadAdmin()}catch(err){notice(err.message,'error')}};return}const r=await api('admin-list');let rows=r.items;const counters={total:rows.length,pending:rows.filter(x=>x.status==='assigned'||x.status==='in_progress').length,submitted:rows.filter(x=>x.status==='submitted'&&!x.decision).length,approved:rows.filter(x=>x.decision==='accepted').length};const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בירור נוסף'};root.innerHTML=frame('לוח ניהול בחינות',`שלום ${escape(admin.display_name)} · תוצאות הבחינה לעיון מנהל בלבד`, `<div class="secure-toolbar"><div class="secure-stats"><div><b>${counters.total}</b><span>סה״כ בחינות</span></div><div><b>${counters.pending}</b><span>ממתינים / בבחינה</span></div><div><b>${counters.submitted}</b><span>ממתינים להחלטה</span></div><div><b>${counters.approved}</b><span>אושרו</span></div></div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div><div class="secure-grid"><section class="secure-card"><h2>יצירת מבחן אישי</h2><p>הזינו את פרטי העובד. הקוד יופיע פעם אחת בלבד לאחר יצירת ההזמנה.</p><form id="assign">${field('שם מלא של העובד','worker-name','text','autocomplete="off"')}${field('מספר תעודה / דרכון','worker-doc','text','autocomplete="off"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div></section><section class="secure-card wide"><div class="secure-section-head"><h2>רשימת נבחנים</h2><input id="search" type="search" placeholder="חיפוש לפי שם" aria-label="חיפוש לפי שם"></div><div class="table-wrap"><table><thead><tr><th>שם</th><th>תעודה</th><th>סטטוס</th><th>ציון</th><th>החלטה</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="candidate-rows"></tbody></table></div></section></div>`);const renderRows=()=>{const query=document.querySelector('#search').value.trim();const filtered=rows.filter(x=>x.name.includes(query));document.querySelector('#candidate-rows').innerHTML=filtered.map(x=>`<tr><td>${escape(x.name)}</td><td>••••${escape(x.identityLast4)}</td><td>${translate[x.status]||escape(x.status)}</td><td>${x.score===null?'—':x.correctCount+'/30 · '+x.score+'%'}</td><td>${translate[x.decision]||'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td>${x.status==='submitted'&&!x.decision?`<button type="button" class="small-action" data-review="${x.id}">קבלת החלטה</button>`:'—'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">אין רשומות</td></tr>';document.querySelectorAll('#candidate-rows tr').forEach(tr=>tr.querySelectorAll('td').forEach((td,i)=>{td.dataset.label=document.querySelectorAll('.secure-card thead th')[i]?.textContent||''}));document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>review(rows.find(x=>x.id===b.dataset.review)))};renderRows();document.querySelector('#search').oninput=renderRows;document.querySelector('#logout-admin').onclick=async()=>{await api('admin-logout','POST');admin=null;startPage()};document.querySelector('#assign').onsubmit=async e=>{e.preventDefault();try{const x=await api('admin-assign','POST',{name:document.querySelector('#worker-name').value,document:document.querySelector('#worker-doc').value});latestCode=x.code;document.querySelector('#worker-doc').value='';const text=`מבחן הדגמה - אלקטרה אפיקים\nשם: ${x.candidate.name}\nקוד: ${x.code}\nקישור: ${location.origin}/#worker\nיש להזין את מספר התעודה שנרשם אצל המנהל.`;document.querySelector('#invitation').innerHTML=`<div class="invitation"><strong>הזמנה נוצרה בהצלחה</strong><p>קוד אישי: <code>${x.code}</code></p><button id="copy-invite" type="button" class="secondary-btn">העתקת הזמנה</button><p>קוד בדיקה בלבד. עובד בדפדפן הזה ולא ניתן להעביר אותו למכשיר אחר.</p></div>`;document.querySelector('#copy-invite').onclick=()=>navigator.clipboard.writeText(text).then(()=>notice('ההזמנה הועתקה'));notice('ההזמנה נוצרה; יש לשתף את הקוד בערוץ מאובטח');}catch(err){notice(err.message,'error')}}}
 function review(x){root.innerHTML=frame('בדיקת תוצאות',`החלטת המנהל עבור ${escape(x.name)} · ${x.correctCount} מתוך 30 · ${x.score}%`, `<section class="secure-card"><h2>החלטת התאמה</h2><p>הציון הוא נתון מסייע בלבד. ההחלטה נקבעת על ידי גורם מוסמך, עם נימוק כתוב.</p><form id="review-form"><label class="secure-field"><span>החלטה</span><select id="decision"><option value="accepted">מתאים</option><option value="rejected">לא מתאים</option><option value="follow_up">נדרשת בדיקה נוספת</option></select></label><label class="secure-field"><span>נימוק מקצועי</span><textarea id="notes" rows="4" required minlength="3"></textarea></label><div class="form-actions">${btn('שמירת החלטה')}<button type="button" id="back" class="secondary-btn">חזרה</button></div></form></section>`);document.querySelector('#back').onclick=loadAdmin;document.querySelector('#review-form').onsubmit=async e=>{e.preventDefault();try{await api('admin-review','POST',{id:x.id,decision:document.querySelector('#decision').value,notes:document.querySelector('#notes').value});await loadAdmin();notice('ההחלטה נשמרה ביומן הפעילות')}catch(err){notice(err.message,'error')}}}
 async function loadExam(){const m=await api('worker-me');candidate=m.candidate;if(candidate.status==='submitted'){root.innerHTML=frame('המבחן הוגש','תוצאת הבחינה הועברה לבדיקת מנהל',`<div class="secure-card"><h2>${escape(candidate.name)}</h2><p>תשובות נכונות: ${candidate.correctCount} מתוך 30 (${candidate.score}%)</p><p>החלטת התאמה תתקבל בנפרד על ידי אחראי מוסמך.</p><button class="secondary-btn" id="exit-worker">התנתקות</button></div>`);document.querySelector('#exit-worker').onclick=async()=>{await api('worker-logout','POST');startPage()};return}const r=await api('worker-questions');questions=r.questions;answers=r.answers;deadline=Date.now()+m.remainingSeconds*1000;active=0;renderExam()}
 function renderExam(){if(timer)clearInterval(timer);const q=questions[active];root.innerHTML=frame('מבחן מקצועי למבקרי תחבורה ציבורית',`נבחן/ת: ${escape(candidate.name)} · שאלה ${active+1} מתוך ${questions.length}`,`<div class="secure-card exam-secure"><div class="exam-top"><strong>${escape(q.section)}</strong><span id="clock">—</span></div><div class="secure-progress"><span style="width:${(active+1)/questions.length*100}%"></span></div><h2>${escape(q.question)}</h2><div class="answer-grid">${q.options.map((option,i)=>`<button data-choice="${i}" type="button" class="choice ${answers[q.id]===i?'selected':''}"><span>${'אבגד'[i]}</span>${escape(option)}</button>`).join('')}</div><div class="form-actions"><button type="button" id="prev" class="secondary-btn" ${active===0?'disabled':''}>הקודמת</button><button type="button" id="next" class="primary-btn">${active===questions.length-1?'סיום והגשת מבחן':'השאלה הבאה'}</button></div><p class="secure-help">התשובות נשמרות בדפדפן הזה בלבד. שאלות ללא תשובה נחשבות שגויות.</p></div>`);const update=()=>{const left=Math.max(0,Math.floor((deadline-Date.now())/1000));const el=document.querySelector('#clock');if(el)el.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;if(left===0){clearInterval(timer);submit()}};update();timer=setInterval(update,1000);document.querySelectorAll('[data-choice]').forEach(button=>button.onclick=async()=>{const choice=Number(button.dataset.choice);button.disabled=true;try{await api('worker-answer','POST',{questionId:q.id,selectedOption:choice});answers[q.id]=choice;renderExam()}catch(err){notice(err.message,'error');button.disabled=false}});document.querySelector('#prev').onclick=()=>{if(active>0){active--;renderExam()}};document.querySelector('#next').onclick=()=>{if(active<questions.length-1){active++;renderExam()}else{const n=questions.filter(x=>answers[x.id]===undefined).length;root.querySelector('.exam-secure').insertAdjacentHTML('beforeend',`<div class="secure-confirm"><p>לשלוח את הבחינה? ${n?`נותרו ${n} שאלות ללא מענה.`:'כל השאלות נענו.'}</p><button id="confirm-submit" class="primary-btn" type="button">אישור הגשה</button></div>`);document.querySelector('#confirm-submit').onclick=submit}}}
