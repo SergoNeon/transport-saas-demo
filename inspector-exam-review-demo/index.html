@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c2639"><meta name="robots" content="noindex,nofollow">
+<meta name="description" content="אלקטרה אפיקים — תצוגת הדגמה של מערכת בחינות והערכת עובדים">
+<title>אלקטרה אפיקים | הדגמת מערכת בחינות לעובדים</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #10283c;
+  --muted: #65798a;
+  --subtle: #8c9aa8;
+  --accent: #128b84;
+  --accent-dark: #08736c;
+  --accent-soft: #e7f7f3;
+  --navy: #0c2639;
+  --line: #e3e9ee;
+  --paper: #fff;
+  --background: #f5f7fa;
+  --warn: #c37624;
+  --warn-soft: #fff5e5;
+  --danger: #b44c47;
+  --danger-soft: #fff0ef;
+  --shadow: 0 18px 48px rgba(16,40,60,.07), 0 2px 10px rgba(16,40,60,.025);
+  --radius: 20px;
+}
+* {box-sizing:border-box}
+html {font-family: Arial, "Noto Sans Hebrew", "Segoe UI", sans-serif; font-size: 16px; scroll-behavior:smooth}
+body {margin:0; color:var(--ink); background:var(--background); min-width:300px; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased}
+button,input {font:inherit}
+button {cursor:pointer}
+a {color:inherit;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible {outline:3px solid #65c9d2;outline-offset:3px}
+button:disabled {cursor:not-allowed;opacity:.5}
+.app-shell {min-height:100vh;display:flex;flex-direction:column}
+.topbar {min-height:84px;display:flex;justify-content:space-between;align-items:center;padding:15px clamp(18px,5vw,75px);border-bottom:1px solid #e6edf1;background:#fff;gap:15px}
+.brand {display:flex;align-items:center;gap:12px}
+.brand-mark {width:46px;height:46px;background:var(--navy);color:#81e7d8;display:grid;place-items:center;border-radius:14px;flex:none}
+.brand-mark svg {width:29px;height:29px}
+.brand-copy {display:flex;flex-direction:column;gap:3px}
+.brand-copy strong {font-size:20px;font-weight:800;letter-spacing:-.8px;line-height:1.1}
+.brand-copy small {font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.1px}
+.header-side {display:flex;align-items:center;gap:20px}
+.training-chip {display:flex;align-items:center;gap:8px;background:#edf8f5;color:#14796e;border:1px solid #d5eee8;font-weight:700;border-radius:999px;padding:10px 13px;font-size:12px;white-space:nowrap}
+.live-dot {width:7px;height:7px;background:#1ca88b;border-radius:100%;box-shadow:0 0 0 4px rgba(28,168,139,.12)}
+.header-divider {height:23px;width:1px;background:var(--line)}
+.header-label {color:var(--muted);font-size:12px;font-weight:600}
+.main {width:min(1230px, calc(100% - 64px));margin:0 auto;flex:1}
+.loading-state {padding:6rem 0;text-align:center;color:var(--muted)}
+.site-footer {width:min(1230px,calc(100% - 64px));margin:auto;display:flex;justify-content:space-between;gap:12px;color:#8b99a7;font-size:11px;padding:25px 0 28px}
+
+/* Landing */
+.welcome {display:grid;grid-template-columns:minmax(0,1.14fr) minmax(360px,.86fr);gap:26px;margin-top:42px;align-items:stretch}
+.hero {position:relative;min-height:510px;overflow:hidden;background:linear-gradient(147deg,#123b51 0%,#0b2739 57%,#071a2a 100%);color:#fff;padding:clamp(29px,5vw,62px);border-radius:24px;display:flex;flex-direction:column;justify-content:space-between;isolation:isolate}
+.hero::before {content:"";position:absolute;width:530px;height:530px;border-radius:50%;border:1px solid rgba(172,238,226,.14);left:-145px;top:12px;box-shadow:0 0 0 90px rgba(172,238,226,.035),0 0 0 180px rgba(172,238,226,.028);z-index:-1}
+.hero::after {content:"";position:absolute;width:250px;height:250px;left:-42px;bottom:-125px;border-radius:100%;background:radial-gradient(circle,#1bc6a855,transparent 70%);z-index:-1}
+.eyebrow {display:inline-flex;align-items:center;gap:10px;color:#9ce6d7;font-weight:800;font-size:12px;letter-spacing:.1px}
+.eyebrow-line {width:27px;height:2px;background:#78dccc;display:inline-block}
+.hero h1 {font-size:clamp(40px,4.6vw,65px);line-height:1.13;font-weight:850;letter-spacing:-2.5px;margin:30px 0 18px;max-width:580px}
+.hero h1 em {color:#a4f1e5;font-style:normal}
+.hero-description {color:#c8d9e1;line-height:1.9;font-size:15px;max-width:460px;margin:0}
+.hero-bottom {display:flex;gap:22px;flex-wrap:wrap;padding-top:28px}
+.hero-metric {display:flex;flex-direction:column;gap:7px;padding-inline-start:23px;border-inline-start:1px solid rgba(224,255,249,.16);min-width:93px}
+.hero-metric:first-child {padding-inline-start:0;border-inline-start:none}
+.hero-metric b {font-weight:800;font-size:29px;letter-spacing:-1.1px;direction:ltr;text-align:right}
+.hero-metric small {font-size:12px;color:#c8d9e1;font-weight:500}
+.start-panel {display:flex;flex-direction:column;justify-content:center;background:var(--paper);border:1px solid var(--line);padding:clamp(27px,4vw,49px);border-radius:24px;box-shadow:var(--shadow);min-width:0}
+.panel-icon {width:50px;height:50px;display:grid;place-items:center;background:#e5f5f1;border-radius:15px;color:var(--accent-dark);margin-bottom:22px}
+.panel-icon svg{width:25px;height:25px}
+.start-panel h2 {font-size:28px;letter-spacing:-.6px;margin:0 0 11px;font-weight:800}
+.start-panel>p {font-size:14px;line-height:1.85;color:var(--muted);margin:0 0 24px}
+.field {display:flex;flex-direction:column;gap:9px;margin-bottom:17px}
+.field label {font-weight:700;font-size:13px}
+.field label .optional {font-size:11px;font-weight:400;color:var(--subtle);margin-inline-start:5px}
+.field input {padding:0 17px;width:100%;height:54px;border:1px solid #dfe6eb;border-radius:12px;background:#fbfcfd;color:var(--ink);transition:.18s ease;outline:0}
+.field input:focus {border-color:#45b5a9;background:#fff;box-shadow:0 0 0 3px #e1f6f1}
+.field input::placeholder{color:#a6b2bd}
+.form-error {color:var(--danger);font-size:12px;min-height:15px;margin:0 0 10px}
+.primary-btn {border:none;display:inline-flex;align-items:center;justify-content:center;gap:11px;background:var(--accent);color:#fff;font-size:14px;font-weight:800;padding:0 26px;min-height:54px;border-radius:12px;transition:transform .16s,background .16s,box-shadow .16s;box-shadow:0 8px 18px rgba(17,132,122,.16)}
+.primary-btn:hover:not(:disabled) {background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 9px 22px rgba(17,132,122,.22)}
+.primary-btn svg,.secondary-btn svg,.text-btn svg {width:17px;height:17px}
+.full-width{width:100%}
+.consent-note {display:flex;gap:9px;align-items:flex-start;margin-top:18px;font-size:11px;line-height:1.7;color:var(--subtle)}
+.consent-note svg{width:15px;min-width:15px;height:15px;margin-top:1px;color:#8194a2}
+.resume-box {border-top:1px solid var(--line);padding-top:18px;margin-top:18px}
+.resume-box p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.8}
+.secondary-btn {display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1px solid #dbe5ea;padding:0 18px;min-height:48px;border-radius:11px;color:var(--ink);font-size:13px;font-weight:800;transition:.15s}
+.secondary-btn:hover:not(:disabled) {border-color:#80b7b3;background:#f6fcfa}
+.secondary-btn.alt {border:none;background:#edf4f6}
+.features {display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:22px 0 36px}
+.feature {display:flex;gap:14px;align-items:center;padding:22px 23px;border:1px solid var(--line);background:#fff;border-radius:15px;min-width:0}
+.feature-symbol {flex:none;width:44px;height:44px;background:#f2f6f7;color:#3b8390;border-radius:12px;display:grid;place-items:center}
+.feature-symbol svg{width:22px;height:22px}
+.feature strong{font-size:13px;display:block;margin-bottom:5px}
+.feature span {display:block;font-size:11px;color:var(--muted);line-height:1.5}
+
+/* Exam */
+.exam-page {padding:35px 0 36px}
+.exam-heading {display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:26px}
+.exam-heading-copy .mini-label {font-size:12px;letter-spacing:.2px;color:var(--accent-dark);font-weight:800}
+.exam-heading h1 {font-size:27px;font-weight:800;letter-spacing:-.8px;margin:7px 0 5px}
+.exam-heading p {font-size:12px;margin:0;color:var(--muted)}
+.outline-btn {display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #dce5e9;background:transparent;color:#637988;border-radius:10px;padding:11px 17px;font-size:12px;font-weight:700;white-space:nowrap}
+.outline-btn:hover {background:#fff;border-color:#bdd5dc}
+.exam-grid {display:grid;grid-template-columns:minmax(252px,288px) minmax(0,1fr);gap:23px;align-items:start}
+.exam-sidebar {background:#fff;border:1px solid var(--line);border-radius:19px;padding:25px;box-shadow:0 2px 10px rgba(22,48,66,.025)}
+.sidebar-label {color:var(--muted);font-size:12px;font-weight:700;margin-bottom:15px}
+.sidebar-stats {display:flex;justify-content:space-between;align-items:end;margin:3px 0 13px}
+.sidebar-stats b{font-size:27px;line-height:1;letter-spacing:-.8px}
+.sidebar-stats b span {color:var(--subtle);font-size:15px}
+.sidebar-stats small{color:var(--muted);font-size:11px}
+.progress-track {height:8px;background:#e9eff1;border-radius:10px;overflow:hidden}
+.progress-fill {height:100%;background:linear-gradient(90deg,#129083,#48c6af);border-radius:10px;transition:width .2s}
+.sidebar-rule {height:1px;background:var(--line);margin:26px 0}
+.timer-box {border-radius:13px;background:#f1f6f7;padding:17px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:23px}
+.timer-box.warn {background:var(--warn-soft)}
+.timer-description {display:flex;flex-direction:column;gap:4px}
+.timer-description span{font-size:11px;color:var(--muted)}
+.timer-description strong{font-size:21px;letter-spacing:.5px;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.timer-box.warn strong {color:#a96a25}
+.timer-symbol {width:37px;height:37px;background:#e3eff0;border-radius:10px;display:grid;place-items:center;color:#588d94}
+.timer-symbol svg{width:19px;height:19px}
+.num-grid {display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.num {aspect-ratio:1;border:1px solid #dfe7ea;background:#fff;border-radius:9px;font-size:12px;font-weight:700;color:#687e8e;position:relative;transition:transform .12s,border-color .12s}
+.num:hover {border-color:var(--accent);transform:translateY(-1px)}
+.num.answered {background:var(--accent-soft);border-color:#c6e9e0;color:#14796d}
+.num.current {background:var(--navy);border-color:var(--navy);color:white;box-shadow:0 3px 12px #163d542a}
+.num.marked:after {content:"";position:absolute;width:5px;height:5px;left:5px;top:5px;border-radius:50%;background:#f0a344}
+.grid-legend {display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px}
+.grid-legend span {display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.leg-dot {width:8px;height:8px;border-radius:3px;background:#e2e9ed}
+.leg-dot.filled {background:#80cbbd}
+.leg-dot.now {background:var(--navy)}
+.sidebar-note {margin-top:25px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:11px;line-height:1.85}
+.question-card {background:white;border:1px solid var(--line);border-radius:20px;padding:clamp(24px,4vw,47px);min-height:590px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.question-meta {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.question-count {display:inline-flex;align-items:center;gap:9px;color:var(--accent-dark);font-size:12px;font-weight:800}
+.question-count i {width:8px;height:8px;background:#36ad99;border-radius:50%}
+.question-category {font-size:11px;color:#6a7e8b;background:#f4f7f9;border-radius:30px;padding:8px 13px;white-space:nowrap;max-width:55%;overflow:hidden;text-overflow:ellipsis}
+.question-card h2 {font-size:clamp(20px,2.2vw,29px);line-height:1.58;letter-spacing:-.6px;font-weight:800;max-width:715px;margin:0 0 27px}
+.answers-list {display:flex;flex-direction:column;gap:12px;border:0;margin:0 0 35px;padding:0;min-width:0}
+.answers-list legend {font-size:12px;color:var(--muted);margin-bottom:13px}
+.answer-option {background:#fff;border:1.5px solid #e2e9ee;border-radius:13px;min-height:72px;text-align:right;display:flex;align-items:center;gap:18px;padding:14px 18px;transition:background .16s,border-color .16s,box-shadow .16s;line-height:1.6;width:100%;font-size:14px;color:#354d60}
+.answer-option:hover {border-color:#a7d6ce;background:#fbfffe}
+.answer-option.selected {background:#f0faf7;border-color:#18a28f;box-shadow:0 0 0 2px rgba(24,162,143,.06);color:var(--ink);font-weight:700}
+.option-label {flex:none;width:35px;height:35px;border:1px solid #dbe5e9;background:#f7f9fa;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#718693}
+.answer-option.selected .option-label {background:#d7f1e9;border-color:#bbebdd;color:#0a8273}
+.answer-text {flex:1;min-width:0}
+.fake-radio {display:grid;place-items:center;flex:none;width:19px;height:19px;border-radius:50%;border:1.8px solid #bdcbd2;margin-inline-start:auto}
+.answer-option.selected .fake-radio {border:5px solid #159b8c}
+.question-bottom {margin-top:auto;border-top:1px solid var(--line);padding-top:23px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.question-bottom-left,.question-bottom-right {display:flex;align-items:center;gap:10px}
+.text-btn {display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:#718595;font-size:12px;font-weight:700;padding:12px 3px}
+.text-btn.is-marked {color:#b66e19}
+.text-btn:hover {color:var(--accent-dark)}
+.prev-next {display:inline-flex;align-items:center;gap:10px}
+.prev-next svg {width:16px;height:16px}
+.primary-btn.end-btn {background:var(--navy);box-shadow:none}
+.primary-btn.end-btn:hover {background:#1d4356}
+.mobile-progress {display:none}
+
+/* Result */
+.result-page {padding:42px 0 45px}
+.result-card {background:#fff;border-radius:23px;border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+.result-top {background:linear-gradient(130deg,#0c2639,#184a5b);color:white;padding:48px 50px 42px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:35px}
+.result-top h1{font-size:36px;letter-spacing:-1px;margin:8px 0 14px}
+.result-top p{color:#c6dbe3;margin:0;line-height:1.85;max-width:510px}
+.result-eyebrow{color:#9be7d8;font-size:12px;font-weight:800}
+.score-dial {width:170px;height:170px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#80e4d2 var(--percent),#ffffff22 var(--percent));padding:12px}
+.score-inner {width:100%;height:100%;background:#153b4d;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.score-inner strong{font-size:44px;line-height:1.1;direction:ltr}
+.score-inner small{font-size:12px;color:#b9d0d8;margin-top:4px}
+.result-body {padding:37px 50px 43px}
+.result-status {display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.status-icon {width:43px;height:43px;border-radius:13px;background:var(--accent-soft);color:#128b7c;display:grid;place-items:center;font-size:26px;font-weight:800}
+.status-icon.fail {color:var(--warn);background:var(--warn-soft)}
+.result-status strong {font-size:18px}
+.result-status p {color:var(--muted);margin:5px 0 0;font-size:13px}
+.result-details {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:27px}
+.detail {background:#f6f9fa;border:1px solid #edf1f3;padding:17px 19px;border-radius:12px;min-width:0}
+.detail small {display:block;color:var(--muted);font-size:11px;margin-bottom:9px}
+.detail strong{display:block;overflow-wrap:anywhere;font-size:15px}
+.result-actions {display:flex;gap:11px;flex-wrap:wrap}
+.result-actions .primary-btn {min-height:49px}
+.result-actions .secondary-btn{min-height:49px}
+.result-footer-note {color:var(--muted);font-size:12px;margin-top:28px;line-height:1.8;border-top:1px solid var(--line);padding-top:20px}
+.detail-table{width:100%;border-collapse:collapse;margin-top:21px;font-size:12px}
+.detail-table th,.detail-table td{padding:12px;text-align:right;border-bottom:1px solid var(--line)}
+.detail-table th{background:#f7f9fa;color:var(--muted);font-size:11px}
+.detail-table td:nth-child(2),.detail-table td:nth-child(3){white-space:nowrap}
+.print-only{display:none}
+
+/* Dialog, toast */
+.overlay {position:fixed;inset:0;z-index:50;background:#091f30ad;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.dialog {width:min(100%,430px);background:white;box-shadow:0 26px 90px #04162544;border-radius:20px;padding:30px;text-align:right}
+.dialog-symbol {width:46px;height:46px;background:#fff4e7;color:#b9782c;border-radius:13px;display:grid;place-items:center;font-size:25px;margin-bottom:19px}
+.dialog h2 {font-size:23px;letter-spacing:-.5px;margin:0 0 12px}
+.dialog p{font-size:14px;color:var(--muted);line-height:1.85;margin:0 0 24px}
+.dialog-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dialog-actions>*{flex:1}
+.toast {position:fixed;bottom:24px;left:24px;z-index:80;padding:14px 19px;background:var(--navy);color:white;border-radius:12px;font-size:13px;box-shadow:0 10px 30px #04162533;opacity:0;transform:translateY(20px);transition:.2s;pointer-events:none;max-width:320px}
+.toast.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:1020px){
+  .main{width:min(100% - 36px,1230px)}
+  .welcome{grid-template-columns:1fr 1fr;gap:17px}
+  .hero{min-height:485px;padding:35px}
+  .hero h1{font-size:43px;letter-spacing:-1.5px}
+  .start-panel{padding:28px}
+  .exam-grid{grid-template-columns:245px minmax(0,1fr);gap:16px}
+  .exam-sidebar{padding:18px}
+  .question-card{padding:29px;min-height:640px}
+  .site-footer{width:min(100% - 36px,1230px)}
+}
+@media(max-width:760px){
+  .topbar{min-height:70px;padding:11px 17px}
+  .brand-mark{width:41px;height:41px;border-radius:12px}
+  .brand-mark svg{width:26px;height:26px}
+  .brand-copy strong{font-size:18px}
+  .brand-copy small{font-size:10px}
+  .header-label,.header-divider{display:none}
+  .training-chip{font-size:11px;padding:8px 10px}
+  .main{width:calc(100% - 30px)}
+  .welcome {grid-template-columns:1fr;margin-top:20px;gap:13px}
+  .hero{min-height:auto;padding:34px 28px;border-radius:18px;gap:34px}
+  .hero::before{width:370px;height:370px;left:-200px;top:-60px;box-shadow:0 0 0 70px rgba(172,238,226,.035)}
+  .hero h1{font-size:40px;line-height:1.18;letter-spacing:-1.8px;margin:23px 0 13px}
+  .hero-description{font-size:13px;line-height:1.9}
+  .hero-bottom{gap:13px;padding-top:0}
+  .hero-metric{padding-inline-start:14px;min-width:80px}
+  .hero-metric b{font-size:24px}
+  .hero-metric small{font-size:10px}
+  .start-panel{padding:27px 24px;border-radius:18px}
+  .start-panel h2{font-size:24px}
+  .features{grid-template-columns:1fr;gap:9px;margin:14px 0 22px}
+  .feature{padding:15px 18px}
+  .feature-symbol{width:37px;height:37px}
+  .feature-symbol svg{width:18px;height:18px}
+  .site-footer{width:calc(100% - 30px);font-size:10px;flex-direction:column;gap:4px;padding:21px 0}
+  .exam-page {padding:21px 0 24px}
+  .exam-heading {margin-bottom:17px}
+  .exam-heading h1{font-size:20px;letter-spacing:-.4px}
+  .exam-heading .mini-label{font-size:10px}
+  .exam-heading p{font-size:11px}
+  .exam-heading .outline-btn{padding:10px;font-size:10px}
+  .exam-grid{display:flex;flex-direction:column}
+  .exam-sidebar{order:1;width:100%;padding:17px;border-radius:15px}
+  .question-card{order:2;width:100%;padding:25px 21px;border-radius:15px;min-height:600px}
+  .sidebar-rule,.sidebar-note,.grid-legend{display:none}
+  .sidebar-top-line{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+  .sidebar-label{margin:0;font-size:11px}
+  .sidebar-stats{margin:0}
+  .sidebar-stats b{font-size:20px}
+  .sidebar-stats small{display:none}
+  .progress-track{height:6px;margin-bottom:13px}
+  .timer-box{position:static;margin:0 0 12px;padding:9px 12px;gap:8px;border-radius:9px;background:#e9f2f2}
+  .timer-description span{display:none}
+  .timer-description strong{font-size:13px}
+  .timer-symbol{width:20px;height:20px;background:transparent}
+  .timer-symbol svg{width:16px;height:16px}
+  .num-grid{display:flex;gap:7px;overflow-x:auto;scrollbar-width:thin;padding-bottom:5px;scroll-snap-type:x mandatory}
+  .num{min-width:37px;height:37px;aspect-ratio:1;scroll-snap-align:center}
+  .question-meta{margin-bottom:17px;gap:5px}
+  .question-category{font-size:9px;padding:8px}
+  .question-card h2{font-size:20px;line-height:1.65;letter-spacing:-.3px;margin-bottom:18px}
+  .answers-list{gap:9px;margin-bottom:27px}
+  .answers-list legend{font-size:11px;margin-bottom:8px}
+  .answer-option{padding:13px 11px;gap:11px;font-size:12px;min-height:71px;border-radius:11px}
+  .option-label{width:29px;height:29px;border-radius:8px;font-size:12px}
+  .fake-radio{width:17px;height:17px}
+  .question-bottom{gap:14px;padding-top:15px}
+  .question-bottom-left,.question-bottom-right{width:100%;justify-content:space-between}
+  .question-bottom-left{order:2}
+  .question-bottom-right{order:1}
+  .question-bottom-right .primary-btn{flex:1}
+  .primary-btn{min-height:51px;font-size:13px;padding:0 18px}
+  .secondary-btn{min-height:48px;font-size:12px}
+  .result-page{padding:23px 0}
+  .result-top{padding:30px 23px;grid-template-columns:1fr;justify-items:start;gap:25px}
+  .result-top h1{font-size:27px;margin:8px 0 10px}
+  .result-top p{font-size:12px}
+  .score-dial{width:124px;height:124px;padding:8px}
+  .score-inner strong{font-size:34px}
+  .result-body{padding:26px 19px}
+  .result-details{grid-template-columns:1fr;gap:8px}
+  .detail{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .detail small{margin:0}
+  .result-actions{flex-direction:column}
+  .result-actions>*{width:100%}
+}
+@media(max-width:360px){.header-side{display:none}.hero h1{font-size:35px}.question-bottom-right{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media print {
+  html,body{background:#fff;color:#111}
+  .topbar,.site-footer,.result-actions,.result-footer-note,.toast,.no-print{display:none!important}
+  .main{width:100%;max-width:none;margin:0}
+  .result-page{padding:0}
+  .result-card{border:none;box-shadow:none;border-radius:0}
+  .result-top{color:#111;background:#fff;padding:0 0 25px;border-bottom:2px solid #222}
+  .result-top p,.result-eyebrow{color:#444}
+  .score-dial {display:none}
+  .result-body{padding:20px 0}
+  .detail{border:1px solid #ddd;background:#fff}
+  .print-only{display:block}
+  .print-only.detail-table{display:table}
+  @page{size:A4;margin:18mm}
+}
+/* Secure staff assessment extension */
+.secure-main{width:min(1250px,calc(100% - 40px));padding:36px 0 60px}.secure-heading{margin-bottom:24px}.secure-heading h1{font-size:clamp(28px,3.3vw,44px);letter-spacing:-1.3px;margin:8px 0 10px}.secure-heading p{color:#64758a;line-height:1.7;margin:0}.secure-label{font-weight:800;font-size:12px;color:#0a8b76}.secure-card{background:#fff;border:1px solid #e1e8ee;border-radius:17px;padding:28px;box-shadow:0 5px 24px rgba(8,29,45,.045)}.secure-card h2{font-size:21px;margin:0 0 12px}.secure-card p{color:#63758a;line-height:1.6}.secure-card form{display:grid;gap:17px}.secure-field{display:grid;gap:8px;font-weight:750;font-size:13px}.secure-field input,.secure-field textarea,.secure-field select,.secure-section-head input{width:100%;border:1px solid #cdd8e0;border-radius:9px;padding:13px 14px;color:#142f41;background:white;font:inherit;min-height:46px}.secure-field textarea{resize:vertical}.secure-tabs{display:flex;gap:8px;margin:0 0 17px}.secure-tabs button{border:1px solid #dce5e8;color:#245062;border-radius:9px;padding:11px 19px;background:white;cursor:pointer;font-weight:700}.secure-tabs .active{background:#092a39;color:white}.secure-help{font-size:13px!important;margin:20px 0 0}.secure-main>.secure-card{max-width:480px}.secure-grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;align-items:start}.secure-stats{display:flex;gap:25px;flex-wrap:wrap}.secure-stats>div{display:grid;gap:2px}.secure-stats b{font-size:29px;color:#0b344b}.secure-stats span{font-size:12px;color:#687e8b}.secure-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px}.secure-section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.secure-section-head input{max-width:220px}.table-wrap{overflow:auto;max-height:630px}.secure-card table{width:100%;border-collapse:collapse;font-size:13px;text-align:right}.secure-card th,.secure-card td{padding:13px 8px;border-bottom:1px solid #e8edf1;white-space:nowrap}.secure-card th{background:#f5f8fa;color:#567086;font-size:12px;position:sticky;top:0}.small-action{border:1px solid #9ac5b8;color:#08765a;background:#f4fffb;padding:7px 10px;border-radius:7px;font-weight:700;cursor:pointer}.invitation{background:#e9f8f3;padding:15px;border-radius:11px;margin-top:20px;overflow-wrap:anywhere}.invitation code{direction:ltr;unicode-bidi:isolate;font-weight:800;display:inline-block;color:#0b614e}.feedback{background:#e8f5ef;padding:12px 15px;border-radius:8px;margin:0 0 20px}.feedback.error{background:#ffebe8;color:#913d35}.exam-secure{max-width:800px!important}.exam-top{display:flex;justify-content:space-between;gap:18px}.secure-progress{height:6px;border-radius:8px;overflow:hidden;background:#e8edf1;margin:23px 0}.secure-progress span{background:#13a583;display:block;height:100%}.exam-secure h2{font-size:clamp(20px,2.5vw,27px);line-height:1.5;margin:25px 0}.answer-grid{display:grid;gap:10px}.answer-grid button{display:flex;align-items:center;gap:15px;border:1px solid #dce5ed;border-radius:11px;background:white;text-align:right;padding:14px 15px;font-size:15px;cursor:pointer;color:#233d51}.answer-grid button span{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:9px;background:#eff3f5;font-weight:800}.answer-grid .selected{background:#eaf9f3;border-color:#15a683}.form-actions{display:flex;justify-content:space-between;gap:14px;margin-top:20px}.secure-confirm{background:#f5faf8;border:1px solid #bbddd0;border-radius:12px;margin-top:24px;padding:18px}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #29b8c6;outline-offset:2px}html{scrollbar-color:#91a8b6 #edf2f6;scrollbar-width:thin}::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#91a8b6;border-radius:6px}@media(max-width:870px){.secure-grid{grid-template-columns:1fr}.secure-toolbar{align-items:start}}@media(max-width:560px){.secure-main{width:calc(100% - 28px);padding-top:25px}.secure-card{padding:20px}.secure-toolbar{display:block}.secure-stats{justify-content:space-between;margin-bottom:20px}.secure-section-head{display:block}.secure-section-head input{max-width:100%}.form-actions{flex-wrap:wrap}.site-footer{display:block;text-align:center}}
+
+/* Electra Afikim interactive public demo */
+.afikim-brand {gap:16px;min-width:0}
+.afikim-logo{max-width:220px;width:clamp(130px,24vw,220px);height:48px;object-fit:contain;flex-shrink:0}
+.afikim-logo[hidden]{display:none}
+.afikim-brand .brand-copy{padding-inline-start:16px;border-inline-start:1px solid #dce6e9}
+.afikim-brand .brand-copy strong{font-size:17px;letter-spacing:0}
+.demo-banner{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#f0f7f7;border:1px solid #d1e4e5;border-radius:12px;padding:16px 20px;margin:0 0 25px;line-height:1.5;color:#234d53}
+.demo-banner>strong{font-size:14px;white-space:nowrap}.demo-banner>span{flex:1;min-width:220px;font-size:12px}
+.demo-banner>button,.demo-reset button{padding:9px 12px;border:1px solid #acc9cd;border-radius:8px;background:white;color:#174b51;font-size:12px;cursor:pointer;font-weight:700}
+.demo-status{background:#f0f5f8;border-color:#dce6ec;color:#2c5865}
+.demo-quick{display:flex;flex-direction:column;gap:10px;background:#f5f8f7;border:1px dashed #bacfce;border-radius:10px;margin-top:18px;padding:16px;color:#30535d;font-size:13px}
+.demo-quick>strong{font-size:14px}.demo-quick button{align-self:start;min-height:39px;padding:8px 14px}
+.demo-reset{width:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.demo-reset p{width:100%;margin:3px 0;font-size:13px;font-weight:700}
+@media(max-width:700px){.topbar{padding:13px 16px}.afikim-logo{width:112px;height:36px}.afikim-brand{gap:8px}.afikim-brand .brand-copy{padding-inline-start:9px}.afikim-brand .brand-copy strong{font-size:13px}.afikim-brand .brand-copy small{font-size:10px}.training-chip{display:none}.demo-banner{padding:14px;gap:9px}.demo-banner>span{min-width:0;flex-basis:100%}}
+
+</style>
+</head><body>
+<header class="topbar">
+  <a class="brand afikim-brand" href="./" aria-label="אלקטרה אפיקים — מסך הבית">
+    <img class="afikim-logo" src="https://static.wixstatic.com/media/47704c_975a3cac4fce46458e85e6b6f2f13816~mv2.png" alt="אלקטרה אפיקים" width="222" height="46" onerror="this.hidden=true">
+    <span class="brand-copy"><strong>אלקטרה אפיקים</strong><small>מערכת בחינות והערכת עובדים</small></span>
+  </a>
+  <div class="header-side"><span class="training-chip demo-status">סביבת הדגמה מקוונת</span></div>
+</header>
+<main class="main secure-main">
+  <aside class="demo-banner" role="note"><strong>גרסת הדגמה — ללא שימוש בפרטים אישיים</strong><span>כאן אפשר לבדוק את תהליך המנהל, הנבחן וקבלת ההחלטה. כל הנתונים נשמרים רק בדפדפן הנוכחי ואינם משותפים למכשירים אחרים.</span><button id="reset-demo" type="button">איפוס ההדגמה</button></aside>
+  <div id="root"><div class="loading-state">טוען מערכת...</div></div>
+</main>
+<footer class="site-footer"><span>אלקטרה אפיקים · מערכת בחינות לעובדים</span><span>הדגמה לא רשמית · אינה מיועדת לאישורי העסקה או למסמכים אמיתיים</span></footer>
+<script>
+/* מקור: מבחן מבקרי תחבורה ציבורית, 30 שאלות */
+window.EXAM_QUESTIONS = [
+  {
+    "id": 1,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "מהי חובתו הבסיסית של נוסע בתחילת נסיעה באוטובוס?",
+    "options": [
+      "לשלם ולתקף את הנסיעה באמצעי מאושר, גם כאשר הוא זכאי לנסיעה ללא תשלום.",
+      "לתקף רק אם המבקר עולה לאוטובוס.",
+      "להציג לנהג כרטיס ללא צורך בתיקוף.",
+      "לתקף רק בקו בין־עירוני."
+    ],
+    "answer": 0,
+    "explanation": "חובת התיקוף חלה בכל נסיעה, לרבות שימוש במנוי תקופתי או בזכאות לנסיעה חינם."
+  },
+  {
+    "id": 2,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "מתי נכון לבצע את תיקוף הנסיעה?",
+    "options": [
+      "רק אחרי שהאוטובוס עבר שתי תחנות.",
+      "בסוף הנסיעה, לפני הירידה.",
+      "מיד עם העלייה ובאופן שנקבע לאמצעי התשלום.",
+      "רק כאשר יש מקום פנוי ליד המכשיר."
+    ],
+    "answer": 2,
+    "explanation": "הנוסע נדרש לתקף עם העלייה, במתקן או באמצעי המאושר; יש להתחשב בנסיבות חריגות ובנגישות."
+  },
+  {
+    "id": 3,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "נוסעת מחזיקה במנוי חופשי־חודשי בתוקף אך לא תיקפה. מה נכון?",
+    "options": [
+      "אין חובת תיקוף למי שכבר שילמה מראש.",
+      "עדיין קיימת חובת תיקוף; יש לבחון את המקרה לפי ההוראות החלות על מנוי תקופתי.",
+      "יש להטיל עליה באופן אוטומטי את התעריף המוגדל הגבוה ביותר.",
+      "יש להחרים את כרטיס הרב־קו."
+    ],
+    "answer": 1,
+    "explanation": "רכישת מנוי אינה מחליפה תיקוף. התעריף המוגדל למנוי ששולם מראש עשוי להיות מופחת לעומת אי־תשלום מוחלט."
+  },
+  {
+    "id": 4,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "נוסע מציג רב־קו אישי הרשום על שם אדם אחר. מה יש לבדוק?",
+    "options": [
+      "רק אם הכרטיס בצבע הנכון.",
+      "רק אם קיימת יתרה בכרטיס.",
+      "אם הנהג מכיר את בעל הכרטיס.",
+      "את התאמת הכרטיס והפרופיל לנוסע ואת זכאותו בהתאם להוראות."
+    ],
+    "answer": 3,
+    "explanation": "כרטיס רב־קו אישי והנחות אישיות אינם עוברים אוטומטית מאדם לאדם."
+  },
+  {
+    "id": 5,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "נוסע משלם ביישומון ומציג צילום מסך ישן של אישור נסיעה. מה הפעולה הנכונה?",
+    "options": [
+      "לאשר כל צילום מסך ללא בדיקה.",
+      "לדרוש תשלום מזומן נוסף.",
+      "לבדוק במערכת הבקרה את אישור הנסיעה הרלוונטי, לרבות זמן, קו ותוקף.",
+      "להסתפק בהצהרתו של הנוסע ללא בדיקה."
+    ],
+    "answer": 2,
+    "explanation": "יש לבדוק אישור נסיעה תקף וספציפי; צילום מסך כשלעצמו אינו מוכיח תיקוף של הנסיעה הנבדקת."
+  },
+  {
+    "id": 6,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "מה על נוסע המשתמש ביישומון תשלום לעשות בעת עלייה לאוטובוס?",
+    "options": [
+      "לסרוק את קוד ה־QR הרלוונטי ולהשלים את תהליך התיקוף, כולל יעד אם נדרש.",
+      "לצלם את מספר הרישוי ולשמור בגלריה.",
+      "להתקשר למוקד השירות במקום לתקף.",
+      "לשלם רק כאשר אין ברכב מכשיר רב־קו."
+    ],
+    "answer": 0,
+    "explanation": "בתשלום באמצעות יישומון נדרש לבצע את התהליך לפי היישומון והנחיות התיקוף."
+  },
+  {
+    "id": 7,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "מכשיר תיקוף אחד מקולקל, ואחר פועל. הנוסע טוען שלא יכול היה להגיע אליו. מה עושים?",
+    "options": [
+      "מניחים שהנוסע משקר.",
+      "בודקים את תקינות המכשירים, נגישותם ונסיבות הנוסע ומתעדים את הממצאים.",
+      "מטילים תעריף מוגדל בלי לבדוק.",
+      "מבקשים מהנהג לעצור עד שישולם קנס."
+    ],
+    "answer": 1,
+    "explanation": "ההכרעה מחייבת בדיקת המצב בפועל ושיקול דעת, לרבות עומס, מוגבלות ויכולת הגעה למתקן תקין."
+  },
+  {
+    "id": 8,
+    "section": "כרטוס, הסדרי נסיעה ותיקוף",
+    "question": "נמצא שכל עמדות התיקוף הרלוונטיות אינן תקינות. מה נכון?",
+    "options": [
+      "לחייב אוטומטית כל נוסע שלא תיקף.",
+      "למנוע מכל הנוסעים לרדת.",
+      "להתעלם מהתקלה ולהמשיך כרגיל.",
+      "לתעד ולדווח על התקלה, לבדוק חלופת תיקוף זמינה ולפעול לפי הנוהל לפני כל החלטה."
+    ],
+    "answer": 3,
+    "explanation": "כשל במערך התיקוף הוא נתון מהותי לבקרה, וחובה להתייחס אליו לפני דרישה לתעריף מוגדל."
+  },
+  {
+    "id": 9,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "מה חייב מבקר לבדוק ולרשום בתחילת ביקורת באוטובוס?",
+    "options": [
+      "רק את מזג האוויר בחוץ.",
+      "את תקינות אמצעי התיקוף ומדבקות ה־QR ואת פרטי הקו, הרכב והשעה.",
+      "את מספר הנוסעים שיקבלו קנס.",
+      "רק את שם הנהג."
+    ],
+    "answer": 1,
+    "explanation": "נוהל הבקרה מחייב בדיקת התקינות ותיעוד פרטי זיהוי הביקורת."
+  },
+  {
+    "id": 10,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "כיצד המבקר צריך להזדהות בעת מילוי תפקידו?",
+    "options": [
+      "די בבגדים אזרחיים ללא כל זיהוי.",
+      "ככל שירצה, לפי בחירתו האישית.",
+      "במדים מזהים, תג גלוי ותעודת הסמכה בתוקף בהתאם להנחיות.",
+      "באמצעות הודעה קולית בלבד."
+    ],
+    "answer": 2,
+    "explanation": "הנחיות משרד התחבורה כוללות דרישות לזיהוי גלוי של מבקר מוסמך."
+  },
+  {
+    "id": 11,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "נוסע אינו מציג כרטיס נסיעה לפי דרישה. מה רשאי מבקר מוסמך לדרוש לפי פקודת התעבורה?",
+    "options": [
+      "לפתוח את הטלפון של הנוסע ולקרוא הודעות.",
+      "למסור מיד את ארנק הנוסע.",
+      "לרדת בתחנה בלי שום תיעוד.",
+      "את שמו ומענו והצגת תעודה מזהה בהתאם לחוק."
+    ],
+    "answer": 3,
+    "explanation": "סעיף 61ג לפקודת התעבורה עוסק במסירת פרטים וזיהוי כאשר נוסע לא הציג כרטיס."
+  },
+  {
+    "id": 12,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "נוסע מסרב להזדהות ומתחיל לצעוק. מה אסור למבקר לעשות?",
+    "options": [
+      "לתעד את האירוע בצורה עניינית.",
+      "להפעיל כוח או לעכב את האוטובוס כדי לכפות הזדהות.",
+      "להזעיק גורם מוסמך לפי הצורך והנוהל.",
+      "לשמור על מרחק בטוח."
+    ],
+    "answer": 1,
+    "explanation": "הבקר אינו מוסמך לפעול בכוח או לשבש את נסיעת הקו כדי לכפות שיתוף פעולה."
+  },
+  {
+    "id": 13,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "הבקר לא סיים להפיק דרישה לתשלום, והאוטובוס הגיע לתחנה. כיצד יפעל?",
+    "options": [
+      "יורה לנהג להישאר בתחנה ככל שצריך.",
+      "יחסום את דלת היציאה.",
+      "לא יעכב את האוטובוס; יפעל לפי נוהלי ההמשך והתיעוד.",
+      "ימנע מהנוסעים לרדת."
+    ],
+    "answer": 2,
+    "explanation": "נוהל הבקרה אוסר באופן מפורש עיכוב של האוטובוס ושיבוש זמני הקו."
+  },
+  {
+    "id": 14,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "לפני הוצאת דרישה לתשלום תעריף מוגדל, מה חשוב לברר?",
+    "options": [
+      "רק את מספר הדוחות שהמבקר הוציא באותו היום.",
+      "רק אם הנוסע מוכן לחתום.",
+      "רק את גיל הנהג.",
+      "את מצב התיקוף, תקינות המכשירים, ההסדר התקף, נסיבות המקרה וטענת הנוסע."
+    ],
+    "answer": 3,
+    "explanation": "מטרת הבדיקה היא החלטה מדויקת, מנומקת וניתנת לביקורת, ולא ענישה אוטומטית."
+  },
+  {
+    "id": 15,
+    "section": "סמכויות, זיהוי והפעלת ביקורת",
+    "question": "כיצד נקבע סכום התעריף המוגדל?",
+    "options": [
+      "לפי סוג המקרה והתעריף התקף, באמצעות התהליך המוסמך.",
+      "לפי החלטה אישית של המבקר.",
+      "לפי תגובת הנוסע בלבד.",
+      "בסכום קבוע זהה בכל מצב, ללא חריגים."
+    ],
+    "answer": 0,
+    "explanation": "הסכומים וההבחנות נקבעים בהוראות הדין והנוהל, ויש לבדוק נוסח מעודכן בעת הבחינה."
+  },
+  {
+    "id": 16,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "קטין מקבל דרישת תשלום. מה נדרש מהמבקר בנוסף לטיפול המקצועי?",
+    "options": [
+      "להחרים את הטלפון הנייד שלו.",
+      "לבקש פרטי קשר של הוריו ולעדכנם על מסירת ההודעה, לפי הנוהל.",
+      "לפרסם את פרטיו בקבוצת עובדים.",
+      "לדרוש ממנו להישאר באוטובוס עד שיגיע הורה."
+    ],
+    "answer": 1,
+    "explanation": "בטיפול בקטין יש לנקוט זהירות יתרה, ובמקרה של דרישת תשלום לבקש ולעדכן הורה בהתאם להנחיות."
+  },
+  {
+    "id": 17,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "נוסע עם מוגבלות מתקשה להגיע למתקף בשל מצב בריאותי. מהי דרך הפעולה הנכונה?",
+    "options": [
+      "להודיע שאין שום חשיבות לנסיבות.",
+      "לדרוש ממנו לרדת מייד.",
+      "להפעיל שיקול דעת, לברר את המגבלה והיכולת לתקף ולתעד.",
+      "להטיל תעריף מוגדל אוטומטית."
+    ],
+    "answer": 2,
+    "explanation": "הנוהל דורש שיקול דעת מיוחד כלפי אנשים עם מוגבלות ונסיבות המונעות גישה לתיקוף."
+  },
+  {
+    "id": 18,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "נוסעת עם עגלת תינוק מאובטחת אינה יכולה להגיע למתקף בזמן. כיצד יש לנהוג?",
+    "options": [
+      "להכיר בנסיבות, לבדוק אפשרות מעשית לתיקוף ולפעול בשיקול דעת.",
+      "להתעלם ממנה ולא לבצע בדיקה.",
+      "לקנוס אותה בהכרח.",
+      "לדרוש ממנה להשאיר את העגלה ללא השגחה."
+    ],
+    "answer": 0,
+    "explanation": "יש להתחשב בצורך באבטחת עגלה ובגישה בטוחה למתקן, בלי לקבוע פטור אוטומטי מכל חובה."
+  },
+  {
+    "id": 19,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "נוסע טוען שהרכב היה צפוף ולא הייתה לו גישה למתקף. מהי הפעולה הנכונה?",
+    "options": [
+      "לקבוע מיד שאין סיכוי שדבריו נכונים.",
+      "לבקש מהנהג לעצור את הרכב.",
+      "לקבוע שכל צפיפות מזכה אוטומטית בפטור.",
+      "לבחון את העומס ואת הגישה בפועל למתקף ולתעד את הבירור."
+    ],
+    "answer": 3,
+    "explanation": "עומס נוסעים וחסימה בפועל של הגישה למכשיר הם שיקולים רלוונטיים בבדיקת אי־תיקוף."
+  },
+  {
+    "id": 20,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "נוסע מסרב בנימוס ומבקש לדעת כיצד מערערים על דרישת תשלום. מה נכון?",
+    "options": [
+      "להגיד שאין כל אפשרות להשיג על ההחלטה.",
+      "להסביר את מסלול הפנייה הרשמי ולהפנות לפרטים ולמועדים המופיעים בהודעה.",
+      "להתנות הגשת ערעור בתשלום למבקר במזומן.",
+      "להבטיח שהערעור יתקבל."
+    ],
+    "answer": 1,
+    "explanation": "לנוסע עומדת אפשרות לפנות לגורם המוסמך; המבקר מוסר מידע מדויק ואינו מבטיח תוצאה."
+  },
+  {
+    "id": 21,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "נוסע כועס, מקלל ומצלם את המבקר. מהי תגובה מקצועית?",
+    "options": [
+      "להחזיר קללות ולהסלים את המצב.",
+      "לחטוף את הטלפון של הנוסע.",
+      "לשמור על שיח ענייני ומרחק בטוח, לא להסלים ולדווח אם מתפתח איום.",
+      "להעלות את הסרטון לרשת החברתית."
+    ],
+    "answer": 2,
+    "explanation": "בטיחות, איפוק, שירותיות ודיווח מתאים קודמים לעימות אישי."
+  },
+  {
+    "id": 22,
+    "section": "שירות, שיקול דעת והתמודדות עם נוסעים",
+    "question": "מבקר חושד שהנוסע השתמש בפרופיל הנחה שאינו מתאים לו. מהו השלב הראשון?",
+    "options": [
+      "לבדוק עניינית את הפרופיל, הזכאות והנתונים בלי להניח אשמה מראש.",
+      "להניח שכל מי שמקבל הנחה מרמה.",
+      "להטיל את הסכום הגבוה ביותר ללא בירור.",
+      "לדרוש הסברים מול כל נוסעי האוטובוס."
+    ],
+    "answer": 0,
+    "explanation": "בדיקת זכאות חייבת להיות עובדתית, דיסקרטית ומבוססת נתונים."
+  },
+  {
+    "id": 23,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "אילו פרטים חיוניים לדוח פעולה מקצועי ולדרישת תשלום, לפי סוג האירוע?",
+    "options": [
+      "רק כינויו של הנוסע.",
+      "רק מספר הקנסות באותו היום.",
+      "רק מספר התחנה הקרובה.",
+      "פרטי נסיעה וביקורת, ממצאים, פרטי זיהוי נדרשים וטענות הנוסע."
+    ],
+    "answer": 3,
+    "explanation": "תיעוד איכותי מאפשר בדיקת ההחלטה, מענה לפניות ושמירה על הליך הוגן."
+  },
+  {
+    "id": 24,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "המבקר מזהה טעות במספר הרישוי או בפרטי הזיהוי בטופס. מה עליו לעשות?",
+    "options": [
+      "להעלים את הטעות ולהמשיך.",
+      "לתקן או לדווח על הטעות באמצעות ההליך המורשה, תוך שמירה על תיעוד אמין.",
+      "לשנות נתונים של נוסע אחר כדי שיתאימו.",
+      "להפיק מיד דוח נוסף בלי לבדוק."
+    ],
+    "answer": 1,
+    "explanation": "אי־דיוק בפרטי הזיהוי עלול לפגוע בתוקף הבדיקה ובזכויות הנוסע."
+  },
+  {
+    "id": 25,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "האם מבקר רשאי לבטל בעצמו כל דרישה לתשלום רק משום שהנוסע ביקש?",
+    "options": [
+      "כן, תמיד וללא תיעוד.",
+      "כן, בתנאי שהנוסע מכיר עובד חברה.",
+      "לא; יש לפעול בהתאם לסמכויות ולמסלול ביטול או הפחתה מוסמך.",
+      "כן, רק אם הוויכוח נמשך מעל חמש דקות."
+    ],
+    "answer": 2,
+    "explanation": "בחינת בקשות לביטול או להפחתה היא הליך מוסדר; המבקר אינו מחליף את הגורם המוסמך."
+  },
+  {
+    "id": 26,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "מה נכון לגבי שימוש בצילומים ובפרטים אישיים שנאספו בביקורת?",
+    "options": [
+      "לאסוף ולהעביר רק מידע שנדרש ומותר, בערוצים מורשים ובהתאם להגנת הפרטיות.",
+      "לשלוח פרטים לקבוצת חברים לצורכי התייעצות.",
+      "לפרסם שמות נוסעים שחויבו.",
+      "לשמור צילומים בטלפון האישי ללא הגבלה."
+    ],
+    "answer": 0,
+    "explanation": "פרטי נוסעים הם מידע אישי; הטיפול בו חייב להיות מידתי, נחוץ ומאובטח."
+  },
+  {
+    "id": 27,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "במהלך הביקורת מזהים דלת תקולה או מפגע בטיחותי חמור באוטובוס. מהו סדר העדיפויות?",
+    "options": [
+      "להמשיך לבדוק כרטיסים ולהתעלם.",
+      "לבקש מהנהג לנסוע מהר יותר.",
+      "להעלות תמונה לרשת חברתית.",
+      "לדאוג לבטיחות, לעדכן את הנהג והגורם התפעולי ולפעול לפי נוהל אירוע בטיחות."
+    ],
+    "answer": 3,
+    "explanation": "טיפול במפגע בטיחותי גובר על רציפות הביקורת; אין לייצר סיכון חדש."
+  },
+  {
+    "id": 28,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "המבקר צריך לברר עניין עם נהג בזמן נהיגה. כיצד נכון לפעול?",
+    "options": [
+      "לשוחח איתו זמן ממושך תוך כדי פנייה חדה.",
+      "להימנע מהסחת דעת הנהג, ולברר במקום ובמועד בטוחים.",
+      "לעמוד בשדה הראייה של הנהג וללחוץ לתשובה.",
+      "לדרוש מהנהג לבצע רישום בזמן נהיגה."
+    ],
+    "answer": 1,
+    "explanation": "אסור להעמיס על הנהג פעולות או שיחות הפוגעות בקשב לנהיגה."
+  },
+  {
+    "id": 29,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "מסופון הבקרה איבד קליטה באמצע הבדיקה. מה נכון לעשות?",
+    "options": [
+      "לרשום כל נוסע כמי שלא שילם.",
+      "לבקש מהנוסע את סיסמת היישומון שלו.",
+      "לפעול לפי נוהל תקלה או עבודה לא־מקוונת מורשית, ללא הנחות לא מבוססות, ולסנכרן בבטחה.",
+      "למחוק את כל הדוחות הקיימים."
+    ],
+    "answer": 2,
+    "explanation": "תקלה טכנית אינה הוכחה להפרה; יש להמשיך רק במסלול עבודה המאושר ולשמור על אמינות הנתונים."
+  },
+  {
+    "id": 30,
+    "section": "דיווח, פרטיות, בטיחות ומקצועיות",
+    "question": "מהו המדד הטוב ביותר לביקורת מקצועית ואמינה?",
+    "options": [
+      "מספר מרבי של דוחות בכל מחיר.",
+      "משך עימות ממושך ככל האפשר.",
+      "יכולת להטיל סכומים שונים ללא הסבר.",
+      "דיוק בבדיקות, הוגנות, בטיחות, שירות ותיעוד תקין בהתאם לנהלים."
+    ],
+    "answer": 3,
+    "explanation": "הנחיות הבקרה מדגישות מקצועיות, ולא קובעות את מספר דרישות התשלום כמדד לתגמול."
+  }
+];
+
+</script>
+<script>
+/* Electra Afikim — isolated interactive DEMO, not an authentication service.
+   Only fictitious TEST* document IDs accepted. All data is browser-local. */
+(() => {
+  'use strict';
+  const STORE = 'afikim-exam-demo-data-v2';
+  const SESSION = 'afikim-exam-demo-session-v2';
+  const originNow = () => Date.now();
+  const err = (message) => { throw Error(message); };
+  const sampleManager = { id: 'demo-manager', username: 'demo', display_name: 'מנהל הדגמה', role: 'owner', must_change_password: false };
+  const getSession = () => { try { return JSON.parse(sessionStorage.getItem(SESSION) || 'null'); } catch { return null; } };
+  const setSession = (value) => { if (value) sessionStorage.setItem(SESSION, JSON.stringify(value)); else sessionStorage.removeItem(SESSION); };
+  const load = () => { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { return null; } };
+  const save = (value) => localStorage.setItem(STORE, JSON.stringify(value));
+  const checksum = async text => {
+    const bytes = new TextEncoder().encode('afikim-demo-only:' + String(text).toUpperCase());
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
+  };
+  const docValid = doc => /^TEST[A-Z0-9]{4,18}$/.test(String(doc || '').toUpperCase());
+  const summarize = c => ({ id: c.id, name: c.name, identityLast4: c.identityLast4, status: c.status,
+    createdAt: c.createdAt, expiresAt: c.expiresAt, startedAt: c.startedAt, submittedAt: c.submittedAt,
+    correctCount: c.correctCount, score: c.correctCount === null ? null : Math.round(c.correctCount / 30 * 100),
+    decision: c.decision, decisionNotes: c.decisionNotes, reviewedAt: c.reviewedAt });
+  async function init() {
+    let data = load();
+    if (data && data.version === 2 && Array.isArray(data.candidates)) return data;
+    const date = new Date().toISOString();
+    const assignedDoc = 'TEST654321', assignedCode = 'DEMO2026WORKER';
+    const submittedDoc = 'TEST123456';
+    data = { version: 2, candidates: [
+      { id: 'sample-reviewed-pending', name: 'נועה לוי (דוגמה)', identityLast4: submittedDoc.slice(-4),
+        identityDigest: await checksum(submittedDoc), codeDigest: await checksum('DEMO-EXPIRED-SAMPLE'),
+        status: 'submitted', createdAt: date, expiresAt: new Date(originNow()+7*864e5).toISOString(),
+        startedAt: date, submittedAt: date, correctCount: 25, decision: null, decisionNotes: '', reviewedAt: null, answers: {} },
+      { id: 'sample-invited', name: 'דניאל כהן (דוגמה)', identityLast4: assignedDoc.slice(-4),
+        identityDigest: await checksum(assignedDoc), codeDigest: await checksum(assignedCode),
+        status: 'assigned', createdAt: date, expiresAt: new Date(originNow()+7*864e5).toISOString(),
+        startedAt: null, submittedAt: null, correctCount: null, decision: null, decisionNotes: '', reviewedAt: null, answers: {} }
+    ], history: [] };
+    save(data);return data;
+  }
+  const isAdmin = () => getSession()?.role === 'admin';
+  const getWorker = data => {const s=getSession();return s?.role==='worker' ? data.candidates.find(x=>x.id===s.id) : null;};
+  const answerBank = () => Array.isArray(window.EXAM_QUESTIONS) ? window.EXAM_QUESTIONS : [];
+  window.AfikimDemoAPI = async (path, method='GET', body) => {
+    await Promise.resolve();
+    const b = body || {};
+    const d = await init();
+    const name = String(path || '');
+    if (name === 'health') return { ok: true, ready: answerBank().length===30, questions: answerBank().length, demo: true };
+    if (name === 'admin-login' && method==='POST') {
+      if (b.username !== 'demo' || b.password !== 'demo2026') err('פרטי הדגמה לא תקינים. שם משתמש: demo, סיסמה: demo2026');
+      setSession({role:'admin'});
+      return {ok:true,name:sampleManager.display_name,role:sampleManager.role,mustChangePassword:false};
+    }
+    if (name === 'admin-me' && method==='GET') { if(!isAdmin()) err('נדרשת כניסה של מנהל'); return {admin:sampleManager}; }
+    if (name === 'admin-logout' && method==='POST') {setSession(null);return {ok:true};}
+    if (name === 'admin-list' && method==='GET') {
+      if(!isAdmin()) err('הכניסה למערכת הניהול נדרשת');
+      return {items:d.candidates.map(summarize).reverse()};
+    }
+    if (name === 'admin-assign' && method==='POST') {
+      if(!isAdmin()) err('נדרשת כניסת מנהל');
+      const workerName=String(b.name||'').trim(), doc=String(b.document||'').toUpperCase().trim();
+      if(workerName.length<2||workerName.length>120)err('יש להזין שם מלא לדוגמה');
+      if(!docValid(doc))err('בדמו מותר להזין אך ורק מספר דמיוני שמתחיל ב-TEST ומכיל 8–22 תווים');
+      const code='DEMO-'+crypto.randomUUID().replace(/-/g,'').slice(0,18).toUpperCase();
+      const c={ id:crypto.randomUUID(),name:workerName,identityLast4:doc.slice(-4),
+        identityDigest:await checksum(doc),codeDigest:await checksum(code),status:'assigned',
+        createdAt:new Date().toISOString(),expiresAt:new Date(originNow()+7*864e5).toISOString(),
+        startedAt:null,submittedAt:null,correctCount:null,decision:null,decisionNotes:'',reviewedAt:null,answers:{} };
+      d.candidates.push(c);d.history.push({action:'assigned',id:c.id,time:new Date().toISOString()});save(d);
+      return {candidate:summarize(c),code};
+    }
+    if (name === 'admin-review' && method==='POST') {
+      if(!isAdmin())err('נדרשת כניסת מנהל');
+      const c=d.candidates.find(x=>x.id===b.id);
+      if(!c || c.status!=='submitted' || c.decision)err('לא ניתן לקבל החלטה למבחן זה');
+      if(!['accepted','rejected','follow_up'].includes(b.decision) || String(b.notes||'').trim().length<3)err('נדרשת החלטה עם נימוק בן 3 תווים לפחות');
+      c.decision=b.decision;c.decisionNotes=String(b.notes).trim().slice(0,1000);c.reviewedAt=new Date().toISOString();
+      d.history.push({action:'reviewed',id:c.id,time:c.reviewedAt,decision:c.decision});save(d);
+      return {candidate:summarize(c)};
+    }
+    if (name === 'admin-password' && method==='POST') err('שינוי סיסמה זמין בגרסה השרתית בלבד');
+    if (name === 'worker-login' && method==='POST') {
+      const doc=String(b.document||'').toUpperCase().trim(); const code=String(b.code||'').toUpperCase().trim();
+      if(!docValid(doc)||code.length<12)err('הזינו מספר מסמך דמיוני שמתחיל ב-TEST וקוד הזמנה');
+      const documentDigest=await checksum(doc), codeDigest=await checksum(code);
+      const c=d.candidates.find(x=>x.identityDigest===documentDigest&&x.codeDigest===codeDigest);
+      if(!c || !['assigned','in_progress'].includes(c.status) || new Date(c.expiresAt).getTime()<originNow())err('פרטי כניסה אינם תקינים או שהמבחן אינו זמין');
+      if(c.startedAt && originNow()-new Date(c.startedAt).getTime()>=40*60*1000)err('זמן הבחינה הסתיים');
+      c.status='in_progress';c.startedAt ||= new Date().toISOString();save(d);setSession({role:'worker',id:c.id});
+      return {ok:true,name:c.name};
+    }
+    if (name === 'worker-logout' && method==='POST') {setSession(null);return {ok:true};}
+    if (name === 'worker-me' && method==='GET') {
+      const c=getWorker(d);if(!c)err('נדרשת כניסה למבחן');
+      return {candidate:summarize(c),remainingSeconds:Math.max(0,Math.floor((new Date(c.startedAt).getTime()+40*60*1000-originNow())/1000))};
+    }
+    if (name === 'worker-questions' && method==='GET') {
+      const c=getWorker(d);
+      if(!c || c.status!=='in_progress')err('נדרשת כניסה למבחן');
+      if(new Date(c.startedAt).getTime()+40*60*1000<=originNow())err('זמן המבחן הסתיים');
+      return {questions:answerBank().map(q=>({id:q.id,section:q.section,question:q.question,options:q.options})),answers:c.answers||{}};
+    }
+    if (name === 'worker-answer' && method==='POST') {
+      const c=getWorker(d);if(!c||c.status!=='in_progress')err('המבחן אינו פעיל');
+      if(new Date(c.startedAt).getTime()+40*60*1000<=originNow())err('זמן המבחן הסתיים');
+      const q=Number(b.questionId),choice=Number(b.selectedOption);
+      if(!answerBank().some(x=>x.id===q)||![0,1,2,3].includes(choice))err('תשובה אינה תקינה');
+      c.answers[q]=choice;save(d);return {ok:true};
+    }
+    if (name === 'worker-submit' && method==='POST') {
+      const c=getWorker(d);if(!c)err('נדרשת כניסה למבחן');
+      if(c.status!=='submitted'){
+        if(c.status!=='in_progress')err('המבחן אינו פעיל');
+        c.correctCount=answerBank().reduce((a,q)=>a+(c.answers?.[q.id]===q.answer?1:0),0);
+        c.submittedAt=new Date().toISOString();c.status='submitted';d.history.push({action:'submitted',id:c.id,time:c.submittedAt});save(d);
+      }
+      return {candidate:summarize(c)};
+    }
+    err('פעולה זו אינה זמינה בסביבת ההדגמה');
+  };
+  window.AfikimDemoInfo={manager:{username:'demo',password:'demo2026'},worker:{code:'DEMO2026WORKER',document:'TEST654321'},reset:()=>{localStorage.removeItem(STORE);sessionStorage.removeItem(SESSION);location.reload()}};
+})();
+
+</script>
+<script>
+const root=document.querySelector('#root');let admin=null,candidate=null,questions=[],answers={},active=0,deadline=0,timer=null,latestCode='';
+const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const api=window.AfikimDemoAPI;
+const notice=(msg,type='ok')=>{let p=document.querySelector('#notice');if(!p){p=document.createElement('div');p.id='notice';p.className='feedback';root.prepend(p)}p.textContent=msg;p.className='feedback '+type};
+const frame=(title,sub,inner)=>`<section class="secure-heading"><span class="secure-label">אלקטרה אפיקים | ניהול הכשרות</span><h1>${title}</h1><p>${sub}</p></section>${inner}`;
+const btn=(label,type='submit')=>`<button type="${type}" class="primary-btn">${label}</button>`;
+const field=(label,id,type='text',extra='')=>`<label class="secure-field"><span>${label}</span><input id="${id}" type="${type}" required ${extra}></label>`;
+function tabs(){return `<nav class="secure-tabs"><button id="nav-worker" class="${location.hash==='#worker'?'active':''}" type="button">כניסת עובד</button><button id="nav-admin" class="${location.hash==='#admin'?'active':''}" type="button">כניסת מנהל</button></nav>`}
+function startPage(){const isAdmin=location.hash==='#admin';root.innerHTML=frame(isAdmin?'כניסה למערכת הניהול':'בחינה אישית לעובד',isAdmin?'גישה למנהלים ולאחראים מורשים בלבד':'היכנסו עם קוד המבחן שקיבלתם ממנהל ופרטי המסמך שנרשמו בעת יצירת המבחן (TEST בלבד)',`${tabs()}<div class="secure-card"><form id="entry">${isAdmin?field('שם משתמש','login-user','text','autocomplete="username"')+field('סיסמה','login-pass','password','autocomplete="current-password"'):field('קוד הזמנה','login-code','text','autocomplete="off"')+field('מספר תעודה / דרכון','login-doc','text','autocomplete="off"')}${btn(isAdmin?'כניסה לניהול':'כניסה למבחן')}</form><p class="secure-help">הדגמה בדפדפן הזה בלבד. אין להקליד שמות או מספרי מסמך אמיתיים. רק נתוני TEST מותרים.</p><div class="demo-quick"><strong>פרטי כניסה להדגמה</strong><span>${isAdmin?'מנהל: demo · סיסמה: demo2026':'עובד: DEMO2026WORKER · תעודה: TEST654321'}</span><button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div></div>`);document.querySelector('#demo-fill').onclick=()=>{if(isAdmin){document.querySelector('#login-user').value='demo';document.querySelector('#login-pass').value='demo2026'}else{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'}};document.querySelector('#nav-worker').onclick=()=>{location.hash='worker';startPage()};document.querySelector('#nav-admin').onclick=()=>{location.hash='admin';startPage()};document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{if(isAdmin){const x=await api('admin-login','POST',{username:document.querySelector('#login-user').value,password:document.querySelector('#login-pass').value});admin=x;await loadAdmin()}else{const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()}}catch(e){notice(e.message,'error')}}}
+async function loadAdmin(){const me=await api('admin-me');admin=me.admin;if(admin.must_change_password){root.innerHTML=frame('עדכון סיסמה','יש להחליף סיסמה זמנית כדי להמשיך',`<div class="secure-card"><form id="change-pass">${field('סיסמה נוכחית','current','password')}${field('סיסמה חדשה, לפחות 14 תווים','next','password')}${btn('שמירה')}</form></div>`);document.querySelector('#change-pass').onsubmit=async e=>{e.preventDefault();try{await api('admin-password','POST',{current:document.querySelector('#current').value,next:document.querySelector('#next').value});await loadAdmin()}catch(err){notice(err.message,'error')}};return}const r=await api('admin-list');let rows=r.items;const counters={total:rows.length,pending:rows.filter(x=>x.status==='assigned'||x.status==='in_progress').length,submitted:rows.filter(x=>x.status==='submitted'&&!x.decision).length,approved:rows.filter(x=>x.decision==='accepted').length};const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בירור נוסף'};root.innerHTML=frame('לוח ניהול בחינות',`שלום ${escape(admin.display_name)} · תוצאות הבחינה לעיון מנהל בלבד`, `<div class="secure-toolbar"><div class="secure-stats"><div><b>${counters.total}</b><span>סה״כ בחינות</span></div><div><b>${counters.pending}</b><span>ממתינים / בבחינה</span></div><div><b>${counters.submitted}</b><span>ממתינים להחלטה</span></div><div><b>${counters.approved}</b><span>אושרו</span></div></div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div><div class="secure-grid"><section class="secure-card"><h2>יצירת מבחן אישי</h2><p>הזינו את פרטי העובד. הקוד יופיע פעם אחת בלבד לאחר יצירת ההזמנה.</p><form id="assign">${field('שם מלא של העובד','worker-name','text','autocomplete="off"')}${field('מספר תעודה / דרכון','worker-doc','text','autocomplete="off"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div></section><section class="secure-card wide"><div class="secure-section-head"><h2>רשימת נבחנים</h2><input id="search" type="search" placeholder="חיפוש לפי שם" aria-label="חיפוש לפי שם"></div><div class="table-wrap"><table><thead><tr><th>שם</th><th>תעודה</th><th>סטטוס</th><th>ציון</th><th>החלטה</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="candidate-rows"></tbody></table></div></section></div>`);const renderRows=()=>{const query=document.querySelector('#search').value.trim();const filtered=rows.filter(x=>x.name.includes(query));document.querySelector('#candidate-rows').innerHTML=filtered.map(x=>`<tr><td>${escape(x.name)}</td><td>••••${escape(x.identityLast4)}</td><td>${translate[x.status]||escape(x.status)}</td><td>${x.score===null?'—':x.correctCount+'/30 · '+x.score+'%'}</td><td>${translate[x.decision]||'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td>${x.status==='submitted'&&!x.decision?`<button type="button" class="small-action" data-review="${x.id}">קבלת החלטה</button>`:'—'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">אין רשומות</td></tr>';document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>review(rows.find(x=>x.id===b.dataset.review)))};renderRows();document.querySelector('#search').oninput=renderRows;document.querySelector('#logout-admin').onclick=async()=>{await api('admin-logout','POST');admin=null;startPage()};document.querySelector('#assign').onsubmit=async e=>{e.preventDefault();try{const x=await api('admin-assign','POST',{name:document.querySelector('#worker-name').value,document:document.querySelector('#worker-doc').value});latestCode=x.code;document.querySelector('#worker-doc').value='';const text=`מבחן הדגמה - אלקטרה אפיקים\nשם: ${x.candidate.name}\nקוד: ${x.code}\nקישור: ${location.origin}/#worker\nיש להזין את מספר התעודה שנרשם אצל המנהל.`;document.querySelector('#invitation').innerHTML=`<div class="invitation"><strong>הזמנה נוצרה בהצלחה</strong><p>קוד אישי: <code>${x.code}</code></p><button id="copy-invite" type="button" class="secondary-btn">העתקת הזמנה</button><p>קוד בדיקה בלבד. עובד בדפדפן הזה ולא ניתן להעביר אותו למכשיר אחר.</p></div>`;document.querySelector('#copy-invite').onclick=()=>navigator.clipboard.writeText(text).then(()=>notice('ההזמנה הועתקה'));notice('ההזמנה נוצרה; יש לשתף את הקוד בערוץ מאובטח');}catch(err){notice(err.message,'error')}}}
+function review(x){root.innerHTML=frame('בדיקת תוצאות',`החלטת המנהל עבור ${escape(x.name)} · ${x.correctCount} מתוך 30 · ${x.score}%`, `<section class="secure-card"><h2>החלטת התאמה</h2><p>הציון הוא נתון מסייע בלבד. ההחלטה נקבעת על ידי גורם מוסמך, עם נימוק כתוב.</p><form id="review-form"><label class="secure-field"><span>החלטה</span><select id="decision"><option value="accepted">מתאים</option><option value="rejected">לא מתאים</option><option value="follow_up">נדרשת בדיקה נוספת</option></select></label><label class="secure-field"><span>נימוק מקצועי</span><textarea id="notes" rows="4" required minlength="3"></textarea></label><div class="form-actions">${btn('שמירת החלטה')}<button type="button" id="back" class="secondary-btn">חזרה</button></div></form></section>`);document.querySelector('#back').onclick=loadAdmin;document.querySelector('#review-form').onsubmit=async e=>{e.preventDefault();try{await api('admin-review','POST',{id:x.id,decision:document.querySelector('#decision').value,notes:document.querySelector('#notes').value});await loadAdmin();notice('ההחלטה נשמרה ביומן הפעילות')}catch(err){notice(err.message,'error')}}}
+async function loadExam(){const m=await api('worker-me');candidate=m.candidate;if(candidate.status==='submitted'){root.innerHTML=frame('המבחן הוגש','תוצאת הבחינה הועברה לבדיקת מנהל',`<div class="secure-card"><h2>${escape(candidate.name)}</h2><p>תשובות נכונות: ${candidate.correctCount} מתוך 30 (${candidate.score}%)</p><p>החלטת התאמה תתקבל בנפרד על ידי אחראי מוסמך.</p><button class="secondary-btn" id="exit-worker">התנתקות</button></div>`);document.querySelector('#exit-worker').onclick=async()=>{await api('worker-logout','POST');startPage()};return}const r=await api('worker-questions');questions=r.questions;answers=r.answers;deadline=Date.now()+m.remainingSeconds*1000;active=0;renderExam()}
+function renderExam(){if(timer)clearInterval(timer);const q=questions[active];root.innerHTML=frame('מבחן מקצועי למבקרי תחבורה ציבורית',`נבחן/ת: ${escape(candidate.name)} · שאלה ${active+1} מתוך ${questions.length}`,`<div class="secure-card exam-secure"><div class="exam-top"><strong>${escape(q.section)}</strong><span id="clock">—</span></div><div class="secure-progress"><span style="width:${(active+1)/questions.length*100}%"></span></div><h2>${escape(q.question)}</h2><div class="answer-grid">${q.options.map((option,i)=>`<button data-choice="${i}" type="button" class="choice ${answers[q.id]===i?'selected':''}"><span>${'אבגד'[i]}</span>${escape(option)}</button>`).join('')}</div><div class="form-actions"><button type="button" id="prev" class="secondary-btn" ${active===0?'disabled':''}>הקודמת</button><button type="button" id="next" class="primary-btn">${active===questions.length-1?'סיום והגשת מבחן':'השאלה הבאה'}</button></div><p class="secure-help">התשובות נשמרות בדפדפן הזה בלבד. שאלות ללא תשובה נחשבות שגויות.</p></div>`);const update=()=>{const left=Math.max(0,Math.floor((deadline-Date.now())/1000));const el=document.querySelector('#clock');if(el)el.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;if(left===0){clearInterval(timer);submit()}};update();timer=setInterval(update,1000);document.querySelectorAll('[data-choice]').forEach(button=>button.onclick=async()=>{const choice=Number(button.dataset.choice);button.disabled=true;try{await api('worker-answer','POST',{questionId:q.id,selectedOption:choice});answers[q.id]=choice;renderExam()}catch(err){notice(err.message,'error');button.disabled=false}});document.querySelector('#prev').onclick=()=>{if(active>0){active--;renderExam()}};document.querySelector('#next').onclick=()=>{if(active<questions.length-1){active++;renderExam()}else{const n=questions.filter(x=>answers[x.id]===undefined).length;root.querySelector('.exam-secure').insertAdjacentHTML('beforeend',`<div class="secure-confirm"><p>לשלוח את הבחינה? ${n?`נותרו ${n} שאלות ללא מענה.`:'כל השאלות נענו.'}</p><button id="confirm-submit" class="primary-btn" type="button">אישור הגשה</button></div>`);document.querySelector('#confirm-submit').onclick=submit}}}
+async function submit(){clearInterval(timer);try{await api('worker-submit','POST');await loadExam()}catch(err){notice(err.message,'error')}}
+async function init(){try{const m=await api('admin-me');admin=m.admin;location.hash='admin';await loadAdmin();return}catch{}try{const m=await api('worker-me');candidate=m.candidate;location.hash='worker';await loadExam();return}catch{}location.hash=location.hash==='#admin'?'admin':'worker';startPage()};init();
+
+</script>
+<script defer>document.addEventListener('DOMContentLoaded',()=>{document.getElementById('reset-demo').onclick=()=>{const box=document.createElement('div');box.className='demo-reset';box.innerHTML='<p>לאפס את כל נתוני ההדגמה בדפדפן הזה?</p><button id="reset-yes" type="button">אפס נתוני דוגמה</button><button id="reset-no" type="button">ביטול</button>';document.querySelector('.demo-banner').append(box);document.getElementById('reset-yes').onclick=()=>window.AfikimDemoInfo.reset();document.getElementById('reset-no').onclick=()=>box.remove()}})</script>
+</body></html>
