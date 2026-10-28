@@ -19,7 +19,7 @@
     const hash = await crypto.subtle.digest('SHA-256', bytes);
     return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
   };
-  const docValid = doc => /^TEST[A-Z0-9]{4,18}$/.test(String(doc || '').toUpperCase());
+  const docValid = doc => /^000000[0-9]{3}$/.test(String(doc || '').trim());
   const summarize = c => ({ id: c.id, name: c.name, identityLast4: c.identityLast4, status: c.status,
     createdAt: c.createdAt, expiresAt: c.expiresAt, startedAt: c.startedAt, submittedAt: c.submittedAt,
     correctCount: c.correctCount, score: c.correctCount === null ? null : Math.round(c.correctCount / 30 * 100),
@@ -36,6 +36,11 @@
   async function init() {
     let data = load();
     if (data && data.version === 2 && Array.isArray(data.candidates)) {
+      for (const c of data.candidates) {
+        if(c.id==='sample-invited' && c.status==='assigned'){c.identityDigest=await checksum('000000123');c.identityLast4='0123';}
+        if(c.id==='sample-reviewed-pending'){c.identityDigest=await checksum('000000456');c.identityLast4='0456';}
+      }
+      save(data);
       const sample=data.candidates.find(x=>x.id==='sample-reviewed-pending');
       if(sample && sample.status==='submitted' && !Object.keys(sample.answers||{}).length){
         sample.answers=Object.fromEntries(answerBank().map((q,i)=>[q.id,i<25?q.answer:(q.answer+1)%4]));
@@ -45,8 +50,8 @@
       return ensureStaff(data);
     }
     const date = new Date().toISOString();
-    const assignedDoc = 'TEST654321', assignedCode = 'DEMO2026WORKER';
-    const submittedDoc = 'TEST123456';
+    const assignedDoc = '000000123', assignedCode = 'DEMO2026WORKER';
+    const submittedDoc = '000000456';
     data = { version: 2, candidates: [
       { id: 'sample-reviewed-pending', name: 'נועה לוי (דוגמה)', identityLast4: submittedDoc.slice(-4),
         identityDigest: await checksum(submittedDoc), codeDigest: await checksum('DEMO-EXPIRED-SAMPLE'),
@@ -118,7 +123,7 @@
       if(!isAdmin(d)) err('נדרשת כניסת מנהל');
       const workerName=String(b.name||'').trim(), doc=String(b.document||'').toUpperCase().trim();
       if(workerName.length<2||workerName.length>120)err('יש להזין שם מלא לדוגמה');
-      if(!docValid(doc))err('בדמו מותר להזין אך ורק מספר דמיוני שמתחיל ב-TEST ומכיל 8–22 תווים');
+      if(!docValid(doc))err('בהדגמה יש להזין תעודת זהות פיקטיבית בת 9 ספרות המתחילה ב-000000');
       const code='DEMO-'+crypto.randomUUID().replace(/-/g,'').slice(0,18).toUpperCase();
       const c={ id:crypto.randomUUID(),name:workerName,assignedBy:getAdmin(d).id,identityLast4:doc.slice(-4),
         identityDigest:await checksum(doc),codeDigest:await checksum(code),status:'assigned',
@@ -154,7 +159,7 @@
     if (name === 'admin-password' && method==='POST') err('שינוי סיסמה זמין בגרסה השרתית בלבד');
     if (name === 'worker-login' && method==='POST') {
       const doc=String(b.document||'').toUpperCase().trim(); const code=String(b.code||'').toUpperCase().trim();
-      if(!docValid(doc)||code.length<12)err('הזינו מספר מסמך דמיוני שמתחיל ב-TEST וקוד הזמנה');
+      if(!docValid(doc)||code.length<12)err('הזינו תעודת זהות פיקטיבית בת 9 ספרות המתחילה ב-000000 וקוד הזמנה');
       const documentDigest=await checksum(doc), codeDigest=await checksum(code);
       const c=d.candidates.find(x=>x.identityDigest===documentDigest&&x.codeDigest===codeDigest);
       if(!c || !['assigned','in_progress'].includes(c.status) || new Date(c.expiresAt).getTime()<originNow())err('פרטי כניסה אינם תקינים או שהמבחן אינו זמין');
@@ -191,5 +196,5 @@
     }
     err('פעולה זו אינה זמינה בסביבת ההדגמה');
   };
-  window.AfikimDemoInfo={manager:{staffNumber:'000001',username:'demo',password:'demo2026'},worker:{code:'DEMO2026WORKER',document:'TEST654321'},reset:()=>{localStorage.removeItem(STORE);sessionStorage.removeItem(SESSION);location.reload()}};
+  window.AfikimDemoInfo={manager:{staffNumber:'000001',username:'demo',password:'demo2026'},worker:{code:'DEMO2026WORKER',document:'000000123'},reset:()=>{localStorage.removeItem(STORE);sessionStorage.removeItem(SESSION);location.reload()}};
 })();
