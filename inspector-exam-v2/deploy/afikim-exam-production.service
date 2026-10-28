@@ -1,0 +1,26 @@
+[Unit]
+Description=Electra Afikim official exam application (BRILL TEAM PROJECT)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=afikim-exam
+Group=afikim-exam
+WorkingDirectory=/opt/afikim-exam-production/inspector-exam-v2
+EnvironmentFile=/etc/afikim-exam/production.env
+ExecStart=/usr/bin/node server.mjs
+Restart=always
+RestartSec=4
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+UMask=027
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryMax=700M
+
+[Install]
+WantedBy=multi-user.target
