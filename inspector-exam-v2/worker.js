@@ -121,7 +121,7 @@ function renderQuestion(){
  root.querySelector('#worker-next').addEventListener('click',()=>state.active===state.questions.length-1?showConfirmation():go(state.active+1));
  updateClock();state.tick=setInterval(updateClock,1000);
 }
-function go(index){if(state.saving||state.submitting||state.confirming||state.phase!=='exam')return;if(index<0||index>=state.questions.length)return;state.active=index;renderQuestion();root.querySelector('#question-heading')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
+function go(index){console.debug('AFIKIM_NAV',JSON.stringify({index,saving:state.saving,submitting:state.submitting,confirming:state.confirming,phase:state.phase}));if(state.saving||state.submitting||state.confirming||state.phase!=='exam')return;if(index<0||index>=state.questions.length)return;state.active=index;renderQuestion();root.querySelector('#question-heading')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
 async function saveAnswer(value,button){
  if(state.saving||state.submitting||state.phase!=='exam')return;
  state.saving=true;const q=state.questions[state.active],status=root.querySelector('#worker-save-status');
