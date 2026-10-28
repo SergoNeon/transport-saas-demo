@@ -1,0 +1,20 @@
+{
+  "name": "בקרת דרך - מבחן מבקרים",
+  "short_name": "מבחן מבקרים",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#0c2639",
+  "description": "מבחן הכשרה למבקרי תחבורה ציבורית",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
