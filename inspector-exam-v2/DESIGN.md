@@ -18,7 +18,7 @@ A calm, institutional public-transit assessment console that employees and super
 - Blue-grey `#65798a`: secondary information.
 
 ## Composition
-- Login: concise heading, role selector and two-field form; no numbered sales or decorative KPI cards.
+- Login: two independent HTML entry points, `/` for workers and `/admin.html` for authorized staff. Each contains only its own two-field form, without role tabs or combined views.
 - Desktop login: typographic navy overview paired with task form; mobile overview becomes compact, unboxed heading.
 - Manager: dense, scannable candidate list, owner-controlled staff access.
 - Worker exam: one question at a time, progress and deadline visible, no answer key or final score for worker.
