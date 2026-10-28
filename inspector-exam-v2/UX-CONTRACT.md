@@ -9,5 +9,5 @@
 - Worker sees no correct answer index and no score or percentage, even after submission or re-login.
 - Server remains authoritative for completion, timer, session validity, review decisions and role permissions.
 - Network failure must preserve safe form input and give visible status. Buttons disable while awaiting the server to avoid duplicate requests.
-- Mobile: keep form fields, role selection, submit, errors and footer readable without horizontal scroll. RTL Hebrew labels; ID/code inputs LTR.
+- Mobile: keep role-specific form fields, submit, errors and footer readable without horizontal scroll. RTL Hebrew labels; ID/code inputs LTR. Never show manager-login controls on the worker page or worker-login controls on the management page. RTL Hebrew labels; ID/code inputs LTR.
 - Public staging environment uses dummy data only; actual employee IDs are not permitted until a production privacy and security acceptance.
