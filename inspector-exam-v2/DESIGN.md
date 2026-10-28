@@ -19,7 +19,7 @@ A calm, institutional public-transit assessment console that employees and super
 
 ## Composition
 - Login: two independent HTML entry points, `/` for workers and `/admin.html` for authorized staff. Each contains only its own two-field form, without role tabs or combined views.
-- Desktop login: typographic navy overview paired with task form; mobile overview becomes compact, unboxed heading.
+- Worker entry: light transit-teal overview and a focused invitation/identity form; compact unboxed heading on mobile. Manager entry: deep navy overview and a staff-number/password form; on mobile, a contained navy introduction above a white form. Both preserve the approved Electra Afikim visual language.
 - Manager: dense, scannable candidate list, owner-controlled staff access.
 - Worker exam: one question at a time, progress and deadline visible, no answer key or final score for worker.
 - Notice: staging-only warning remains prominent but understated and never implies approval for real personnel records.
