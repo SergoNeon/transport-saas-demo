@@ -35,11 +35,10 @@ if(setup.status!==200&&setup.status!==409)check(setup,200,'Owner initialization'
 if(setup.status===409&&!existsSync(output))throw Error('Owner already exists but staging credential file missing');
 check(await owner.call('admin-login','POST',creds.owner),200,'Owner authenticated');
 check(await owner.call('admin-me'),200,'Owner cookie persisted');
-if(setup.status===200){
- check(await owner.call('admin-staff-create','POST',{staffNumber:creds.manager.username,display_name:'מנהל בדיקה א',password:creds.manager.password,role:'manager'}),200,'Create primary manager');
- check(await owner.call('admin-staff-create','POST',{staffNumber:creds.outsider.username,display_name:'מנהל בדיקה ב',password:creds.outsider.password,role:'manager'}),200,'Create isolated second manager');
- writeFileSync(output,JSON.stringify(creds,null,2),{mode:0o600,flag:'wx'});
-}
+const staff=check(await owner.call('admin-staff-list'),200,'Owner lists authorized staff');
+if(!staff.items.some(x=>x.staffNumber===creds.manager.username))check(await owner.call('admin-staff-create','POST',{staffNumber:creds.manager.username,display_name:'מנהל בדיקה א',password:creds.manager.password,role:'manager'}),200,'Create primary manager');
+if(!staff.items.some(x=>x.staffNumber===creds.outsider.username))check(await owner.call('admin-staff-create','POST',{staffNumber:creds.outsider.username,display_name:'מנהל בדיקה ב',password:creds.outsider.password,role:'manager'}),200,'Create isolated second manager');
+if(!existsSync(output))writeFileSync(output,JSON.stringify(creds,null,2),{mode:0o600,flag:'wx'});
 check(await manager.call('admin-login','POST',creds.manager),200,'First manager session');
 check(await outsider.call('admin-login','POST',creds.outsider),200,'Independent second manager session');
 const assignment=check(await manager.call('admin-assign','POST',{name:'עובד בדיקה פיקטיבי',document:'000000123'}),200,'Manager assigns exam');
