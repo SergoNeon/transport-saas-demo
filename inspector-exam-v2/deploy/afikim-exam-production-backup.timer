@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily encrypted backup of official Electra Afikim database
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+RandomizedDelaySec=15min
+Persistent=true
+Unit=afikim-exam-production-backup.service
+
+[Install]
+WantedBy=timers.target
