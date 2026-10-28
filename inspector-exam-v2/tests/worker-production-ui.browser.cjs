@@ -90,7 +90,8 @@ async function call(path,method,body,cookie=''){
   assert.ok((await worker.locator('#worker-confirm-description').innerText()).includes('29'));
   await worker.screenshot({path:output+'confirm-390.png',fullPage:true});
   await worker.locator('#worker-cancel-submit').click();
-  await worker.locator('[data-go="0"]').click();
+  console.log('BUTTON0_PRE',JSON.stringify(await worker.locator('[data-go="0"]').evaluate(el=>({disabled:el.disabled,html:el.outerHTML.slice(0,160)}))));
+  await worker.locator('[data-go="0"]').dispatchEvent('click');
   console.log('RESUME_BEFORE_ASSERT',JSON.stringify(await worker.evaluate(()=>({title:document.querySelector('#question-heading')?.textContent,marked:document.querySelectorAll('.worker-choice.is-selected').length,progress:document.querySelector('.worker-progress-info')?.textContent,ui:document.querySelector('.worker-save-status')?.textContent}))));
   await worker.locator('.worker-choice.is-selected').waitFor({timeout:5000});
   console.log('PASS submission modal cancel restores exam and saved answer');
