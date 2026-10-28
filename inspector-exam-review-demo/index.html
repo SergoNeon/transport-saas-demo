@@ -488,6 +488,149 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
  .secure-stats>div{min-height:72px;padding:11px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* v4: decision-focused assessment workflow; RTL operational UI */
+.staff-kpi{min-width:0;background:#fff;border:1px solid #dfe9ed;border-radius:15px;padding:17px 18px;display:flex;flex-direction:column;gap:5px;box-shadow:0 3px 10px rgba(8,34,49,.025)}
+.staff-kpi strong{font-size:29px;line-height:1;color:#112f40;font-variant-numeric:tabular-nums}
+.staff-kpi span{font-size:12px;font-weight:700;color:#687b89}
+.staff-kpi.kpi-waiting{border-color:#b5dfd6;background:#f4fcf9}
+.staff-kpi.kpi-waiting strong{color:#0b7f70}
+.operations-toolbar{margin-bottom:20px;align-items:stretch}
+.operations-toolbar .secure-stats{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.operations-toolbar>#logout-admin{align-self:center;flex:none}
+.card-eyebrow{font-size:11px;color:#087d74;font-weight:800;letter-spacing:.04em;margin-bottom:7px}
+.staff-create-card,.staff-list-card{min-width:0}
+.staff-create-card h2,.staff-list-card h2{margin:0 0 10px;font-size:20px}
+.staff-create-card>p{font-size:13px;line-height:1.7;margin:0 0 21px}
+.staff-create-card form{gap:13px}
+.staff-create-card .secure-field{gap:7px}
+.staff-create-card .secure-field input{height:51px}
+.staff-create-card .primary-btn{height:49px}
+.candidate-filters{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:10px;margin:15px 0 19px}
+.candidate-filters label{display:grid;gap:7px;min-width:0;font-size:12px;font-weight:750;color:#456476}
+.candidate-filters input,.candidate-filters select{width:100%;height:43px;min-width:0;border:1px solid #d5e2e9;background:#fff;border-radius:9px;padding:0 11px;font-size:13px;color:#123345}
+.candidate-filters input:focus-visible,.candidate-filters select:focus-visible{outline:3px solid #5ec5ba;outline-offset:1px}
+.list-count{color:#6a828d;font-size:12px;font-weight:700;background:#eef5f7;border-radius:20px;padding:2px 8px;white-space:nowrap}
+.staff-record-table{min-width:0}
+.staff-record-table th{font-size:11px}
+.staff-record-table td{font-size:12px}
+.staff-record-table td.person-cell strong{font-size:13px;white-space:normal}
+.staff-record-table .score-cell{white-space:nowrap;font-variant-numeric:tabular-nums}
+.status-pill,.decision-pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:18px;font-size:11px;line-height:1.2;font-weight:800;white-space:nowrap;background:#ecf1f4;color:#516a7b}
+.status-pill.status-in_progress{background:#e8f4fb;color:#27648e}
+.status-pill.status-submitted{background:#fff6e7;color:#95661d}
+.decision-pill.decision-accepted{background:#e5f5ee;color:#087655}
+.decision-pill.decision-rejected{background:#fff0ef;color:#a5433c}
+.decision-pill.decision-follow_up{background:#fff5e5;color:#926318}
+.list-pagination{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:15px 0 0;color:#6c8292;font-size:12px}
+.pagination-controls{display:flex;gap:7px}
+.pagination-controls .secondary-btn{min-height:36px;padding:0 14px;font-size:12px}
+.empty-state{white-space:normal!important;text-align:center!important;padding:30px 16px!important;color:#748794!important;font-size:13px!important}
+.audit-panel{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start;background:#fff;border:1px solid #e0eaf0;border-radius:17px;padding:22px 25px;margin-top:18px}
+.audit-panel h2{margin:0;font-size:19px}
+.activity-list{display:grid;gap:0;min-width:0}
+.activity-row{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:11px;align-items:center;border-bottom:1px solid #edf1f3;padding:10px 0}
+.activity-row:last-child{border-bottom:none}
+.activity-indicator{width:8px;height:8px;border-radius:50%;background:#168f7e}
+.activity-row>div{display:grid;gap:3px;min-width:0}
+.activity-row strong{font-size:12px;color:#183a4b}
+.activity-row span{font-size:11px;color:#67808b}
+.activity-row time{font-size:11px;color:#81949e;white-space:nowrap}
+.activity-empty{color:#6b8491;font-size:13px;line-height:1.6;margin:0}
+.invitation-v4{display:flex;flex-direction:column;align-items:flex-start;gap:10px;border:1px solid #b9ded3}
+.invitation-v4 p,.invitation-v4 small{margin:0;font-size:12px;line-height:1.5;color:#436c66}
+.invitation-v4 code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;word-break:break-all;direction:ltr;unicode-bidi:isolate;background:#fff;padding:10px;border:1px solid #d2eae4;border-radius:8px}
+.record-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:-2px 0 18px}
+.record-summary{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(0,1.7fr);gap:22px;align-items:center}
+.record-summary h2{font-size:24px;margin:0 0 12px}
+.record-summary p{font-size:13px;margin:0}
+.record-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.record-facts>div{padding:13px 15px;background:#f5f8f9;border-radius:10px;display:grid;gap:6px;min-width:0}
+.record-facts small{font-size:11px;color:#6b8491}
+.record-facts strong{font-size:14px;overflow-wrap:anywhere}
+.review-questions,.review-decision,.decision-readonly,.pending-note{margin-top:17px}
+.review-questions h2,.review-decision h2{font-size:20px;margin:0 0 10px}
+.review-questions>p,.review-decision>p{font-size:13px;line-height:1.6;margin:0 0 17px}
+.review-answers{display:grid;gap:7px}
+.review-answer{border:1px solid #e2e9ed;border-radius:10px;overflow:hidden;background:#fff}
+.review-answer summary{cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;list-style:none}
+.review-answer summary::-webkit-details-marker{display:none}
+.review-answer summary>span:first-child{font-size:11px;color:#6b818e;flex:none}
+.review-answer summary strong{font-size:13px;font-weight:700;flex:1;min-width:0}
+.response-tag{font-size:11px;font-weight:800;border-radius:16px;padding:5px 9px;white-space:nowrap;background:#e9f6ef;color:#167253}
+.response-tag.response-wrong{background:#fff0ee;color:#a94b43}
+.response-tag.response-none{background:#eff2f3;color:#697b87}
+.review-answer-body{padding:12px 15px;border-top:1px solid #e9eef1;background:#f9fbfb}
+.review-answer-body p{font-size:12px;line-height:1.7;margin:5px 0}
+.review-answer-body .answer-explanation{color:#607e88;margin-top:13px}
+.decision-readonly{border-right:4px solid #118f7b}
+.decision-readonly p{white-space:pre-wrap;overflow-wrap:anywhere}
+.decision-readonly small{color:#708994}
+.exam-workspace{display:grid;grid-template-columns:minmax(0,1fr) 244px;gap:17px;align-items:start}
+.exam-workspace .v4-exam{max-width:none!important;min-width:0}
+.exam-navigator{padding:18px;background:#fff;border:1px solid #e0e8ec;border-radius:15px;position:sticky;top:16px}
+.exam-nav-head{display:flex;justify-content:space-between;align-items:center;gap:7px;margin:0 0 14px}
+.exam-nav-head strong{font-size:13px}
+.exam-nav-head span{color:#708794;font-size:11px}
+.exam-number-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.exam-number-grid button{aspect-ratio:1;border:1px solid #dce6ea;background:#fff;border-radius:8px;font-size:12px;font-weight:800;color:#456171;padding:0;min-width:0}
+.exam-number-grid button.answered{border-color:#a8d7c9;background:#e9f7f2;color:#167861}
+.exam-number-grid button.current{background:#123a4d;border-color:#123a4d;color:#fff}
+.exam-number-grid button:focus-visible{outline:3px solid #29b8c6;outline-offset:2px}
+.exam-nav-foot{display:flex;gap:14px;flex-wrap:wrap;margin:13px 0 15px;font-size:10px;color:#6f8793}
+.exam-nav-foot>span{display:flex;align-items:center;gap:5px}
+.exam-nav-foot i{width:9px;height:9px;display:inline-block;border-radius:3px;background:#9bd2c2}
+.exam-nav-foot .legend-current{background:#123a4d}
+.exam-save-exit{width:100%;min-height:41px;font-size:11px}
+.exam-step{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:15px;color:#576f7c;font-size:13px}
+.exam-step b{font-size:18px;color:#102e42}
+.answered-count{font-size:12px;color:#128672;font-weight:800}
+.v4-exam .secure-progress{margin:15px 0 25px}
+.v4-exam .exam-top{align-items:center}
+.exam-clock{font-variant-numeric:tabular-nums;direction:ltr;font-size:19px;font-weight:800;background:#edf5f6;border-radius:9px;padding:6px 9px}
+.v4-exam .answer-grid button{min-height:62px;align-items:center}
+.v4-exam .answer-grid .selected{border-color:#0c9980;background:#effaf5;box-shadow:inset 0 0 0 1px #0c9980}
+.exam-hint{font-size:12px!important}
+.exam-confirm{position:fixed;z-index:99;inset:0;background:rgba(5,23,32,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.exam-confirm-panel{width:min(100%,440px);border-radius:17px;background:white;padding:27px;box-shadow:0 25px 65px rgba(0,0,0,.2)}
+.exam-confirm-panel h3{font-size:22px;margin:0 0 13px}
+.exam-confirm-panel p{font-size:14px;line-height:1.7;color:#546d7a;margin:0 0 22px}
+.exam-confirm-panel>div{display:flex;gap:9px;flex-wrap:wrap}
+.done-mark{width:55px;height:55px;background:#e6f8f1;color:#148d78;display:grid;place-items:center;border-radius:50%;font-size:30px;margin-bottom:19px}
+.exam-done{max-width:640px;margin:0 auto}
+.exam-done h2{font-size:24px;margin:0 0 15px}
+.done-score{font-weight:900;color:#0d3246;font-size:32px;display:flex;gap:12px;align-items:center;margin-bottom:15px}
+.done-score small{font-size:13px;color:#667f8c;font-weight:600}
+@media(max-width:1050px){.exam-workspace{grid-template-columns:minmax(0,1fr) 200px}}
+@media(max-width:870px){.audit-panel{grid-template-columns:1fr}.exam-workspace{grid-template-columns:1fr}.exam-navigator{position:static;order:-1}.exam-number-grid{grid-template-columns:repeat(10,minmax(0,1fr))}.exam-nav-foot{margin-bottom:0}.exam-save-exit{max-width:260px;margin-top:14px}}
+@media(max-width:650px){
+ .operations-toolbar{display:flex;flex-direction:column;gap:9px}
+ .operations-toolbar .secure-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .operations-toolbar>#logout-admin{align-self:flex-end}
+ .staff-kpi{padding:13px 14px}.staff-kpi strong{font-size:25px}.staff-kpi span{font-size:11px}
+ .candidate-filters{grid-template-columns:1fr;gap:10px}
+ .list-pagination{align-items:center;gap:8px}
+ .pagination-controls .secondary-btn{padding:0 10px}
+ .audit-panel{padding:18px 16px;margin-top:12px;gap:13px}
+ .activity-row{grid-template-columns:10px minmax(0,1fr);gap:9px}
+ .activity-row time{grid-column:2;font-size:10px}
+ .record-summary{grid-template-columns:1fr;padding:20px 16px}
+ .record-facts{gap:8px}
+ .record-facts>div{padding:11px}
+ .record-toolbar{flex-wrap:wrap}
+ .review-questions{padding:19px 15px}
+ .review-answer summary{flex-wrap:wrap;gap:7px}
+ .review-answer summary strong{flex-basis:calc(100% - 90px);font-size:12px}
+ .exam-number-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+ .exam-navigator{padding:14px;border-radius:12px}
+ .exam-save-exit{width:100%;max-width:none}
+ .v4-exam{padding:20px 16px!important}
+ .v4-exam .answer-grid button{font-size:13px;line-height:1.5}
+ .v4-exam h2{font-size:20px;line-height:1.5}
+ .done-score{font-size:26px;flex-wrap:wrap}
+ .exam-confirm-panel{padding:20px}
+}
+
 </style>
 </head><body>
 <header class="topbar">
@@ -499,7 +642,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 </header>
 <main class="main secure-main">
   <aside class="demo-banner" role="note"><strong>גרסת הדגמה — ללא שימוש בפרטים אישיים</strong><span>כאן אפשר לבדוק את תהליך המנהל, הנבחן וקבלת ההחלטה. כל הנתונים נשמרים רק בדפדפן הנוכחי ואינם משותפים למכשירים אחרים.</span><button id="reset-demo" type="button">איפוס ההדגמה</button></aside>
-  <div id="root"><div class="loading-state">טוען מערכת...</div></div>
+  <div id="root" aria-live="off"><div class="loading-state">טוען מערכת...</div></div>
 </main>
 <footer class="site-footer"><span>אלקטרה אפיקים · מערכת בחינות לעובדים</span><span>הדגמה לא רשמית · אינה מיועדת לאישורי העסקה או למסמכים אמיתיים</span></footer>
 <script>
@@ -924,7 +1067,15 @@ window.EXAM_QUESTIONS = [
     decision: c.decision, decisionNotes: c.decisionNotes, reviewedAt: c.reviewedAt });
   async function init() {
     let data = load();
-    if (data && data.version === 2 && Array.isArray(data.candidates)) return data;
+    if (data && data.version === 2 && Array.isArray(data.candidates)) {
+      const sample=data.candidates.find(x=>x.id==='sample-reviewed-pending');
+      if(sample && sample.status==='submitted' && !Object.keys(sample.answers||{}).length){
+        sample.answers=Object.fromEntries(answerBank().map((q,i)=>[q.id,i<25?q.answer:(q.answer+1)%4]));
+        save(data);
+      }
+      data.history ||= [];
+      return data;
+    }
     const date = new Date().toISOString();
     const assignedDoc = 'TEST654321', assignedCode = 'DEMO2026WORKER';
     const submittedDoc = 'TEST123456';
@@ -932,7 +1083,7 @@ window.EXAM_QUESTIONS = [
       { id: 'sample-reviewed-pending', name: 'נועה לוי (דוגמה)', identityLast4: submittedDoc.slice(-4),
         identityDigest: await checksum(submittedDoc), codeDigest: await checksum('DEMO-EXPIRED-SAMPLE'),
         status: 'submitted', createdAt: date, expiresAt: new Date(originNow()+7*864e5).toISOString(),
-        startedAt: date, submittedAt: date, correctCount: 25, decision: null, decisionNotes: '', reviewedAt: null, answers: {} },
+        startedAt: date, submittedAt: date, correctCount: 25, decision: null, decisionNotes: '', reviewedAt: null, answers: Object.fromEntries(answerBank().map((q,i)=>[q.id,i<25?q.answer:(q.answer+1)%4])) },
       { id: 'sample-invited', name: 'דניאל כהן (דוגמה)', identityLast4: assignedDoc.slice(-4),
         identityDigest: await checksum(assignedDoc), codeDigest: await checksum(assignedCode),
         status: 'assigned', createdAt: date, expiresAt: new Date(originNow()+7*864e5).toISOString(),
@@ -972,6 +1123,21 @@ window.EXAM_QUESTIONS = [
         startedAt:null,submittedAt:null,correctCount:null,decision:null,decisionNotes:'',reviewedAt:null,answers:{} };
       d.candidates.push(c);d.history.push({action:'assigned',id:c.id,time:new Date().toISOString()});save(d);
       return {candidate:summarize(c),code};
+    }
+    if (name === 'admin-detail' && method==='GET') {
+      if(!isAdmin())err('נדרשת כניסת מנהל');
+      const c=d.candidates.find(x=>x.id===b.id);
+      if(!c)err('המבחן לא נמצא');
+      const questions=c.status==='submitted'?answerBank().map(q=>{
+        const selectedOption=Number.isInteger(c.answers?.[q.id])?c.answers[q.id]:null;
+        return {id:q.id,section:q.section,question:q.question,options:q.options,
+          selectedOption,correctOption:q.answer,correct:selectedOption===q.answer,explanation:q.explanation};
+      }):[];
+      return {candidate:summarize(c),questions};
+    }
+    if (name === 'admin-history' && method==='GET') {
+      if(!isAdmin())err('נדרשת כניסת מנהל');
+      return {items:d.history.slice(-10).reverse().map(e=>({...e,candidateName:d.candidates.find(c=>c.id===e.id)?.name||'נבחן'}))};
     }
     if (name === 'admin-review' && method==='POST') {
       if(!isAdmin())err('נדרשת כניסת מנהל');
@@ -1030,16 +1196,161 @@ window.EXAM_QUESTIONS = [
 const root=document.querySelector('#root');let admin=null,candidate=null,questions=[],answers={},active=0,deadline=0,timer=null,latestCode='';
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const api=window.AfikimDemoAPI;
-const notice=(msg,type='ok')=>{let p=document.querySelector('#notice');if(!p){p=document.createElement('div');p.id='notice';p.className='feedback';root.prepend(p)}p.textContent=msg;p.className='feedback '+type};
+const notice=(msg,type='ok')=>{let p=document.querySelector('#notice');if(!p){p=document.createElement('div');p.id='notice';p.className='feedback';root.prepend(p)}p.textContent=msg;p.className='feedback '+type;p.setAttribute('role','status');p.setAttribute('aria-live','polite')};
 const frame=(title,sub,inner)=>`<section class="secure-heading"><span class="secure-label">אלקטרה אפיקים | ניהול הכשרות</span><h1>${title}</h1><p>${sub}</p></section>${inner}`;
 const btn=(label,type='submit')=>`<button type="${type}" class="primary-btn">${label}</button>`;
 const field=(label,id,type='text',extra='')=>`<label class="secure-field"><span>${label}</span><input id="${id}" type="${type}" required ${extra}></label>`;
 function tabs(){return `<nav class="secure-tabs"><button id="nav-worker" class="${location.hash==='#worker'?'active':''}" type="button">כניסת עובד</button><button id="nav-admin" class="${location.hash==='#admin'?'active':''}" type="button">כניסת מנהל</button></nav>`}
 function startPage(){const isAdmin=location.hash==='#admin';root.innerHTML=frame(isAdmin?'כניסה למערכת הניהול':'בחינה אישית לעובד',isAdmin?'גישה למנהלים ולאחראים מורשים בלבד':'היכנסו עם קוד המבחן שקיבלתם ממנהל ופרטי המסמך שנרשמו בעת יצירת המבחן (TEST בלבד)',`${tabs()}<div class="secure-card"><form id="entry">${isAdmin?field('שם משתמש','login-user','text','autocomplete="username"')+field('סיסמה','login-pass','password','autocomplete="current-password"'):field('קוד הזמנה','login-code','text','autocomplete="off"')+field('מספר תעודה / דרכון','login-doc','text','autocomplete="off"')}${btn(isAdmin?'כניסה לניהול':'כניסה למבחן')}</form><p class="secure-help">הדגמה בדפדפן הזה בלבד. אין להקליד שמות או מספרי מסמך אמיתיים. רק נתוני TEST מותרים.</p><div class="demo-quick"><strong>פרטי כניסה להדגמה</strong><span>${isAdmin?'מנהל: demo · סיסמה: demo2026':'עובד: DEMO2026WORKER · תעודה: TEST654321'}</span><button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div></div>`);document.querySelector('#demo-fill').onclick=()=>{if(isAdmin){document.querySelector('#login-user').value='demo';document.querySelector('#login-pass').value='demo2026'}else{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'}};document.querySelector('#nav-worker').onclick=()=>{location.hash='worker';startPage()};document.querySelector('#nav-admin').onclick=()=>{location.hash='admin';startPage()};document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{if(isAdmin){const x=await api('admin-login','POST',{username:document.querySelector('#login-user').value,password:document.querySelector('#login-pass').value});admin=x;await loadAdmin()}else{const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()}}catch(e){notice(e.message,'error')}}}
-async function loadAdmin(){const me=await api('admin-me');admin=me.admin;if(admin.must_change_password){root.innerHTML=frame('עדכון סיסמה','יש להחליף סיסמה זמנית כדי להמשיך',`<div class="secure-card"><form id="change-pass">${field('סיסמה נוכחית','current','password')}${field('סיסמה חדשה, לפחות 14 תווים','next','password')}${btn('שמירה')}</form></div>`);document.querySelector('#change-pass').onsubmit=async e=>{e.preventDefault();try{await api('admin-password','POST',{current:document.querySelector('#current').value,next:document.querySelector('#next').value});await loadAdmin()}catch(err){notice(err.message,'error')}};return}const r=await api('admin-list');let rows=r.items;const counters={total:rows.length,pending:rows.filter(x=>x.status==='assigned'||x.status==='in_progress').length,submitted:rows.filter(x=>x.status==='submitted'&&!x.decision).length,approved:rows.filter(x=>x.decision==='accepted').length};const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בירור נוסף'};root.innerHTML=frame('לוח ניהול בחינות',`שלום ${escape(admin.display_name)} · תוצאות הבחינה לעיון מנהל בלבד`, `<div class="secure-toolbar"><div class="secure-stats"><div><b>${counters.total}</b><span>סה״כ בחינות</span></div><div><b>${counters.pending}</b><span>ממתינים / בבחינה</span></div><div><b>${counters.submitted}</b><span>ממתינים להחלטה</span></div><div><b>${counters.approved}</b><span>אושרו</span></div></div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div><div class="secure-grid"><section class="secure-card"><h2>יצירת מבחן אישי</h2><p>הזינו את פרטי העובד. הקוד יופיע פעם אחת בלבד לאחר יצירת ההזמנה.</p><form id="assign">${field('שם מלא של העובד','worker-name','text','autocomplete="off"')}${field('מספר תעודה / דרכון','worker-doc','text','autocomplete="off"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div></section><section class="secure-card wide"><div class="secure-section-head"><h2>רשימת נבחנים</h2><input id="search" type="search" placeholder="חיפוש לפי שם" aria-label="חיפוש לפי שם"></div><div class="table-wrap"><table><thead><tr><th>שם</th><th>תעודה</th><th>סטטוס</th><th>ציון</th><th>החלטה</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="candidate-rows"></tbody></table></div></section></div>`);const renderRows=()=>{const query=document.querySelector('#search').value.trim();const filtered=rows.filter(x=>x.name.includes(query));document.querySelector('#candidate-rows').innerHTML=filtered.map(x=>`<tr><td>${escape(x.name)}</td><td>••••${escape(x.identityLast4)}</td><td>${translate[x.status]||escape(x.status)}</td><td>${x.score===null?'—':x.correctCount+'/30 · '+x.score+'%'}</td><td>${translate[x.decision]||'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td>${x.status==='submitted'&&!x.decision?`<button type="button" class="small-action" data-review="${x.id}">קבלת החלטה</button>`:'—'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">אין רשומות</td></tr>';document.querySelectorAll('#candidate-rows tr').forEach(tr=>tr.querySelectorAll('td').forEach((td,i)=>{td.dataset.label=document.querySelectorAll('.secure-card thead th')[i]?.textContent||''}));document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>review(rows.find(x=>x.id===b.dataset.review)))};renderRows();document.querySelector('#search').oninput=renderRows;document.querySelector('#logout-admin').onclick=async()=>{await api('admin-logout','POST');admin=null;startPage()};document.querySelector('#assign').onsubmit=async e=>{e.preventDefault();try{const x=await api('admin-assign','POST',{name:document.querySelector('#worker-name').value,document:document.querySelector('#worker-doc').value});latestCode=x.code;document.querySelector('#worker-doc').value='';const text=`מבחן הדגמה - אלקטרה אפיקים\nשם: ${x.candidate.name}\nקוד: ${x.code}\nקישור: ${location.origin}/#worker\nיש להזין את מספר התעודה שנרשם אצל המנהל.`;document.querySelector('#invitation').innerHTML=`<div class="invitation"><strong>הזמנה נוצרה בהצלחה</strong><p>קוד אישי: <code>${x.code}</code></p><button id="copy-invite" type="button" class="secondary-btn">העתקת הזמנה</button><p>קוד בדיקה בלבד. עובד בדפדפן הזה ולא ניתן להעביר אותו למכשיר אחר.</p></div>`;document.querySelector('#copy-invite').onclick=()=>navigator.clipboard.writeText(text).then(()=>notice('ההזמנה הועתקה'));notice('ההזמנה נוצרה; יש לשתף את הקוד בערוץ מאובטח');}catch(err){notice(err.message,'error')}}}
-function review(x){root.innerHTML=frame('בדיקת תוצאות',`החלטת המנהל עבור ${escape(x.name)} · ${x.correctCount} מתוך 30 · ${x.score}%`, `<section class="secure-card"><h2>החלטת התאמה</h2><p>הציון הוא נתון מסייע בלבד. ההחלטה נקבעת על ידי גורם מוסמך, עם נימוק כתוב.</p><form id="review-form"><label class="secure-field"><span>החלטה</span><select id="decision"><option value="accepted">מתאים</option><option value="rejected">לא מתאים</option><option value="follow_up">נדרשת בדיקה נוספת</option></select></label><label class="secure-field"><span>נימוק מקצועי</span><textarea id="notes" rows="4" required minlength="3"></textarea></label><div class="form-actions">${btn('שמירת החלטה')}<button type="button" id="back" class="secondary-btn">חזרה</button></div></form></section>`);document.querySelector('#back').onclick=loadAdmin;document.querySelector('#review-form').onsubmit=async e=>{e.preventDefault();try{await api('admin-review','POST',{id:x.id,decision:document.querySelector('#decision').value,notes:document.querySelector('#notes').value});await loadAdmin();notice('ההחלטה נשמרה ביומן הפעילות')}catch(err){notice(err.message,'error')}}}
-async function loadExam(){const m=await api('worker-me');candidate=m.candidate;if(candidate.status==='submitted'){root.innerHTML=frame('המבחן הוגש','תוצאת הבחינה הועברה לבדיקת מנהל',`<div class="secure-card"><h2>${escape(candidate.name)}</h2><p>תשובות נכונות: ${candidate.correctCount} מתוך 30 (${candidate.score}%)</p><p>החלטת התאמה תתקבל בנפרד על ידי אחראי מוסמך.</p><button class="secondary-btn" id="exit-worker">התנתקות</button></div>`);document.querySelector('#exit-worker').onclick=async()=>{await api('worker-logout','POST');startPage()};return}const r=await api('worker-questions');questions=r.questions;answers=r.answers;deadline=Date.now()+m.remainingSeconds*1000;active=0;renderExam()}
-function renderExam(){if(timer)clearInterval(timer);const q=questions[active];root.innerHTML=frame('מבחן מקצועי למבקרי תחבורה ציבורית',`נבחן/ת: ${escape(candidate.name)} · שאלה ${active+1} מתוך ${questions.length}`,`<div class="secure-card exam-secure"><div class="exam-top"><strong>${escape(q.section)}</strong><span id="clock">—</span></div><div class="secure-progress"><span style="width:${(active+1)/questions.length*100}%"></span></div><h2>${escape(q.question)}</h2><div class="answer-grid">${q.options.map((option,i)=>`<button data-choice="${i}" type="button" class="choice ${answers[q.id]===i?'selected':''}"><span>${'אבגד'[i]}</span>${escape(option)}</button>`).join('')}</div><div class="form-actions"><button type="button" id="prev" class="secondary-btn" ${active===0?'disabled':''}>הקודמת</button><button type="button" id="next" class="primary-btn">${active===questions.length-1?'סיום והגשת מבחן':'השאלה הבאה'}</button></div><p class="secure-help">התשובות נשמרות בדפדפן הזה בלבד. שאלות ללא תשובה נחשבות שגויות.</p></div>`);const update=()=>{const left=Math.max(0,Math.floor((deadline-Date.now())/1000));const el=document.querySelector('#clock');if(el)el.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;if(left===0){clearInterval(timer);submit()}};update();timer=setInterval(update,1000);document.querySelectorAll('[data-choice]').forEach(button=>button.onclick=async()=>{const choice=Number(button.dataset.choice);button.disabled=true;try{await api('worker-answer','POST',{questionId:q.id,selectedOption:choice});answers[q.id]=choice;renderExam()}catch(err){notice(err.message,'error');button.disabled=false}});document.querySelector('#prev').onclick=()=>{if(active>0){active--;renderExam()}};document.querySelector('#next').onclick=()=>{if(active<questions.length-1){active++;renderExam()}else{const n=questions.filter(x=>answers[x.id]===undefined).length;root.querySelector('.exam-secure').insertAdjacentHTML('beforeend',`<div class="secure-confirm"><p>לשלוח את הבחינה? ${n?`נותרו ${n} שאלות ללא מענה.`:'כל השאלות נענו.'}</p><button id="confirm-submit" class="primary-btn" type="button">אישור הגשה</button></div>`);document.querySelector('#confirm-submit').onclick=submit}}}
+async function loadAdmin(){
+  if(timer){clearInterval(timer);timer=null;}
+  const me=await api('admin-me');admin=me.admin;
+  if(admin.must_change_password){
+    root.innerHTML=frame('עדכון סיסמה','יש להחליף סיסמה זמנית כדי להמשיך',`<div class="secure-card"><form id="change-pass">${field('סיסמה נוכחית','current','password')}${field('סיסמה חדשה, לפחות 14 תווים','next','password')}${btn('שמירת סיסמה')}</form></div>`);
+    document.querySelector('#change-pass').onsubmit=async e=>{e.preventDefault();try{await api('admin-password','POST',{current:document.querySelector('#current').value,next:document.querySelector('#next').value});await loadAdmin()}catch(err){notice(err.message,'error')}};
+    return;
+  }
+  const r=await api('admin-list');let rows=r.items;
+  const counters={total:rows.length,ongoing:rows.filter(x=>['assigned','in_progress'].includes(x.status)).length,waiting:rows.filter(x=>x.status==='submitted'&&!x.decision).length,reviewed:rows.filter(x=>!!x.decision).length};
+  const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בדיקה נוספת'};
+  const kpi=(count,label,kind)=>`<div class="staff-kpi kpi-${kind}"><strong>${count}</strong><span>${label}</span></div>`;
+  root.innerHTML=frame('ניהול בחינות עובדים','ממשק מנהל · יצירת מבחנים, מעקב ובדיקת תוצאות',`
+    <div class="secure-toolbar operations-toolbar"><div class="secure-stats">${kpi(counters.total,'סה״כ בחינות','total')}${kpi(counters.ongoing,'הוזמנו / בבחינה','running')}${kpi(counters.waiting,'ממתינים להחלטה','waiting')}${kpi(counters.reviewed,'החלטות שהתקבלו','reviewed')}</div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div>
+    <div class="secure-grid">
+      <section class="secure-card staff-create-card"><div class="card-eyebrow">פתיחת מבחן</div><h2>הזמנת עובד לבחינה</h2><p>הזינו שם ופרטי מסמך פיקטיביים בלבד. קוד ההזמנה יוצג לאחר היצירה.</p>
+        <form id="assign" novalidate>${field('שם מלא של העובד','worker-name','text','autocomplete="off" maxlength="120"')}${field('מספר תעודה / דרכון (TEST בלבד)','worker-doc','text','autocomplete="off" maxlength="22"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div>
+      </section>
+      <section class="secure-card staff-list-card"><div class="secure-section-head"><div><div class="card-eyebrow">מעקב ובקרה</div><h2>נבחנים ותוצאות <span id="visible-count" class="list-count"></span></h2></div></div>
+        <div class="candidate-filters"><label><span>חיפוש עובד</span><input id="search" type="search" placeholder="חיפוש לפי שם" autocomplete="off"></label><label><span>מצב בחינה</span><select id="status-filter"><option value="all">כל המצבים</option><option value="active">בהמתנה / בבחינה</option><option value="submitted">ממתינים להחלטה</option><option value="reviewed">עם החלטה</option></select></label></div>
+        <div class="table-wrap"><table class="staff-record-table"><thead><tr><th>עובד</th><th>מסמך</th><th>שלב</th><th>תוצאה</th><th>החלטה</th><th>תאריך</th><th>פעולה</th></tr></thead><tbody id="candidate-rows"></tbody></table></div>
+        <div class="list-pagination"><span id="list-range" aria-live="polite"></span><div class="pagination-controls"><button type="button" class="secondary-btn" id="page-prev">הקודם</button><button type="button" class="secondary-btn" id="page-next">הבא</button></div></div>
+      </section>
+    </div>
+    <section class="audit-panel"><div><div class="card-eyebrow">תיעוד פעולות</div><h2>פעילות אחרונה</h2></div><div id="activity-list" class="activity-list"></div></section>
+  `);
+  let page=0;const pageSize=8;
+  const renderRows=()=>{
+    const query=document.querySelector('#search').value.trim().toLocaleLowerCase('he-IL');
+    const status=document.querySelector('#status-filter').value;
+    const matching=rows.filter(x=>x.name.toLocaleLowerCase('he-IL').includes(query) && (status==='all'||(status==='active'&&['assigned','in_progress'].includes(x.status))||(status==='submitted'&&x.status==='submitted'&&!x.decision)||(status==='reviewed'&&!!x.decision)));
+    const pages=Math.max(1,Math.ceil(matching.length/pageSize));page=Math.min(page,pages-1);
+    const pageRows=matching.slice(page*pageSize,(page+1)*pageSize);
+    const tbody=document.querySelector('#candidate-rows');
+    tbody.innerHTML=pageRows.map(x=>`<tr><td class="person-cell"><strong>${escape(x.name)}</strong></td><td class="masked" dir="ltr">••••${escape(x.identityLast4)}</td><td><span class="status-pill status-${x.status}">${translate[x.status]||escape(x.status)}</span></td><td class="score-cell">${x.score==null?'—':`${x.correctCount}/30 · ${x.score}%`}</td><td>${x.decision?`<span class="decision-pill decision-${x.decision}">${translate[x.decision]}</span>`:'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td><button type="button" class="small-action" data-open="${x.id}">${x.decision?'פרטי החלטה':x.status==='submitted'?'בדיקה והחלטה':'פרטי בחינה'}</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty-state">אין נבחנים התואמים לסינון. ניתן לשנות את החיפוש או לבחור מצב אחר.</td></tr>';
+    const head=[...document.querySelectorAll('.staff-record-table thead th')];
+    tbody.querySelectorAll('tr').forEach(tr=>tr.querySelectorAll('td').forEach((td,i)=>{if(!td.hasAttribute('colspan'))td.dataset.label=head[i]?.textContent||''}));
+    tbody.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openRecord(rows.find(x=>x.id===b.dataset.open)));
+    document.querySelector('#visible-count').textContent=matching.length;
+    document.querySelector('#list-range').textContent=matching.length?`מציג ${page*pageSize+1}–${Math.min((page+1)*pageSize,matching.length)} מתוך ${matching.length}`:'אין תוצאות';
+    document.querySelector('#page-prev').disabled=page===0;document.querySelector('#page-next').disabled=page>=pages-1;
+  };
+  renderRows();
+  document.querySelector('#search').oninput=()=>{page=0;renderRows()};
+  document.querySelector('#status-filter').onchange=()=>{page=0;renderRows()};
+  document.querySelector('#page-prev').onclick=()=>{if(page>0){page--;renderRows()}};
+  document.querySelector('#page-next').onclick=()=>{page++;renderRows()};
+  document.querySelector('#logout-admin').onclick=async()=>{try{await api('admin-logout','POST');admin=null;location.hash='admin';startPage()}catch(err){notice(err.message,'error')}};
+  document.querySelector('#assign').onsubmit=async e=>{
+    e.preventDefault();const name=document.querySelector('#worker-name').value.trim(),doc=document.querySelector('#worker-doc').value.trim();
+    if(name.length<2){notice('יש להזין שם מלא של נבחן לדוגמה','error');document.querySelector('#worker-name').focus();return}
+    if(!/^TEST[A-Za-z0-9]{4,18}$/i.test(doc)){notice('לבדיקה יש להשתמש רק במספר פיקטיבי שמתחיל ב-TEST','error');document.querySelector('#worker-doc').focus();return}
+    try{
+      const x=await api('admin-assign','POST',{name,document:doc});latestCode=x.code;
+      rows=[x.candidate,...rows];page=0;document.querySelector('#search').value='';document.querySelector('#status-filter').value='all';renderRows();
+      document.querySelector('#worker-doc').value='';document.querySelector('#worker-name').value='';
+      const message=`אלקטרה אפיקים – הזמנת מבחן להדגמה\nעובד: ${name}\nקוד אישי: ${x.code}\nכניסה: ${location.origin}/#worker\nיש להזין את פרטי המסמך הפיקטיבי שנקבעו עם המנהל.`;
+      document.querySelector('#invitation').innerHTML=`<div class="invitation invitation-v4"><strong>ההזמנה נוצרה</strong><p>קוד הכניסה:</p><code>${escape(x.code)}</code><button id="copy-invite" type="button" class="secondary-btn">העתקת פרטי הזמנה</button><small>הנתונים זמינים רק בדפדפן זה — העברת קוד למכשיר אחר אינה נתמכת בדמו.</small></div>`;
+      document.querySelector('#copy-invite').onclick=async()=>{try{await navigator.clipboard.writeText(message);notice('פרטי ההזמנה הועתקו')}catch{notice('העתקה לא זמינה כאן; ניתן לסמן ולהעתיק את הקוד המוצג','error')}};
+      notice('נוצרה הזמנה חדשה להדגמה. ניתן לפתוח את התיק מהרשימה.');
+    }catch(err){notice(err.message,'error')}
+  };
+  try{
+    const hist=await api('admin-history');
+    const types={assigned:'יצירת מבחן',submitted:'הגשת מבחן',reviewed:'החלטת מנהל'};
+    const holder=document.querySelector('#activity-list');
+    if(holder)holder.innerHTML=hist.items.length?hist.items.map(e=>`<div class="activity-row"><span class="activity-indicator"></span><div><strong>${types[e.action]||'עדכון במערכת'}</strong><span>${escape(e.candidateName||'עובד לדוגמה')}</span></div><time>${new Date(e.time).toLocaleString('he-IL')}</time></div>`).join(''):'<p class="activity-empty">פעולות חדשות יוצגו כאן לאחר יצירת בחינה או שמירת החלטה.</p>';
+  }catch{const holder=document.querySelector('#activity-list');if(holder)holder.textContent='רישום הפעילות אינו זמין כעת.'}
+}
+
+async function openRecord(x){
+  if(!x)return loadAdmin();
+  let detail;
+  try{detail=await api('admin-detail','GET',{id:x.id})}catch(err){return notice(err.message,'error')}
+  const c=detail.candidate||x;
+  const translate={assigned:'הוזמן',in_progress:'בתהליך',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'נדרשת בדיקה נוספת'};
+  const when=v=>v?new Date(v).toLocaleString('he-IL'):'—';
+  const reviewAllowed=c.status==='submitted'&&!c.decision;
+  const answers=detail.questions||[];
+  root.innerHTML=frame('תיק הבחינה',`נבחן/ת: ${escape(c.name)} · בדיקה מקצועית לפני החלטה`,`
+    <div class="record-toolbar"><button id="back" type="button" class="secondary-btn">חזרה לרשימת נבחנים</button><span class="status-pill status-${c.status}">${translate[c.status]||escape(c.status)}</span></div>
+    <section class="secure-card record-summary"><div><div class="card-eyebrow">פרטי בחינה</div><h2>${escape(c.name)}</h2><p>מספר מסמך מוסתר: <span dir="ltr">••••${escape(c.identityLast4)}</span></p></div><div class="record-facts"><div><small>ציון</small><strong>${c.correctCount==null?'טרם הוגש':`${c.correctCount} / 30 · ${c.score}%`}</strong></div><div><small>נוצר</small><strong>${when(c.createdAt)}</strong></div><div><small>הוגש</small><strong>${when(c.submittedAt)}</strong></div><div><small>החלטה</small><strong>${translate[c.decision]||'ממתין להחלטה'}</strong></div></div></section>
+    ${c.decision?`<section class="secure-card decision-readonly"><div class="card-eyebrow">החלטה מתועדת</div><h2>${translate[c.decision]}</h2><p>${escape(c.decisionNotes||'לא צורף נימוק')}</p><small>תאריך החלטה: ${when(c.reviewedAt)}</small></section>`:''}
+    ${c.status==='submitted'?`<section class="secure-card review-questions"><div class="card-eyebrow">בדיקת המבחן</div><h2>פירוט תשובות · 30 שאלות</h2><p>פירוט זה מוצג למנהל בלבד. ציון הבחינה אינו קובע אוטומטית התאמה לעבודה.</p>${answers.length?`<div class="review-answers">${answers.map((q,i)=>`<details class="review-answer"><summary><span>שאלה ${i+1}</span><strong>${escape(q.question)}</strong><span class="response-tag ${q.selectedOption==null?'response-none':q.correct?'response-right':'response-wrong'}">${q.selectedOption==null?'אין נתון':q.correct?'נכון':'לא נכון'}</span></summary><div class="review-answer-body"><p>תשובת העובד: <strong>${q.selectedOption==null?'לא נענתה':escape(q.options[q.selectedOption])}</strong></p><p>התשובה הנכונה: <strong>${escape(q.options[q.correctOption])}</strong></p><p class="answer-explanation">${escape(q.explanation)}</p></div></details>`).join('')}</div>`:'<p class="activity-empty">נתוני שאלות מפורטים אינם זמינים לרשומת הדוגמה הזאת.</p>'}</section>`:''}
+    ${reviewAllowed?`<section class="secure-card review-decision"><div class="card-eyebrow">אישור אנושי</div><h2>החלטת המנהל</h2><p>יש לבחור החלטה ולצרף הסבר מקצועי. הציון הוא מידע מסייע, לא אישור אוטומטי.</p><form id="review-form" novalidate><label class="secure-field"><span>החלטה</span><select id="decision"><option value="" selected disabled>בחירת החלטה</option><option value="accepted">מתאים</option><option value="rejected">לא מתאים</option><option value="follow_up">נדרשת בדיקה נוספת</option></select></label><label class="secure-field"><span>נימוק מקצועי (חובה)</span><textarea id="notes" rows="4" minlength="3" maxlength="1000" placeholder="מהם הנימוקים המקצועיים להחלטה?"></textarea></label><button type="submit" class="primary-btn">שמירת החלטה</button></form></section>`:c.status!=='submitted'?'<section class="secure-card pending-note"><p>עדיין לא ניתן להחליט על התאמה: הנבחן טרם הגיש את הבחינה.</p></section>':''}
+  `);
+  document.querySelector('#back').onclick=loadAdmin;
+  const f=document.querySelector('#review-form');if(!f)return;
+  f.onsubmit=async e=>{
+    e.preventDefault();const decision=document.querySelector('#decision').value,notes=document.querySelector('#notes').value.trim();
+    if(!decision){notice('בחרו החלטה לפני שמירה','error');document.querySelector('#decision').focus();return}
+    if(notes.length<3){notice('נדרש נימוק מקצועי בן שלושה תווים לפחות','error');document.querySelector('#notes').focus();return}
+    try{await api('admin-review','POST',{id:c.id,decision,notes});await loadAdmin();notice('ההחלטה נרשמה ונשמרה בתיק הבחינה')}catch(err){notice(err.message,'error')}
+  };
+}
+async function loadExam(){
+  const m=await api('worker-me');candidate=m.candidate;
+  if(candidate.status==='submitted'){
+    if(timer)clearInterval(timer);
+    root.innerHTML=frame('המבחן הוגש בהצלחה','הטופס הושלם ונשמר בדפדפן ההדגמה',`<section class="secure-card exam-done"><div class="done-mark">✓</div><h2>הבחינה של ${escape(candidate.name)} הושלמה</h2><div class="done-score">${candidate.correctCount} / 30 <small>תשובות נכונות · ${candidate.score}%</small></div><p>ההחלטה לגבי התאמה לתפקיד מתקבלת בנפרד על ידי מנהל מוסמך. אין כאן אישור העסקה אוטומטי.</p><button type="button" class="secondary-btn" id="exit-worker">התנתקות</button></section>`);
+    document.querySelector('#exit-worker').onclick=async()=>{try{await api('worker-logout','POST');candidate=null;location.hash='worker';startPage()}catch(err){notice(err.message,'error')}};return;
+  }
+  const r=await api('worker-questions');questions=r.questions;answers=r.answers||{};deadline=Date.now()+m.remainingSeconds*1000;
+  try{active=Math.max(0,Math.min(questions.length-1,Number(localStorage.getItem('afikim-demo-last-question-'+candidate.id))||0))}catch{active=0}
+  renderExam();
+}
+function renderExam(){
+  if(timer)clearInterval(timer);
+  const q=questions[active],answered=questions.filter(x=>Number.isInteger(answers[x.id])).length;
+  try{localStorage.setItem('afikim-demo-last-question-'+candidate.id,String(active))}catch{}
+  root.innerHTML=frame('מבחן מקצועי למבקרי תחבורה ציבורית',`נבחן/ת: ${escape(candidate.name)} · השאלות והתשובות נשמרות בדפדפן הדגמה זה`,`
+    <div class="exam-workspace">
+      <section class="secure-card exam-secure v4-exam"><div class="exam-top"><span class="exam-section">${escape(q.section)}</span><span id="clock" class="exam-clock" aria-label="זמן שנותר" role="timer">—</span></div>
+        <div class="exam-step"><span>שאלה <b>${active+1}</b> מתוך ${questions.length}</span><span class="answered-count">נענו ${answered} / ${questions.length}</span></div>
+        <div class="secure-progress" aria-label="התקדמות לפי שאלות שנענו"><span style="width:${answered/questions.length*100}%"></span></div>
+        <h2>${escape(q.question)}</h2>
+        <div class="answer-grid" role="group" aria-label="בחירת תשובה לשאלה ${active+1}">${q.options.map((opt,i)=>`<button type="button" data-choice="${i}" aria-pressed="${answers[q.id]===i?'true':'false'}" class="choice ${answers[q.id]===i?'selected':''}"><span>${'אבגד'[i]}</span>${escape(opt)}</button>`).join('')}</div>
+        <div class="form-actions exam-actions"><button id="prev" type="button" class="secondary-btn" ${active===0?'disabled':''}>שאלה קודמת</button><button id="next" type="button" class="primary-btn">${active===questions.length-1?'סיום ובדיקה':'השאלה הבאה'}</button></div>
+        <p class="secure-help exam-hint">ניתן לדלג ולחזור. בסיום תוצג בקשת אישור לפני הגשה.</p>
+      </section>
+      <aside class="exam-navigator"><div class="exam-nav-head"><strong>מעבר בין שאלות</strong><span>${answered} נענו</span></div><div class="exam-number-grid">${questions.map((item,i)=>`<button type="button" data-go="${i}" aria-label="שאלה ${i+1}${Number.isInteger(answers[item.id])?', נענתה':''}" aria-current="${i===active?'step':'false'}" class="${i===active?'current':''} ${Number.isInteger(answers[item.id])?'answered':''}">${i+1}</button>`).join('')}</div><div class="exam-nav-foot"><span><i class="legend-answered"></i> נענתה</span><span><i class="legend-current"></i> נוכחית</span></div><button type="button" id="exit-in-progress" class="secondary-btn exam-save-exit">יציאה ושמירת התקדמות</button></aside>
+    </div>
+  `);
+  const update=()=>{
+    const left=Math.max(0,Math.floor((deadline-Date.now())/1000));
+    const el=document.querySelector('#clock');if(el)el.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;
+    if(left===0){clearInterval(timer);timer=null;submit()}
+  };
+  update();timer=setInterval(update,1000);
+  document.querySelectorAll('[data-choice]').forEach(button=>button.onclick=async()=>{
+    const choice=Number(button.dataset.choice);document.querySelectorAll('[data-choice]').forEach(b=>b.disabled=true);
+    try{await api('worker-answer','POST',{questionId:q.id,selectedOption:choice});answers[q.id]=choice;renderExam()}catch(err){notice(err.message,'error');document.querySelectorAll('[data-choice]').forEach(b=>b.disabled=false)}
+  });
+  document.querySelectorAll('[data-go]').forEach(button=>button.onclick=()=>{active=Number(button.dataset.go);renderExam()});
+  document.querySelector('#prev').onclick=()=>{if(active>0){active--;renderExam()}};
+  document.querySelector('#next').onclick=()=>{
+    if(active<questions.length-1){active++;renderExam();return}
+    const missing=questions.filter(x=>!Number.isInteger(answers[x.id])).length;
+    if(document.querySelector('.exam-confirm'))return;
+    const box=document.createElement('div');box.className='exam-confirm';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','confirm-title');
+    box.innerHTML=`<div class="exam-confirm-panel"><h3 id="confirm-title">הגשת הבחינה</h3><p>${missing?`עדיין קיימות ${missing} שאלות ללא תשובה.`:'כל השאלות נענו.'} לאחר הגשה לא ניתן לשנות תשובות.</p><div><button id="cancel-submit" class="secondary-btn" type="button">חזרה למבחן</button><button id="confirm-submit" class="primary-btn" type="button">אישור והגשה</button></div></div>`;
+    root.append(box);document.querySelector('#cancel-submit').onclick=()=>{box.remove();document.querySelector('#next')?.focus()};document.querySelector('#confirm-submit').onclick=submit;document.querySelector('#cancel-submit').focus();
+    box.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();box.remove();document.querySelector('#next')?.focus()} if(e.key==='Tab'){const buttons=[...box.querySelectorAll('button')];const index=buttons.indexOf(document.activeElement);if(e.shiftKey&&index===0){e.preventDefault();buttons.at(-1).focus()}else if(!e.shiftKey&&index===buttons.length-1){e.preventDefault();buttons[0].focus()}}});
+  };
+  document.querySelector('#exit-in-progress').onclick=async()=>{
+    if(timer)clearInterval(timer);timer=null;
+    try{await api('worker-logout','POST');candidate=null;location.hash='worker';startPage();notice('התקדמות הבחינה נשמרה בדפדפן הזה')}catch(err){notice(err.message,'error')}
+  };
+}
 async function submit(){clearInterval(timer);try{await api('worker-submit','POST');await loadExam()}catch(err){notice(err.message,'error')}}
 async function init(){try{const m=await api('admin-me');admin=m.admin;location.hash='admin';await loadAdmin();return}catch{}try{const m=await api('worker-me');candidate=m.candidate;location.hash='worker';await loadExam();return}catch{}location.hash=location.hash==='#admin'?'admin':'worker';startPage()};init();
 
