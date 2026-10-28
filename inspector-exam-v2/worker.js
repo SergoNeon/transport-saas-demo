@@ -186,6 +186,6 @@ async function loadSession(){
   showLogin('שגיאה בחיבור למערכת. נא לנסות שוב.');
  }
 }
-root.addEventListener('click',event=>{const button=event.target.closest('button[data-go]');if(button&&root.contains(button))go(Number(button.dataset.go));});
+root.addEventListener('click',event=>{const button=event.target.closest('button[data-go]');if(button&&root.contains(button)){console.debug('AFIKIM_NAV',JSON.stringify({index:button.dataset.go,saving:state.saving,submitting:state.submitting,confirming:state.confirming,phase:state.phase}));go(Number(button.dataset.go));}});
 loadSession();
 })();
