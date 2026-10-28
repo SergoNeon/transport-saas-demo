@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-portal="admin">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#102c40">
+<meta name="description" content="מערכת ניהול בחינות — אלקטרה אפיקים">
+<title>אלקטרה אפיקים | פורטל ניהול בחינות</title>
+<link rel="stylesheet" href="./assets/portal.css">
+</head>
+<body class="admin-portal">
+<header class="topbar">
+ <a class="brand afikim-brand" href="./" aria-label="אלקטרה אפיקים">
+   <img class="afikim-logo" src="https://static.wixstatic.com/media/47704c_975a3cac4fce46458e85e6b6f2f13816~mv2.png" width="222" height="46" alt="אלקטרה אפיקים" referrerpolicy="no-referrer" onerror="this.hidden=true">
+   <span class="brand-copy"><strong>אלקטרה אפיקים</strong><small>מערכת ניהול והערכת עובדים</small></span>
+ </a>
+ <div class="header-side"><span class="training-chip demo-status">הדגמה · הנהלה</span></div>
+</header>
+<main class="main secure-main" id="main">
+ <aside class="demo-banner" role="note"><strong>פורטל ניהול · סביבת הדגמה</strong><span>תוצאות הבחינה ופרטי האחריות מוצגים בממשק הניהול בלבד. נתונים נשמרים בדפדפן הנוכחי בלבד; אין להזין פרטים אמיתיים.</span><button id="reset-demo" type="button">איפוס נתוני הדגמה</button></aside>
+ <div id="root" aria-live="off"><div class="loading-state" role="status">טוען מערכת...</div></div>
+</main>
+<footer class="site-footer portal-footer" id="portal-footer">
+ <div class="footer-identity"><strong>BRILL TEAM PROJECT</strong><span>המערכת פותחה על ידי BRILL TEAM PROJECT</span></div>
+ <nav class="footer-portals" aria-label="מעבר בין ממשקים"><a id="footer-worker" href="./">מעבר לכניסת נבחנים</a></nav>
+ <div class="footer-legal">אלקטרה אפיקים · סביבת הדגמה לא רשמית · TEST בלבד · אין להזין פרטים אמיתיים</div>
+</footer>
+<script defer src="./assets/questions.js"></script>
+<script defer src="./assets/demo-api.js"></script>
+<script defer src="./assets/admin.js"></script>
+<script defer>document.addEventListener('DOMContentLoaded',()=>{const button=document.getElementById('reset-demo');if(!button)return;button.addEventListener('click',()=>{if(document.querySelector('.demo-reset'))return;const div=document.createElement('div');div.className='demo-reset';div.innerHTML='<p>לאפס את נתוני ההדגמה בדפדפן הזה?</p><button id="reset-yes" type="button">אפס נתונים</button><button id="reset-no" type="button">ביטול</button>';document.querySelector('.demo-banner').append(div);div.querySelector('#reset-yes').onclick=()=>window.AfikimDemoInfo.reset();div.querySelector('#reset-no').onclick=()=>div.remove()})})</script>
+</body>
+</html>
