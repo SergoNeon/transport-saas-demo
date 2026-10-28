@@ -1,0 +1,58 @@
+import {Pool} from 'pg';
+import crypto from 'node:crypto';
+const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:true},max:4,connectionTimeoutMillis:8000});
+const H=s=>crypto.createHmac('sha256',process.env.EXAM_HMAC_SECRET||'').update(String(s)).digest('hex');
+const token=()=>crypto.randomBytes(32).toString('base64url');
+const hashPassword=(p,s)=>crypto.scryptSync(p,s,64).toString('hex');
+const eq=(a,b)=>{try{return crypto.timingSafeEqual(Buffer.from(a,'hex'),Buffer.from(b,'hex'))}catch{return false}};
+const cookie=(name,value,maxAge)=>`${name}=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+const clean=(v,n=120)=>String(v||'').trim().slice(0,n);
+const db=(sql,params)=>pool.query(sql,params);
+const fail=(res,code,message)=>res.status(code).json({error:message});
+const requestJSON=req=>typeof req.body==='object'&&req.body!==null?req.body:{};
+const validDoc=x=>/^[a-zA-Z0-9-]{5,24}$/.test(x);
+const getCookies=req=>Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=').slice(0,2)).filter(x=>x.length===2));
+async function admin(req){const s=getCookies(req).afikim_admin;if(!s)return null;const r=await db(`SELECT a.id,a.username,a.display_name,a.role,a.must_change_password FROM exam_staff_sessions x JOIN exam_admins a ON a.id=x.staff_id WHERE x.session_digest=$1 AND x.expires_at>now() AND a.is_active=true`,[H(s)]);return r.rows[0]||null}
+async function worker(req){const s=getCookies(req).afikim_worker;if(!s)return null;const r=await db(`SELECT c.* FROM exam_candidate_sessions s JOIN exam_candidates c ON c.id=s.candidate_id WHERE s.session_digest=$1 AND s.expires_at>now()`,[H(s)]);return r.rows[0]||null}
+async function limit(kind,val,max=12){const subject=H(val);const x=await db(`INSERT INTO exam_rate_limits(kind,subject_digest,hits,since_at) VALUES($1,$2,1,now()) ON CONFLICT(kind,subject_digest) DO UPDATE SET hits=CASE WHEN exam_rate_limits.since_at<now()-interval '15 minutes' THEN 1 ELSE exam_rate_limits.hits+1 END,since_at=CASE WHEN exam_rate_limits.since_at<now()-interval '15 minutes' THEN now() ELSE exam_rate_limits.since_at END RETURNING hits`,[kind,subject]);return x.rows[0].hits<=max}
+function summary(c){return {id:c.id,name:c.name,identityLast4:c.identity_last4,status:c.status,createdAt:c.created_at,expiresAt:c.expires_at,startedAt:c.started_at,submittedAt:c.submitted_at,correctCount:c.correct_count,score:c.correct_count===null?null:Math.round(c.correct_count/30*100),decision:c.reviewer_decision,decisionNotes:c.reviewer_notes,reviewedAt:c.reviewed_at}}
+export default async function handler(req,res){res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json; charset=utf-8');if(!process.env.EXAM_HMAC_SECRET||!process.env.DATABASE_URL)return fail(res,503,'המערכת עדיין אינה מוגדרת');
+const path=String(req.query.path||'').replace(/^\/+|\/+$/g,'') || req.url.split('?')[0].replace(/^\/api\/?/,'');const method=req.method;const b=requestJSON(req);
+try{
+if(path==='health'&&method==='GET'){const r=await db('SELECT (SELECT count(*) FROM exam_question_bank) AS questions');return res.status(200).json({ok:true,questions:Number(r.rows[0].questions),ready:Number(r.rows[0].questions)===30})}
+if(path==='setup'&&method==='POST'){
+if(!process.env.EXAM_SETUP_SECRET||clean(b.setupSecret,200)!==process.env.EXAM_SETUP_SECRET)return fail(res,403,'גישה נדחתה');
+const exists=await db('SELECT count(*)::integer n FROM exam_admins');if(exists.rows[0].n!==0)return fail(res,409,'המערכת כבר הוגדרה');
+const username=clean(b.username,40).toLowerCase(),password=String(b.password||''),name=clean(b.name);
+if(!/^[a-z0-9._-]{3,40}$/.test(username)||password.length<14||name.length<2)return fail(res,400,'פרטי הקמה אינם תקינים');
+const salt=crypto.randomBytes(16).toString('hex');await db('INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password) VALUES ($1,$2,$3,$4,$5,false)',[username,name,'owner',salt,hashPassword(password,salt)]);return res.json({ok:true})}
+if(path==='admin-login'&&method==='POST'){
+const username=clean(b.username,40).toLowerCase(),password=String(b.password||'');if(!(await limit('admin',username+':'+(req.headers['x-forwarded-for']||'').split(',')[0],8)))return fail(res,429,'יותר מדי ניסיונות. נסו שוב מאוחר יותר');
+const r=await db('SELECT * FROM exam_admins WHERE username=$1 AND is_active=true',[username]);const a=r.rows[0];if(!a||!eq(hashPassword(password,a.password_salt),a.password_hash))return fail(res,401,'שם משתמש או סיסמה שגויים');
+const t=token();await db(`INSERT INTO exam_staff_sessions(staff_id,session_digest,expires_at) VALUES($1,$2,now()+interval '8 hours')`,[a.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_admin',t,28800));return res.json({ok:true,name:a.display_name,role:a.role,mustChangePassword:a.must_change_password})}
+if(path==='admin-logout'&&method==='POST'){const s=getCookies(req).afikim_admin;if(s)await db('DELETE FROM exam_staff_sessions WHERE session_digest=$1',[H(s)]);res.setHeader('Set-Cookie',cookie('afikim_admin','',0));return res.json({ok:true})}
+if(path==='worker-logout'&&method==='POST'){const s=getCookies(req).afikim_worker;if(s)await db('DELETE FROM exam_candidate_sessions WHERE session_digest=$1',[H(s)]);res.setHeader('Set-Cookie',cookie('afikim_worker','',0));return res.json({ok:true})}
+if(path==='worker-login'&&method==='POST'){
+const code=clean(b.code,100).toUpperCase(),doc=clean(b.document,30).toUpperCase();if(!validDoc(doc)||code.length<12)return fail(res,400,'פרטי כניסה אינם תקינים');if(!(await limit('worker',code,10)))return fail(res,429,'יותר מדי ניסיונות');
+const r=await db('SELECT * FROM exam_candidates WHERE access_digest=$1 AND identity_digest=$2 AND expires_at>now()',[H(code),H(doc)]);const c=r.rows[0];if(!c||!['assigned','in_progress'].includes(c.status))return fail(res,401,'פרטי כניסה אינם תקינים או שהמבחן אינו זמין');
+await db(`UPDATE exam_candidates SET status='in_progress',started_at=COALESCE(started_at,now()) WHERE id=$1`,[c.id]);const t=token();await db(`DELETE FROM exam_candidate_sessions WHERE candidate_id=$1`,[c.id]);await db(`INSERT INTO exam_candidate_sessions(candidate_id,session_digest,expires_at) VALUES($1,$2,now()+interval '2 hours')`,[c.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_worker',t,7200));return res.json({ok:true,name:c.name})}
+const a=await admin(req);if(path==='admin-me'&&method==='GET')return a?res.json({admin:a}):fail(res,401,'נדרשת כניסה של מנהל');
+if(path==='admin-password'&&method==='POST'){
+if(!a)return fail(res,401,'נדרשת כניסה');const r=await db('SELECT * FROM exam_admins WHERE id=$1',[a.id]);const user=r.rows[0];if(!eq(hashPassword(String(b.current||''),user.password_salt),user.password_hash)||String(b.next||'').length<14)return fail(res,400,'סיסמה לא תקינה');const salt=crypto.randomBytes(16).toString('hex');await db('UPDATE exam_admins SET password_salt=$2,password_hash=$3,must_change_password=false WHERE id=$1',[a.id,salt,hashPassword(b.next,salt)]);await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1 AND session_digest<>$2',[a.id,H(getCookies(req).afikim_admin)]);return res.json({ok:true})}
+if(path==='admin-list'&&method==='GET'){
+if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const r=await db('SELECT * FROM exam_candidates ORDER BY created_at DESC LIMIT 200');return res.json({items:r.rows.map(summary)})}
+if(path==='admin-assign'&&method==='POST'){
+if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const name=clean(b.name),doc=clean(b.document,30).toUpperCase();if(name.length<2||!validDoc(doc))return fail(res,400,'נדרש שם מלא ומספר תעודה תקין');const code=crypto.randomBytes(18).toString('hex').toUpperCase();const r=await db(`INSERT INTO exam_candidates(name,identity_digest,identity_last4,access_digest,expires_at,assigned_by) VALUES($1,$2,$3,$4,now()+interval '7 days',$5) RETURNING *`,[name,H(doc),doc.slice(-4),H(code),a.id]);await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action) VALUES($1,$2,'assigned')`,[a.id,r.rows[0].id]);return res.json({candidate:summary(r.rows[0]),code})}
+if(path==='admin-review'&&method==='POST'){
+if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const id=clean(b.id,64),decision=clean(b.decision,30),notes=clean(b.notes,1000);if(!['accepted','rejected','follow_up'].includes(decision)||notes.length<3)return fail(res,400,'נדרשים החלטה ונימוק');
+const r=await db(`UPDATE exam_candidates SET reviewer_decision=$2,reviewer_notes=$3,reviewed_by=$4,reviewed_at=now() WHERE id=$1 AND status='submitted' AND reviewer_decision IS NULL RETURNING *`,[id,decision,notes,a.id]);if(!r.rowCount)return fail(res,409,'הבדיקה טרם הוגשה או שכבר התקבלה החלטה');await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action,detail) VALUES($1,$2,'reviewed',jsonb_build_object('decision',$3))`,[a.id,id,decision]);return res.json({candidate:summary(r.rows[0])})}
+const w=await worker(req);if(path==='worker-me'&&method==='GET')return w?res.json({candidate:summary(w),remainingSeconds:w.started_at?Math.max(0,Math.floor((new Date(w.started_at).getTime()+w.time_limit_seconds*1000-Date.now())/1000)):w.time_limit_seconds}):fail(res,401,'נדרשת כניסה למבחן');
+if(path==='worker-questions'&&method==='GET'){
+if(!w)return fail(res,401,'נדרשת כניסה');if(w.status==='submitted')return fail(res,409,'המבחן הוגש');const r=await db('SELECT id,section,prompt,choices FROM exam_question_bank ORDER BY id');const x=await db('SELECT question_id,selected_option FROM exam_candidate_answers WHERE candidate_id=$1',[w.id]);return res.json({questions:r.rows.map(q=>({id:q.id,section:q.section,question:q.prompt,options:q.choices})),answers:Object.fromEntries(x.rows.map(q=>[q.question_id,q.selected_option]))})}
+if(path==='worker-answer'&&method==='POST'){
+if(!w||w.status!=='in_progress')return fail(res,403,'המבחן אינו פעיל');const q=Number(b.questionId),choice=Number(b.selectedOption);if(!Number.isInteger(q)||q<1||q>30||!Number.isInteger(choice)||choice<0||choice>3)return fail(res,400,'תשובה אינה תקינה');const x=await db(`SELECT id FROM exam_candidates WHERE id=$1 AND status='in_progress' AND now()<started_at+(time_limit_seconds*interval '1 second') AND expires_at>now()`,[w.id]);if(!x.rowCount)return fail(res,409,'הזמן הסתיים');await db('INSERT INTO exam_candidate_answers(candidate_id,question_id,selected_option) VALUES($1,$2,$3) ON CONFLICT(candidate_id,question_id) DO UPDATE SET selected_option=$3,updated_at=now()',[w.id,q,choice]);return res.json({ok:true})}
+if(path==='worker-submit'&&method==='POST'){
+if(!w)return fail(res,401,'נדרשת כניסה');if(w.status==='submitted')return res.json({candidate:summary(w)});if(w.status!=='in_progress')return fail(res,409,'מבחן אינו פעיל');const correct=await db(`SELECT count(*)::integer n FROM exam_candidate_answers a JOIN exam_question_bank q ON q.id=a.question_id WHERE a.candidate_id=$1 AND a.selected_option=q.answer_index`,[w.id]);const r=await db(`UPDATE exam_candidates SET status='submitted',submitted_at=now(),correct_count=$2,submitted_reason=CASE WHEN now()>started_at+(time_limit_seconds*interval '1 second') THEN 'timeout' ELSE 'submitted' END WHERE id=$1 AND status='in_progress' RETURNING *`,[w.id,correct.rows[0].n]);if(!r.rowCount)return fail(res,409,'המבחן כבר הוגש');return res.json({candidate:summary(r.rows[0])})}
+return fail(res,404,'נתיב לא נמצא');
+}catch(err){console.error('exam_api_error',err?.code||'server_error');return fail(res,500,'שגיאת שרת. נסו שוב מאוחר יותר')}
+}
