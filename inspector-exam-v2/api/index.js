@@ -3,10 +3,19 @@ import crypto from 'node:crypto';
 const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.DATABASE_SSL==='disable'?false:{rejectUnauthorized:true},max:4,connectionTimeoutMillis:8000});
 const H=s=>crypto.createHmac('sha256',process.env.EXAM_HMAC_SECRET||'').update(String(s)).digest('hex');
 const token=()=>crypto.randomBytes(32).toString('base64url');
-const hashPassword=(p,s)=>crypto.scryptSync(p,s,64).toString('hex');
+// Production PIN hashes use a root-only pepper, separate from the encrypted database.
+const passwordPepper=process.env.EXAM_PASSWORD_PEPPER||'';
+const hashPassword=(p,s)=>passwordPepper.length>=32
+ ? 'v2$'+crypto.scryptSync(String(p)+passwordPepper,s,64).toString('hex')
+ : crypto.scryptSync(String(p),s,64).toString('hex');
+const verifyPassword=(p,s,stored)=>typeof stored==='string'&&(
+ stored.startsWith('v2$')
+ ? passwordPepper.length>=32&&eq(crypto.scryptSync(String(p)+passwordPepper,s,64).toString('hex'),stored.slice(3))
+ : eq(crypto.scryptSync(String(p),s,64).toString('hex'),stored)
+);
 // Numeric 6-24 digit PINs are enabled only on the isolated synthetic-data staging server.
 // Personnel production must retain a stronger policy until a security/privacy review.
-const passwordRule=()=>process.env.EXAM_TEST_ONLY==='1'
+const passwordRule=()=>process.env.EXAM_TEST_ONLY==='1'||(process.env.EXAM_PIN_WITH_PEPPER==='1'&&passwordPepper.length>=32)
   ? {type:'digits',minLength:6,maxLength:24}
   : {type:'text',minLength:14,maxLength:128};
 const validAdminPassword=p=>typeof p==='string'&&(
