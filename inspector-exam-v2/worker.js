@@ -149,7 +149,7 @@ function showConfirmation(){
  <div class="worker-dialog-actions"><button type="button" class="worker-secondary" id="worker-cancel-submit">חזרה לשאלות</button><button type="button" class="worker-primary" id="worker-confirm-submit">הגשת המבחן</button></div>
  </section>`;
  root.append(layer);
- const cancel=()=>{layer.remove();state.confirming=false;root.querySelector('#worker-next')?.focus();};
+ const cancel=()=>{layer.remove();state.confirming=false;renderQuestion();root.querySelector('#worker-next')?.focus();};
  layer.querySelector('#worker-cancel-submit').addEventListener('click',cancel);
  layer.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();cancel();}});
  layer.querySelector('#worker-confirm-submit').addEventListener('click',()=>finalize(false));
