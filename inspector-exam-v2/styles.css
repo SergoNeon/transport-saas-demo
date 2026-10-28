@@ -422,3 +422,17 @@ main.auth-view{display:flex;align-items:center;justify-content:center}
   .admin-portal .auth-overview{padding:24px 20px}
   .admin-portal .auth-card.secure-card{padding:23px 19px}
 }
+
+/* Staff password management — reuse canonical form and button patterns */
+.secure-toolbar-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}
+.password-change-card{max-width:510px}
+.password-change-card .form-actions{align-items:center}
+.password-change-card .form-actions button{min-height:47px}
+.password-change-card .form-actions .primary-btn{flex:1;min-width:168px}
+.password-change-card .secure-help{font-size:12px;line-height:1.7;margin-top:17px}
+@media(max-width:560px){
+  .secure-toolbar-actions{justify-content:stretch;width:100%}
+  .secure-toolbar-actions button{flex:1}
+  .password-change-card .form-actions{flex-direction:column;align-items:stretch}
+  .password-change-card .form-actions button{width:100%}
+}
