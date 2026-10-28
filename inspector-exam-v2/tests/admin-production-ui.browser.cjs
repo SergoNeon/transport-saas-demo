@@ -54,6 +54,8 @@ const assertNoOverflow=async(p,width,where)=>{
   await owner.locator('#manager-staff-create button[type=submit]').click();
   await owner.locator('#manager-staff-rows').getByText('מנהל בדיקת ממשק').waitFor({timeout:12000});
   const m=await pool.query('SELECT id FROM exam_admins WHERE username=$1',[managerNumber]);assert.equal(m.rowCount,1);managerId=m.rows[0].id;
+  const rights=owner.locator('#manager-staff-rows [data-staff]').last();
+  assert.equal(await rights.isVisible(),true,'Owner must see mobile staff access-control button');
   await owner.screenshot({path:'/tmp/afikim-manager-staff-390.png',fullPage:true});
   console.log('PASS owner creates a manager with role-based access');
   const mc=await browser.newContext({viewport:{width:390,height:850}});
@@ -68,6 +70,8 @@ const assertNoOverflow=async(p,width,where)=>{
   await manager.locator('#manager-change-password button[type=submit]').click();
   await manager.locator('#manager-table-body').waitFor({timeout:12000});
   assert.equal(await manager.locator('[data-panel="staff"]').count(),0,'Manager must not have user-role management');
+  const rejectedStaff=await mc.request.get(ADMIN+'/api/admin-staff-list');
+  assert.equal(rejectedStaff.status(),403,'Non-owner must be forbidden by API');
   await assertNoOverflow(manager,390,'manager dashboard');
   console.log('PASS manager first-login PIN change then authorized workspace');
   await manager.locator('[data-panel="assign"]').last().click();
@@ -111,6 +115,10 @@ const assertNoOverflow=async(p,width,where)=>{
   assert.ok(summary.includes('החלטת מנהל'));
   await manager.screenshot({path:'/tmp/afikim-manager-review-390.png',fullPage:true});
   await assertNoOverflow(manager,390,'manager review');
+  await manager.setViewportSize({width:320,height:844});
+  await assertNoOverflow(manager,320,'compact manager review');
+  await manager.screenshot({path:'/tmp/afikim-manager-review-320-top.png',fullPage:false});
+  await manager.setViewportSize({width:390,height:850});
   const wrong=await manager.locator('.manager-answer-card.is-wrong').count();
   const correct=await manager.locator('.manager-answer-card.is-correct').count();
   assert.ok(wrong>0&&correct>0,'Need both right and wrong answers');
