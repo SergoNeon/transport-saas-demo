@@ -100,9 +100,9 @@
       <div class="welcome">
         <section class="hero" aria-labelledby="welcome-title">
           <div>
-            <div class="eyebrow"><span class="eyebrow-line"></span> מרכז ידע והכשרה למבקרים</div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> אלקטרה אפיקים | הכשרת מבקרים</div>
             <h1 id="welcome-title">ביקורת טובה מתחילה <em>בידע מדויק.</em></h1>
-            <p class="hero-description">מבחן ידע מקצועי למבקרי תחבורה ציבורית. תרחישים מעולם העבודה, שירות לנוסע, בטיחות, תיקוף וסמכויות — בחוויה פשוטה ונוחה מכל מכשיר.</p>
+            <p class="hero-description">מבחן ידע מקצועי למבקרי אלקטרה אפיקים. תרחישים מעולם העבודה, שירות לנוסע, בטיחות, תיקוף וסמכויות — בחוויה פשוטה ונוחה מכל מכשיר.</p>
           </div>
           <div class="hero-bottom" aria-label="פרטי הבחינה">
             <div class="hero-metric"><b>30</b><small>שאלות במבחן</small></div>
@@ -144,7 +144,7 @@
     app.innerHTML = `
       <div class="exam-page">
         <div class="exam-heading">
-          <div class="exam-heading-copy"><div class="mini-label">מבחן הכשרה מקצועי</div><h1>מבחן ידע למבקרים</h1><p>נבחן/ת: <strong>${escapeHtml(state.name)}</strong>${state.employeeId ? ` · מס' עובד: ${escapeHtml(state.employeeId)}` : ''}</p></div>
+          <div class="exam-heading-copy"><div class="mini-label">אלקטרה אפיקים · מבחן הכשרה</div><h1>מבחן ידע למבקרים</h1><p>נבחן/ת: <strong>${escapeHtml(state.name)}</strong>${state.employeeId ? ` · מס' עובד: ${escapeHtml(state.employeeId)}` : ''}</p></div>
           <button class="outline-btn" type="button" data-action="exit">יציאה ושמירה</button>
         </div>
         <div class="exam-grid">
