@@ -1,6 +1,6 @@
 import {Pool} from 'pg';
 import crypto from 'node:crypto';
-const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:true},max:4,connectionTimeoutMillis:8000});
+const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.DATABASE_SSL==='disable'?false:{rejectUnauthorized:true},max:4,connectionTimeoutMillis:8000});
 const H=s=>crypto.createHmac('sha256',process.env.EXAM_HMAC_SECRET||'').update(String(s)).digest('hex');
 const token=()=>crypto.randomBytes(32).toString('base64url');
 const hashPassword=(p,s)=>crypto.scryptSync(p,s,64).toString('hex');
@@ -10,7 +10,7 @@ const clean=(v,n=120)=>String(v||'').trim().slice(0,n);
 const db=(sql,params)=>pool.query(sql,params);
 const fail=(res,code,message)=>res.status(code).json({error:message});
 const requestJSON=req=>typeof req.body==='object'&&req.body!==null?req.body:{};
-const validDoc=x=>/^\d{9}$/.test(x);
+const validDoc=x=>/^\d{9}$/.test(x)&&(process.env.EXAM_TEST_ONLY!=='1'||/^000000\d{3}$/.test(x));
 const sameOrigin=req=>{const origin=req.headers.origin;if(!origin)return req.headers['sec-fetch-site']!=='cross-site';try{return new URL(origin).origin===new URL('https://'+req.headers.host).origin}catch{return false}};
 const getCookies=req=>Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=').slice(0,2)).filter(x=>x.length===2));
 async function admin(req){const s=getCookies(req).afikim_admin;if(!s)return null;const r=await db(`SELECT a.id,a.username,a.display_name,a.role,a.must_change_password FROM exam_staff_sessions x JOIN exam_admins a ON a.id=x.staff_id WHERE x.session_digest=$1 AND x.expires_at>now() AND a.is_active=true`,[H(s)]);return r.rows[0]||null}
@@ -40,6 +40,29 @@ await db(`UPDATE exam_candidates SET status='in_progress',started_at=COALESCE(st
 const a=await admin(req);if(path==='admin-me'&&method==='GET')return a?res.json({admin:a}):fail(res,401,'נדרשת כניסה של מנהל');
 if(path==='admin-password'&&method==='POST'){
 if(!a)return fail(res,401,'נדרשת כניסה');const r=await db('SELECT * FROM exam_admins WHERE id=$1',[a.id]);const user=r.rows[0];if(!eq(hashPassword(String(b.current||''),user.password_salt),user.password_hash)||String(b.next||'').length<14)return fail(res,400,'סיסמה לא תקינה');const salt=crypto.randomBytes(16).toString('hex');await db('UPDATE exam_admins SET password_salt=$2,password_hash=$3,must_change_password=false WHERE id=$1',[a.id,salt,hashPassword(b.next,salt)]);await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1 AND session_digest<>$2',[a.id,H(getCookies(req).afikim_admin)]);return res.json({ok:true})}
+if(path==='admin-staff-list'&&method==='GET'){
+if(!a||a.role!=='owner'||a.must_change_password)return fail(res,403,'גישה למנהל המערכת בלבד');
+const r=await db("SELECT id,username,display_name,role,is_active,created_at FROM exam_admins ORDER BY created_at");
+return res.json({items:r.rows.map(x=>({id:x.id,staffNumber:x.username,display_name:x.display_name,role:x.role,is_active:x.is_active,createdAt:x.created_at}))})}
+if(path==='admin-staff-create'&&method==='POST'){
+if(!a||a.role!=='owner'||a.must_change_password)return fail(res,403,'גישה למנהל המערכת בלבד');
+const username=clean(b.staffNumber||b.username,40),name=clean(b.display_name||b.name,90),password=String(b.password||''),role=clean(b.role,30);
+if(!/^\d{4,10}$/.test(username)||name.length<2||password.length<14||password.length>128||!['manager','hr'].includes(role))return fail(res,400,'פרטי איש צוות אינם תקינים');
+const salt=crypto.randomBytes(16).toString('hex');
+try{
+const r=await db("INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password,is_active) VALUES($1,$2,$3,$4,$5,true,true) RETURNING id,username,display_name,role,is_active,created_at",[username,name,role,salt,hashPassword(password,salt)]);
+await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_created',jsonb_build_object('created',$2))",[a.id,r.rows[0].id]);
+return res.json({staff:{id:r.rows[0].id,staffNumber:r.rows[0].username,display_name:r.rows[0].display_name,role:r.rows[0].role,is_active:true}});
+}catch(e){if(e.code==='23505')return fail(res,409,'המספר האישי כבר רשום');throw e}}
+if(path==='admin-staff-toggle'&&method==='POST'){
+if(!a||a.role!=='owner'||a.must_change_password)return fail(res,403,'גישה למנהל המערכת בלבד');
+const id=clean(b.id,64),active=b.active===true;
+if(!/^[a-f0-9-]{36}$/i.test(id))return fail(res,400,'מזהה לא תקין');
+const r=await db("UPDATE exam_admins SET is_active=$2 WHERE id=$1 AND role<>'owner' RETURNING id,username,display_name,role,is_active",[id,active]);
+if(!r.rowCount)return fail(res,404,'לא נמצא');
+if(!active)await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1',[id]);
+await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_toggled',jsonb_build_object('target',$2,'active',$3))",[a.id,id,active]);
+return res.json({staff:{id:r.rows[0].id,staffNumber:r.rows[0].username,display_name:r.rows[0].display_name,role:r.rows[0].role,is_active:r.rows[0].is_active}})}
 if(path==='admin-list'&&method==='GET'){
 if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const r=await db('SELECT * FROM exam_candidates WHERE ($1::text = \'owner\' OR assigned_by = $2) ORDER BY created_at DESC LIMIT 200',[a.role,a.id]);return res.json({items:r.rows.map(summary)})}
 if(path==='admin-assign'&&method==='POST'){
