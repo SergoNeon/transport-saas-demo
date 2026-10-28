@@ -51,7 +51,7 @@ if(!/^\d{4,10}$/.test(username)||name.length<2||password.length<14||password.len
 const salt=crypto.randomBytes(16).toString('hex');
 try{
 const r=await db("INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password,is_active) VALUES($1,$2,$3,$4,$5,true,true) RETURNING id,username,display_name,role,is_active,created_at",[username,name,role,salt,hashPassword(password,salt)]);
-await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_created',jsonb_build_object('created',$2))",[a.id,r.rows[0].id]);
+await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_created',jsonb_build_object('created',$2::text))",[a.id,r.rows[0].id]);
 return res.json({staff:{id:r.rows[0].id,staffNumber:r.rows[0].username,display_name:r.rows[0].display_name,role:r.rows[0].role,is_active:true}});
 }catch(e){if(e.code==='23505')return fail(res,409,'המספר האישי כבר רשום');throw e}}
 if(path==='admin-staff-toggle'&&method==='POST'){
@@ -61,7 +61,7 @@ if(!/^[a-f0-9-]{36}$/i.test(id))return fail(res,400,'מזהה לא תקין');
 const r=await db("UPDATE exam_admins SET is_active=$2 WHERE id=$1 AND role<>'owner' RETURNING id,username,display_name,role,is_active",[id,active]);
 if(!r.rowCount)return fail(res,404,'לא נמצא');
 if(!active)await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1',[id]);
-await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_toggled',jsonb_build_object('target',$2,'active',$3))",[a.id,id,active]);
+await db("INSERT INTO exam_review_audit(staff_id,action,detail) VALUES($1,'staff_toggled',jsonb_build_object('target',$2::uuid,'active',$3::boolean))",[a.id,id,active]);
 return res.json({staff:{id:r.rows[0].id,staffNumber:r.rows[0].username,display_name:r.rows[0].display_name,role:r.rows[0].role,is_active:r.rows[0].is_active}})}
 if(path==='admin-list'&&method==='GET'){
 if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const r=await db('SELECT * FROM exam_candidates WHERE ($1::text = \'owner\' OR assigned_by = $2) ORDER BY created_at DESC LIMIT 200',[a.role,a.id]);return res.json({items:r.rows.map(summary)})}
@@ -77,7 +77,7 @@ const questions=c.status==='submitted'?await db(`SELECT q.id,q.section,q.prompt,
 return res.json({candidate:summary(c),questions:questions.rows.map(q=>({id:q.id,section:q.section,question:q.prompt,options:q.choices,correctOption:q.answer_index,selectedOption:q.selected_option,correct:q.selected_option===q.answer_index,explanation:q.explanation}))})}
 if(path==='admin-review'&&method==='POST'){
 if(!a||a.must_change_password)return fail(res,403,'נדרשת הרשאת מנהל');const id=clean(b.id,64),decision=clean(b.decision,30),notes=clean(b.notes,1000);if(!['accepted','rejected','follow_up'].includes(decision)||notes.length<3)return fail(res,400,'נדרשים החלטה ונימוק');
-const r=await db(`UPDATE exam_candidates SET reviewer_decision=$2,reviewer_notes=$3,reviewed_by=$4,reviewed_at=now() WHERE id=$1 AND status='submitted' AND reviewer_decision IS NULL AND ($5::text='owner' OR assigned_by=$4) RETURNING *`,[id,decision,notes,a.id,a.role]);if(!r.rowCount)return fail(res,409,'הבדיקה טרם הוגשה או שכבר התקבלה החלטה');await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action,detail) VALUES($1,$2,'reviewed',jsonb_build_object('decision',$3))`,[a.id,id,decision]);return res.json({candidate:summary(r.rows[0])})}
+const r=await db(`UPDATE exam_candidates SET reviewer_decision=$2,reviewer_notes=$3,reviewed_by=$4,reviewed_at=now() WHERE id=$1 AND status='submitted' AND reviewer_decision IS NULL AND ($5::text='owner' OR assigned_by=$4) RETURNING *`,[id,decision,notes,a.id,a.role]);if(!r.rowCount)return fail(res,409,'הבדיקה טרם הוגשה או שכבר התקבלה החלטה');await db(`INSERT INTO exam_review_audit(staff_id,candidate_id,action,detail) VALUES($1,$2,'reviewed',jsonb_build_object('decision',$3::text))`,[a.id,id,decision]);return res.json({candidate:summary(r.rows[0])})}
 const w=await worker(req);if(path==='worker-me'&&method==='GET')return w?res.json({candidate:{id:w.id,name:w.name,status:w.status,submittedAt:w.submitted_at,startedAt:w.started_at},remainingSeconds:w.started_at?Math.max(0,Math.floor((new Date(w.started_at).getTime()+w.time_limit_seconds*1000-Date.now())/1000)):w.time_limit_seconds}):fail(res,401,'נדרשת כניסה למבחן');
 if(path==='worker-questions'&&method==='GET'){
 if(!w)return fail(res,401,'נדרשת כניסה');if(w.status!=='in_progress'||!w.started_at||new Date(w.started_at).getTime()+w.time_limit_seconds*1000<=Date.now()||new Date(w.expires_at).getTime()<=Date.now())return fail(res,409,'המבחן אינו פעיל');const r=await db('SELECT id,section,prompt,choices FROM exam_question_bank ORDER BY id');const x=await db('SELECT question_id,selected_option FROM exam_candidate_answers WHERE candidate_id=$1',[w.id]);return res.json({questions:r.rows.map(q=>({id:q.id,section:q.section,question:q.prompt,options:q.choices})),answers:Object.fromEntries(x.rows.map(q=>[q.question_id,q.selected_option]))})}
