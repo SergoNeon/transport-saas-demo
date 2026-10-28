@@ -17,13 +17,13 @@ function startPage(){
     field('תעודת זהות (9 ספרות)','login-doc','text','inputmode="numeric" pattern="[0-9]{9}" maxlength="9" autocomplete="off" dir="ltr"');
   root.innerHTML=`<div class='auth-layout'>
     <section class='auth-overview' aria-labelledby='auth-title'>
-      <div class='auth-overline'>אלקטרה אפיקים <span aria-hidden='true'>/</span> מערכת בחינות</div>
+      <div class='auth-overline'>אלקטרה אפיקים <span aria-hidden='true'>/</span> ${isAdmin?'פורטל ניהול':'מבחן עובדים'}</div>
       <h1 id='auth-title'>${title}</h1>
       <p>${description}</p>
       <div class='auth-overview-bottom'><span aria-hidden='true' class='auth-route-line'></span>הדרכה ובחינות לעובדי תחבורה ציבורית</div>
     </section>
     <section class='secure-card auth-card' aria-label='פרטי כניסה'>
-      <div class='auth-card-title'><h2>כניסה למערכת</h2><p>${subtitle}</p></div>
+      <div class='auth-card-title'><h2>${isAdmin?'כניסה לפורטל הניהול':'כניסה לבחינה'}</h2><p>${subtitle}</p></div>
       <form id='entry'>${fields}${btn(isAdmin?'כניסה למערכת הניהול':'כניסה למבחן')}</form>
       <p class='auth-data-note'>סביבת בדיקות בלבד. אין להזין נתוני עובדים אמיתיים.</p>
     </section>
