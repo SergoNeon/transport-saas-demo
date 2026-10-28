@@ -1,0 +1,1 @@
+{"name":"afikim-inspector-exams","private":true,"version":"2.0.0","type":"module","dependencies":{"pg":"8.16.3"},"engines":{"node":">=22"}}
