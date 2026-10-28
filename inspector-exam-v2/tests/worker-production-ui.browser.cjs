@@ -72,13 +72,14 @@ async function call(path,method,body,cookie=''){
   assert.ok((await worker.locator('.worker-progress-info').innerText()).includes('1 תשובות'));
   console.log('PASS answer persists after browser reload');
   for(const width of [320,390,1440]){
-   const page=await context.newPage({viewport:{width,height:844}});
+   const page=await context.newPage();await page.setViewportSize({width,height:844});
    page.on('pageerror',e=>errors.push(e.message));
    await page.goto(BASE,{waitUntil:'networkidle'});
    await page.locator('.worker-question-card').waitFor({timeout:10000});
    const x=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
-   assert.ok(x.scroll<=x.client,'exam overflow at '+width+' '+JSON.stringify(x));
    await page.screenshot({path:output+'exam-'+width+'.png',fullPage:true});
+   if(x.scroll>x.client){const offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>({tag:el.tagName,class:el.className?.baseVal||el.className||'',scroll:el.scrollWidth,client:el.clientWidth,right:Math.round(el.getBoundingClientRect().right),left:Math.round(el.getBoundingClientRect().left)})).filter(v=>v.right>window.innerWidth+1||v.left<-2||v.scroll>v.client+50).slice(0,22));console.log('OVERFLOW_ELEMENTS',width,JSON.stringify(offenders));}
+   assert.ok(x.scroll<=x.client,'exam overflow at '+width+' '+JSON.stringify(x));
    console.log('PASS active exam viewport='+width+' no horizontal scroll');
    await page.close();
   }
