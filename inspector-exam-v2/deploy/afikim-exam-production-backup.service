@@ -1,0 +1,15 @@
+[Unit]
+Description=Encrypted daily production backup of Electra Afikim PostgreSQL
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=root
+Environment=AFIKIM_BACKUP_DATABASE=afikim_exam_prod
+Environment=AFIKIM_BACKUP_DIR=/var/backups/afikim-exam-production
+Environment=AFIKIM_BACKUP_KEY=/etc/afikim-exam/production-backup.pass
+ExecStart=/bin/bash /opt/afikim-exam-production/inspector-exam-v2/deploy/backup.sh
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
