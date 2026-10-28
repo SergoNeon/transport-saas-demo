@@ -631,6 +631,46 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
  .exam-confirm-panel{padding:20px}
 }
 
+
+/* v5: restrained manager portal, footer-only worker entrance, role accounts */
+.secure-tabs{display:none!important}
+.secure-main:has(#entry) #root{max-width:650px;margin:0 auto}
+.secure-main:has(#entry) .secure-heading{text-align:center;margin:26px 0 20px}
+.secure-main:has(#entry) .secure-heading h1{font-size:clamp(28px,5vw,40px)}
+.secure-main:has(#entry) .secure-card{max-width:540px;margin:auto}
+.portal-footer{display:grid;grid-template-columns:1fr auto;gap:12px 30px;align-items:center;padding:25px 0 34px!important}
+.footer-identity{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#536e7b}
+.footer-identity strong{font-size:17px;color:var(--navy);letter-spacing:1px}
+.footer-identity small{color:#91a2aa}
+.footer-portals{display:flex;gap:11px;flex-wrap:wrap;justify-content:flex-end}
+.footer-portals a{display:inline-flex;min-height:46px;align-items:center;justify-content:center;border:1px solid #cfdfe5;border-radius:11px;padding:10px 16px;font-size:13px;font-weight:800;color:#123b4b;background:#fff}
+.footer-portals a[href="#worker"]{background:#e8f6f2;border-color:#b9dfd4;color:#0d6a5b}
+.footer-legal{grid-column:1/-1;font-size:11px;color:#85959e;border-top:1px solid #e2e9ed;padding-top:14px}
+.staff-identity{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid #e2eaee;border-radius:13px;padding:13px 19px;margin:0 0 15px}
+.staff-identity>span{font-size:16px;font-weight:850}
+.staff-identity small{font-size:12px;color:#587083}
+.staff-identity b{font-size:13px;unicode-bidi:isolate}
+.staff-management{margin:24px 0!important;max-width:none!important}
+.staff-management>p{font-size:13px;max-width:750px}
+.staff-access-grid{display:grid;grid-template-columns:minmax(270px,350px) minmax(0,1fr);gap:25px;margin-top:20px}
+.staff-access-grid h3{font-size:16px;margin:0 0 16px}
+.staff-access-grid form{border:1px solid #e4eaed;border-radius:13px;padding:20px;background:#f9fcfc;gap:12px}
+.staff-access-grid form .primary-btn{width:100%}
+.staff-account-list{min-width:0;border:1px solid #e4eaed;border-radius:13px;padding:18px;background:#fff}
+.staff-account-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #edf1f3;gap:12px}
+.staff-account-row:last-child{border-bottom:0}
+.staff-account-name{display:flex;flex-direction:column;gap:5px;min-width:0}
+.staff-account-name strong{font-size:13px;color:#193749;overflow-wrap:anywhere}
+.staff-account-name small{font-size:12px;color:#718492}
+.staff-account-actions{display:flex;gap:8px;align-items:center}
+.staff-toggle{font-size:12px;padding:7px 10px;min-height:35px}
+.staff-account-actions .status-pill{font-size:11px;white-space:nowrap}
+.responsible-line{font-size:11px;color:#7b8d9a;display:block;margin-top:4px;white-space:normal}
+.worker-receipt{border:1px solid #bfe0d4;background:#eff9f5;padding:18px;border-radius:14px;display:flex;flex-direction:column;gap:8px;text-align:center;margin:15px 0 20px}
+.worker-receipt strong{font-size:16px;color:#0e6d5b}
+.worker-receipt span{font-size:13px;color:#44635e}
+@media(max-width:820px){.staff-access-grid{grid-template-columns:1fr}.staff-identity{align-items:flex-start;flex-direction:column}}
+@media(max-width:600px){.portal-footer{grid-template-columns:1fr;gap:15px;padding:24px 0!important}.footer-portals{justify-content:stretch}.footer-portals a{flex:1}.footer-legal{grid-column:1}.staff-account-row{align-items:flex-start;gap:8px}.staff-account-actions{align-items:flex-end;flex-direction:column}.staff-management{padding:18px 13px}.staff-access-grid form,.staff-account-list{padding:14px}.secure-main:has(#entry) .secure-heading{margin-top:10px}}
 </style>
 </head><body>
 <header class="topbar">
@@ -644,7 +684,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   <aside class="demo-banner" role="note"><strong>גרסת הדגמה — ללא שימוש בפרטים אישיים</strong><span>כאן אפשר לבדוק את תהליך המנהל, הנבחן וקבלת ההחלטה. כל הנתונים נשמרים רק בדפדפן הנוכחי ואינם משותפים למכשירים אחרים.</span><button id="reset-demo" type="button">איפוס ההדגמה</button></aside>
   <div id="root" aria-live="off"><div class="loading-state">טוען מערכת...</div></div>
 </main>
-<footer class="site-footer"><span>אלקטרה אפיקים · מערכת בחינות לעובדים</span><span>הדגמה לא רשמית · אינה מיועדת לאישורי העסקה או למסמכים אמיתיים</span></footer>
+<footer class="site-footer portal-footer" id="portal-footer"><div class="footer-identity"><strong>BRILL</strong><span>המערכת פותחה על ידי BRILL</span><small>Electra Afikim &middot; Demo</small></div><div class="footer-portals"><a id="footer-admin" href="#admin">כניסה לניהול</a><a id="footer-worker" href="#worker">כניסת עובד לבחינה</a></div><div class="footer-legal">נתוני הדגמה בלבד &middot; TEST only &middot; No real personal data</div></footer>
 <script>
 /* מקור: מבחן מבקרי תחבורה ציבורית, 30 שאלות */
 window.EXAM_QUESTIONS = [
@@ -1051,6 +1091,8 @@ window.EXAM_QUESTIONS = [
   const originNow = () => Date.now();
   const err = (message) => { throw Error(message); };
   const sampleManager = { id: 'demo-manager', username: 'demo', display_name: 'מנהל הדגמה', role: 'owner', must_change_password: false };
+  const roleLabel = role => ({owner:'בעלים',manager:'מנהל',hr:'משאבי אנוש'}[role]||role);
+  const safeStaff = x => ({id:x.id,staffNumber:x.staffNumber,display_name:x.display_name,role:x.role,jobTitle:roleLabel(x.role),is_active:x.is_active,createdAt:x.createdAt});
   const getSession = () => { try { return JSON.parse(sessionStorage.getItem(SESSION) || 'null'); } catch { return null; } };
   const setSession = (value) => { if (value) sessionStorage.setItem(SESSION, JSON.stringify(value)); else sessionStorage.removeItem(SESSION); };
   const load = () => { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { return null; } };
@@ -1065,6 +1107,15 @@ window.EXAM_QUESTIONS = [
     createdAt: c.createdAt, expiresAt: c.expiresAt, startedAt: c.startedAt, submittedAt: c.submittedAt,
     correctCount: c.correctCount, score: c.correctCount === null ? null : Math.round(c.correctCount / 30 * 100),
     decision: c.decision, decisionNotes: c.decisionNotes, reviewedAt: c.reviewedAt });
+  const ownerRecord = async () => ({id:'demo-manager',staffNumber:'000001',display_name:'מנהל (DEMO)',role:'owner',is_active:true,createdAt:new Date().toISOString(),passwordDigest:await checksum('staff:000001:demo2026')});
+  async function ensureStaff(data){
+    if(!Array.isArray(data.staff)||!data.staff.length){
+      data.staff=[await ownerRecord()];
+      data.candidates.forEach(c=>{if(!c.assignedBy)c.assignedBy='demo-manager'});
+      save(data);
+    }
+    return data;
+  }
   async function init() {
     let data = load();
     if (data && data.version === 2 && Array.isArray(data.candidates)) {
@@ -1074,7 +1125,7 @@ window.EXAM_QUESTIONS = [
         save(data);
       }
       data.history ||= [];
-      return data;
+      return ensureStaff(data);
     }
     const date = new Date().toISOString();
     const assignedDoc = 'TEST654321', assignedCode = 'DEMO2026WORKER';
@@ -1089,9 +1140,13 @@ window.EXAM_QUESTIONS = [
         status: 'assigned', createdAt: date, expiresAt: new Date(originNow()+7*864e5).toISOString(),
         startedAt: null, submittedAt: null, correctCount: null, decision: null, decisionNotes: '', reviewedAt: null, answers: {} }
     ], history: [] };
-    save(data);return data;
+    await ensureStaff(data);save(data);return data;
   }
-  const isAdmin = () => getSession()?.role === 'admin';
+  const getAdmin = data => {const s=getSession();return s?.role==='admin'?data.staff.find(x=>x.id===s.id && x.is_active):null;};
+  const isAdmin = data => Boolean(getAdmin(data));
+  const isOwner = data => getAdmin(data)?.role==='owner';
+  const canView = (data,c) => isOwner(data) || c.assignedBy===getAdmin(data)?.id;
+  const adminSummary = (data,c) => ({...summarize(c),responsible:data.staff.find(x=>x.id===c.assignedBy)?.display_name||'בעלים'});
   const getWorker = data => {const s=getSession();return s?.role==='worker' ? data.candidates.find(x=>x.id===s.id) : null;};
   const answerBank = () => Array.isArray(window.EXAM_QUESTIONS) ? window.EXAM_QUESTIONS : [];
   window.AfikimDemoAPI = async (path, method='GET', body) => {
@@ -1101,52 +1156,83 @@ window.EXAM_QUESTIONS = [
     const name = String(path || '');
     if (name === 'health') return { ok: true, ready: answerBank().length===30, questions: answerBank().length, demo: true };
     if (name === 'admin-login' && method==='POST') {
-      if (b.username !== 'demo' || b.password !== 'demo2026') err('פרטי הדגמה לא תקינים. שם משתמש: demo, סיסמה: demo2026');
-      setSession({role:'admin'});
-      return {ok:true,name:sampleManager.display_name,role:sampleManager.role,mustChangePassword:false};
+      const staffNumber=String(b.staffNumber||b.username||'').trim()==='demo'?'000001':String(b.staffNumber||b.username||'').trim();
+      const staff=d.staff.find(x=>x.staffNumber===staffNumber && x.is_active);
+      if(!staff || staff.passwordDigest!==await checksum('staff:'+staffNumber+':'+String(b.password||'')))err('אין הרשאה לבצע פעולה זו');
+      setSession({role:'admin',id:staff.id});return {admin:safeStaff(staff)};
     }
-    if (name === 'admin-me' && method==='GET') { if(!isAdmin()) err('נדרשת כניסה של מנהל'); return {admin:sampleManager}; }
+    if (name === 'admin-me' && method==='GET') {
+      const staff=getAdmin(d);if(!staff)err('אין הרשאה לבצע פעולה זו');return {admin:safeStaff(staff)};
+    }
     if (name === 'admin-logout' && method==='POST') {setSession(null);return {ok:true};}
+
+    if (name === 'admin-staff-list' && method==='GET') {
+      if(!isOwner(d))err('אין הרשאה לבצע פעולה זו');
+      return {items:d.staff.map(safeStaff).sort((a,b)=>a.staffNumber.localeCompare(b.staffNumber))};
+    }
+    if (name === 'admin-staff-create' && method==='POST') {
+      if(!isOwner(d))err('אין הרשאה לבצע פעולה זו');
+      const staffNumber=String(b.staffNumber||'').trim();
+      const display_name=String(b.display_name||'').trim();
+      const password=String(b.password||'');const role=String(b.role||'');
+      if(!/^\d{4,10}$/.test(staffNumber))err('מספר אישי חייב להכיל 4 עד 10 ספרות');
+      if(d.staff.some(x=>x.staffNumber===staffNumber))err('מספר אישי זה כבר קיים');
+      if(display_name.length<2 || display_name.length>90)err('שם האחראי קצר מדי');
+      if(password.length<8||password.length>128)err('סיסמה חייבת להכיל לפחות 8 תווים');
+      if(!['manager','hr'].includes(role))err('ניתן לשייך רק מנהל או משאבי אנוש');
+      const staff={id:crypto.randomUUID(),staffNumber,display_name,role,is_active:true,
+        createdAt:new Date().toISOString(),passwordDigest:await checksum('staff:'+staffNumber+':'+password)};
+      d.staff.push(staff);d.history.push({action:'staff_created',id:staff.id,actorId:getAdmin(d).id,time:staff.createdAt});save(d);
+      return {staff:safeStaff(staff)};
+    }
+    if (name === 'admin-staff-toggle' && method==='POST') {
+      if(!isOwner(d))err('אין הרשאה לבצע פעולה זו');
+      const staff=d.staff.find(x=>x.id===b.id);
+      if(!staff || staff.role==='owner')err('אין הרשאה לבצע פעולה זו');
+      staff.is_active=Boolean(b.active);
+      d.history.push({action:staff.is_active?'staff_enabled':'staff_disabled',id:staff.id,actorId:getAdmin(d).id,time:new Date().toISOString()});save(d);
+      return {staff:safeStaff(staff)};
+    }
     if (name === 'admin-list' && method==='GET') {
-      if(!isAdmin()) err('הכניסה למערכת הניהול נדרשת');
-      return {items:d.candidates.map(summarize).reverse()};
+      if(!isAdmin(d)) err('הכניסה למערכת הניהול נדרשת');
+      return {items:d.candidates.filter(c=>canView(d,c)).map(c=>adminSummary(d,c)).reverse()};
     }
     if (name === 'admin-assign' && method==='POST') {
-      if(!isAdmin()) err('נדרשת כניסת מנהל');
+      if(!isAdmin(d)) err('נדרשת כניסת מנהל');
       const workerName=String(b.name||'').trim(), doc=String(b.document||'').toUpperCase().trim();
       if(workerName.length<2||workerName.length>120)err('יש להזין שם מלא לדוגמה');
       if(!docValid(doc))err('בדמו מותר להזין אך ורק מספר דמיוני שמתחיל ב-TEST ומכיל 8–22 תווים');
       const code='DEMO-'+crypto.randomUUID().replace(/-/g,'').slice(0,18).toUpperCase();
-      const c={ id:crypto.randomUUID(),name:workerName,identityLast4:doc.slice(-4),
+      const c={ id:crypto.randomUUID(),name:workerName,assignedBy:getAdmin(d).id,identityLast4:doc.slice(-4),
         identityDigest:await checksum(doc),codeDigest:await checksum(code),status:'assigned',
         createdAt:new Date().toISOString(),expiresAt:new Date(originNow()+7*864e5).toISOString(),
         startedAt:null,submittedAt:null,correctCount:null,decision:null,decisionNotes:'',reviewedAt:null,answers:{} };
-      d.candidates.push(c);d.history.push({action:'assigned',id:c.id,time:new Date().toISOString()});save(d);
-      return {candidate:summarize(c),code};
+      d.candidates.push(c);d.history.push({action:'assigned',id:c.id,actorId:getAdmin(d).id,time:new Date().toISOString()});save(d);
+      return {candidate:adminSummary(d,c),code};
     }
     if (name === 'admin-detail' && method==='GET') {
-      if(!isAdmin())err('נדרשת כניסת מנהל');
+      if(!isAdmin(d))err('נדרשת כניסת מנהל');
       const c=d.candidates.find(x=>x.id===b.id);
-      if(!c)err('המבחן לא נמצא');
+      if(!c || !canView(d,c))err('אין הרשאה לבצע פעולה זו');
       const questions=c.status==='submitted'?answerBank().map(q=>{
         const selectedOption=Number.isInteger(c.answers?.[q.id])?c.answers[q.id]:null;
         return {id:q.id,section:q.section,question:q.question,options:q.options,
           selectedOption,correctOption:q.answer,correct:selectedOption===q.answer,explanation:q.explanation};
       }):[];
-      return {candidate:summarize(c),questions};
+      return {candidate:adminSummary(d,c),questions};
     }
     if (name === 'admin-history' && method==='GET') {
-      if(!isAdmin())err('נדרשת כניסת מנהל');
-      return {items:d.history.slice(-10).reverse().map(e=>({...e,candidateName:d.candidates.find(c=>c.id===e.id)?.name||'נבחן'}))};
+      if(!isAdmin(d))err('נדרשת כניסת מנהל');
+      return {items:d.history.filter(e=>isOwner(d)||e.actorId===getAdmin(d).id||d.candidates.some(c=>c.id===e.id&&canView(d,c))).slice(-10).reverse().map(e=>({...e,candidateName:d.candidates.find(c=>c.id===e.id)?.name||d.staff.find(a=>a.id===e.id)?.display_name||'DEMO'}))};
     }
     if (name === 'admin-review' && method==='POST') {
-      if(!isAdmin())err('נדרשת כניסת מנהל');
+      if(!isAdmin(d))err('נדרשת כניסת מנהל');
       const c=d.candidates.find(x=>x.id===b.id);
-      if(!c || c.status!=='submitted' || c.decision)err('לא ניתן לקבל החלטה למבחן זה');
+      if(!c || !canView(d,c) || c.status!=='submitted' || c.decision)err('לא ניתן לקבל החלטה למבחן זה');
       if(!['accepted','rejected','follow_up'].includes(b.decision) || String(b.notes||'').trim().length<3)err('נדרשת החלטה עם נימוק בן 3 תווים לפחות');
       c.decision=b.decision;c.decisionNotes=String(b.notes).trim().slice(0,1000);c.reviewedAt=new Date().toISOString();
-      d.history.push({action:'reviewed',id:c.id,time:c.reviewedAt,decision:c.decision});save(d);
-      return {candidate:summarize(c)};
+      d.history.push({action:'reviewed',id:c.id,actorId:getAdmin(d).id,time:c.reviewedAt,decision:c.decision});save(d);
+      return {candidate:adminSummary(d,c)};
     }
     if (name === 'admin-password' && method==='POST') err('שינוי סיסמה זמין בגרסה השרתית בלבד');
     if (name === 'worker-login' && method==='POST') {
@@ -1162,7 +1248,7 @@ window.EXAM_QUESTIONS = [
     if (name === 'worker-logout' && method==='POST') {setSession(null);return {ok:true};}
     if (name === 'worker-me' && method==='GET') {
       const c=getWorker(d);if(!c)err('נדרשת כניסה למבחן');
-      return {candidate:summarize(c),remainingSeconds:Math.max(0,Math.floor((new Date(c.startedAt).getTime()+40*60*1000-originNow())/1000))};
+      return {candidate:{id:c.id,name:c.name,status:c.status,submittedAt:c.submittedAt,startedAt:c.startedAt},remainingSeconds:Math.max(0,Math.floor((new Date(c.startedAt).getTime()+40*60*1000-originNow())/1000))};
     }
     if (name === 'worker-questions' && method==='GET') {
       const c=getWorker(d);
@@ -1184,11 +1270,11 @@ window.EXAM_QUESTIONS = [
         c.correctCount=answerBank().reduce((a,q)=>a+(c.answers?.[q.id]===q.answer?1:0),0);
         c.submittedAt=new Date().toISOString();c.status='submitted';d.history.push({action:'submitted',id:c.id,time:c.submittedAt});save(d);
       }
-      return {candidate:summarize(c)};
+      return {submitted:true};
     }
     err('פעולה זו אינה זמינה בסביבת ההדגמה');
   };
-  window.AfikimDemoInfo={manager:{username:'demo',password:'demo2026'},worker:{code:'DEMO2026WORKER',document:'TEST654321'},reset:()=>{localStorage.removeItem(STORE);sessionStorage.removeItem(SESSION);location.reload()}};
+  window.AfikimDemoInfo={manager:{staffNumber:'000001',username:'demo',password:'demo2026'},worker:{code:'DEMO2026WORKER',document:'TEST654321'},reset:()=>{localStorage.removeItem(STORE);sessionStorage.removeItem(SESSION);location.reload()}};
 })();
 
 </script>
@@ -1201,7 +1287,7 @@ const frame=(title,sub,inner)=>`<section class="secure-heading"><span class="sec
 const btn=(label,type='submit')=>`<button type="${type}" class="primary-btn">${label}</button>`;
 const field=(label,id,type='text',extra='')=>`<label class="secure-field"><span>${label}</span><input id="${id}" type="${type}" required ${extra}></label>`;
 function tabs(){return `<nav class="secure-tabs"><button id="nav-worker" class="${location.hash==='#worker'?'active':''}" type="button">כניסת עובד</button><button id="nav-admin" class="${location.hash==='#admin'?'active':''}" type="button">כניסת מנהל</button></nav>`}
-function startPage(){const isAdmin=location.hash==='#admin';root.innerHTML=frame(isAdmin?'כניסה למערכת הניהול':'בחינה אישית לעובד',isAdmin?'גישה למנהלים ולאחראים מורשים בלבד':'היכנסו עם קוד המבחן שקיבלתם ממנהל ופרטי המסמך שנרשמו בעת יצירת המבחן (TEST בלבד)',`${tabs()}<div class="secure-card"><form id="entry">${isAdmin?field('שם משתמש','login-user','text','autocomplete="username"')+field('סיסמה','login-pass','password','autocomplete="current-password"'):field('קוד הזמנה','login-code','text','autocomplete="off"')+field('מספר תעודה / דרכון','login-doc','text','autocomplete="off"')}${btn(isAdmin?'כניסה לניהול':'כניסה למבחן')}</form><p class="secure-help">הדגמה בדפדפן הזה בלבד. אין להקליד שמות או מספרי מסמך אמיתיים. רק נתוני TEST מותרים.</p><div class="demo-quick"><strong>פרטי כניסה להדגמה</strong><span>${isAdmin?'מנהל: demo · סיסמה: demo2026':'עובד: DEMO2026WORKER · תעודה: TEST654321'}</span><button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div></div>`);document.querySelector('#demo-fill').onclick=()=>{if(isAdmin){document.querySelector('#login-user').value='demo';document.querySelector('#login-pass').value='demo2026'}else{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'}};document.querySelector('#nav-worker').onclick=()=>{location.hash='worker';startPage()};document.querySelector('#nav-admin').onclick=()=>{location.hash='admin';startPage()};document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{if(isAdmin){const x=await api('admin-login','POST',{username:document.querySelector('#login-user').value,password:document.querySelector('#login-pass').value});admin=x;await loadAdmin()}else{const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()}}catch(e){notice(e.message,'error')}}}
+function startPage(){const isAdmin=location.hash==='#admin';root.innerHTML=frame(isAdmin?'כניסה למערכת הניהול':'בחינה אישית לעובד',isAdmin?'גישה למנהלים ולאחראים מורשים בלבד':'היכנסו עם קוד המבחן שקיבלתם ממנהל ופרטי המסמך שנרשמו בעת יצירת המבחן (TEST בלבד)',`${tabs()}<div class="secure-card"><form id="entry">${isAdmin?field('מספר עובד אישי','login-user','text','autocomplete="username"')+field('סיסמה','login-pass','password','autocomplete="current-password"'):field('קוד הזמנה','login-code','text','autocomplete="off"')+field('מספר תעודה / דרכון','login-doc','text','autocomplete="off"')}${btn(isAdmin?'כניסה לניהול':'כניסה למבחן')}</form><p class="secure-help">הדגמה בדפדפן הזה בלבד. אין להקליד שמות או מספרי מסמך אמיתיים. רק נתוני TEST מותרים.</p><div class="demo-quick"><strong>פרטי כניסה להדגמה</strong><span>${isAdmin?'אחראי: 000001 · סיסמה: demo2026':'עובד: DEMO2026WORKER · תעודה: TEST654321'}</span><button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div></div>`);document.querySelector('#demo-fill').onclick=()=>{if(isAdmin){document.querySelector('#login-user').value='000001';document.querySelector('#login-pass').value='demo2026'}else{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'}};document.querySelector('#nav-worker').onclick=()=>{location.hash='worker';startPage()};document.querySelector('#nav-admin').onclick=()=>{location.hash='admin';startPage()};document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{if(isAdmin){const x=await api('admin-login','POST',{username:document.querySelector('#login-user').value,password:document.querySelector('#login-pass').value});admin=x;await loadAdmin()}else{const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()}}catch(e){notice(e.message,'error')}}}
 async function loadAdmin(){
   if(timer){clearInterval(timer);timer=null;}
   const me=await api('admin-me');admin=me.admin;
@@ -1215,7 +1301,7 @@ async function loadAdmin(){
   const translate={assigned:'הוזמן',in_progress:'בבחינה',submitted:'הוגש',accepted:'מתאים',rejected:'לא מתאים',follow_up:'בדיקה נוספת'};
   const kpi=(count,label,kind)=>`<div class="staff-kpi kpi-${kind}"><strong>${count}</strong><span>${label}</span></div>`;
   root.innerHTML=frame('ניהול בחינות עובדים','ממשק מנהל · יצירת מבחנים, מעקב ובדיקת תוצאות',`
-    <div class="secure-toolbar operations-toolbar"><div class="secure-stats">${kpi(counters.total,'סה״כ בחינות','total')}${kpi(counters.ongoing,'הוזמנו / בבחינה','running')}${kpi(counters.waiting,'ממתינים להחלטה','waiting')}${kpi(counters.reviewed,'החלטות שהתקבלו','reviewed')}</div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div>
+    <div class="staff-identity"><span>${escape(admin.display_name)}</span><small>${escape(admin.jobTitle||admin.role)} · מספר אישי <b dir="ltr">${escape(admin.staffNumber||'—')}</b></small></div><div class="secure-toolbar operations-toolbar"><div class="secure-stats">${kpi(counters.total,'סה״כ בחינות','total')}${kpi(counters.ongoing,'הוזמנו / בבחינה','running')}${kpi(counters.waiting,'ממתינים להחלטה','waiting')}${kpi(counters.reviewed,'החלטות שהתקבלו','reviewed')}</div><button id="logout-admin" type="button" class="secondary-btn">התנתקות</button></div>
     <div class="secure-grid">
       <section class="secure-card staff-create-card"><div class="card-eyebrow">פתיחת מבחן</div><h2>הזמנת עובד לבחינה</h2><p>הזינו שם ופרטי מסמך פיקטיביים בלבד. קוד ההזמנה יוצג לאחר היצירה.</p>
         <form id="assign" novalidate>${field('שם מלא של העובד','worker-name','text','autocomplete="off" maxlength="120"')}${field('מספר תעודה / דרכון (TEST בלבד)','worker-doc','text','autocomplete="off" maxlength="22"')}${btn('יצירת הזמנה')}</form><div id="invitation"></div>
@@ -1226,6 +1312,9 @@ async function loadAdmin(){
         <div class="list-pagination"><span id="list-range" aria-live="polite"></span><div class="pagination-controls"><button type="button" class="secondary-btn" id="page-prev">הקודם</button><button type="button" class="secondary-btn" id="page-next">הבא</button></div></div>
       </section>
     </div>
+    ${admin.role==='owner'?`<section class="secure-card staff-management" id="staff-management"><div class="card-eyebrow">בעלים / ניהול אחראים והרשאות</div><h2>ניהול אחראים והרשאות</h2><p>נתוני הדגמה בלבד. שירות למנהלים מורשים בלבד</p>
+      <div class="staff-access-grid"><form id="staff-create" novalidate><h3>רישום אחראי חדש</h3><label class="secure-field"><span>שם מלא</span><input id="staff-name" required minlength="2" maxlength="90" autocomplete="off" placeholder="TEST" /></label><label class="secure-field"><span>מספר אישי (4-10)</span><input id="staff-number" required inputmode="numeric" pattern="[0-9]{4,10}" maxlength="10" autocomplete="off" placeholder="000245" /></label><label class="secure-field"><span>תפקיד</span><select id="staff-role" required><option value="manager">מנהל</option><option value="hr">משאבי אנוש</option></select></label><label class="secure-field"><span>סיסמה זמנית</span><input id="staff-password" type="password" minlength="8" maxlength="128" required autocomplete="new-password" placeholder="8+" /></label><button class="primary-btn" type="submit">רישום אחראי חדש</button></form><div class="staff-account-list"><h3>אחראים רשומים</h3><div id="staff-rows" aria-live="polite"></div></div></div>
+    </section>`:''}
     <section class="audit-panel"><div><div class="card-eyebrow">תיעוד פעולות</div><h2>פעילות אחרונה</h2></div><div id="activity-list" class="activity-list"></div></section>
   `);
   let page=0;const pageSize=8;
@@ -1236,7 +1325,7 @@ async function loadAdmin(){
     const pages=Math.max(1,Math.ceil(matching.length/pageSize));page=Math.min(page,pages-1);
     const pageRows=matching.slice(page*pageSize,(page+1)*pageSize);
     const tbody=document.querySelector('#candidate-rows');
-    tbody.innerHTML=pageRows.map(x=>`<tr><td class="person-cell"><strong>${escape(x.name)}</strong></td><td class="masked" dir="ltr">••••${escape(x.identityLast4)}</td><td><span class="status-pill status-${x.status}">${translate[x.status]||escape(x.status)}</span></td><td class="score-cell">${x.score==null?'—':`${x.correctCount}/30 · ${x.score}%`}</td><td>${x.decision?`<span class="decision-pill decision-${x.decision}">${translate[x.decision]}</span>`:'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td><button type="button" class="small-action" data-open="${x.id}">${x.decision?'פרטי החלטה':x.status==='submitted'?'בדיקה והחלטה':'פרטי בחינה'}</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty-state">אין נבחנים התואמים לסינון. ניתן לשנות את החיפוש או לבחור מצב אחר.</td></tr>';
+    tbody.innerHTML=pageRows.map(x=>`<tr><td class="person-cell"><strong>${escape(x.name)}</strong><small class="responsible-line">אחראי: ${escape(x.responsible||'—')}</small></td><td class="masked" dir="ltr">••••${escape(x.identityLast4)}</td><td><span class="status-pill status-${x.status}">${translate[x.status]||escape(x.status)}</span></td><td class="score-cell">${x.score==null?'—':`${x.correctCount}/30 · ${x.score}%`}</td><td>${x.decision?`<span class="decision-pill decision-${x.decision}">${translate[x.decision]}</span>`:'ממתין'}</td><td>${new Date(x.createdAt).toLocaleDateString('he-IL')}</td><td><button type="button" class="small-action" data-open="${x.id}">${x.decision?'פרטי החלטה':x.status==='submitted'?'בדיקה והחלטה':'פרטי בחינה'}</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty-state">אין נבחנים התואמים לסינון. ניתן לשנות את החיפוש או לבחור מצב אחר.</td></tr>';
     const head=[...document.querySelectorAll('.staff-record-table thead th')];
     tbody.querySelectorAll('tr').forEach(tr=>tr.querySelectorAll('td').forEach((td,i)=>{if(!td.hasAttribute('colspan'))td.dataset.label=head[i]?.textContent||''}));
     tbody.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openRecord(rows.find(x=>x.id===b.dataset.open)));
@@ -1270,6 +1359,34 @@ async function loadAdmin(){
     const holder=document.querySelector('#activity-list');
     if(holder)holder.innerHTML=hist.items.length?hist.items.map(e=>`<div class="activity-row"><span class="activity-indicator"></span><div><strong>${types[e.action]||'עדכון במערכת'}</strong><span>${escape(e.candidateName||'עובד לדוגמה')}</span></div><time>${new Date(e.time).toLocaleString('he-IL')}</time></div>`).join(''):'<p class="activity-empty">פעולות חדשות יוצגו כאן לאחר יצירת בחינה או שמירת החלטה.</p>';
   }catch{const holder=document.querySelector('#activity-list');if(holder)holder.textContent='רישום הפעילות אינו זמין כעת.'}
+  if(admin.role==='owner')await renderStaffManagement();
+}
+
+async function renderStaffManagement(){
+  const holder=document.querySelector('#staff-rows');if(!holder)return;
+  try{
+    const x=await api('admin-staff-list');
+    holder.innerHTML=x.items.map(a=>`<div class="staff-account-row"><div class="staff-account-name"><strong>${escape(a.display_name)}</strong><small>${escape(a.jobTitle)} · <b dir="ltr">${escape(a.staffNumber)}</b></small></div><div class="staff-account-actions"><span class="status-pill ${a.is_active?'status-submitted':'status-assigned'}">${a.is_active?'פעיל':'מושבת'}</span>${a.role==='owner'?'':`<button type="button" class="secondary-btn staff-toggle" data-staff-id="${a.id}" data-action="${a.is_active?'off':'on'}">${a.is_active?'השבתה':'הפעלה'}</button>`}</div></div>`).join('')||'<p>אין אחראים רשומים</p>';
+    holder.querySelectorAll('[data-staff-id]').forEach(button=>button.onclick=()=>{
+      const selected=x.items.find(s=>s.id===button.dataset.staffId);const active=button.dataset.action==='on';
+      const box=document.createElement('div');box.className='exam-confirm';box.setAttribute('role','alertdialog');box.setAttribute('aria-modal','true');
+      box.innerHTML=`<div class="exam-confirm-panel"><h3>${active?'הפעלה':'השבתה'} · ${escape(selected.display_name)}</h3><p>${active?'פעיל':'מושבת'} · ${escape(selected.jobTitle)} · ${escape(selected.staffNumber)}</p><div><button id="cancel-staff-toggle" class="secondary-btn" type="button">\u05d1\u05d9\u05d8\u05d5\u05dc</button><button id="confirm-staff-toggle" class="primary-btn" type="button">${active?'הפעלה':'השבתה'}</button></div></div>`;
+      document.querySelector('#root').append(box);
+      const close=()=>{box.remove();button.focus()};
+      box.querySelector('#cancel-staff-toggle').onclick=close;
+      box.querySelector('#confirm-staff-toggle').onclick=async()=>{try{await api('admin-staff-toggle','POST',{id:selected.id,active});box.remove();await renderStaffManagement();notice('ההרשאה הונפקה ונשמרה בדפדפן ההדגמה')}catch(err){close();notice(err.message,'error')}};
+      box.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}if(e.key==='Tab'){const btns=[...box.querySelectorAll('button')];const i=btns.indexOf(document.activeElement);if((e.shiftKey&&i===0)||(!e.shiftKey&&i===btns.length-1)){e.preventDefault();btns[e.shiftKey?btns.length-1:0].focus()}}});
+      box.querySelector('#cancel-staff-toggle').focus();
+    });
+  }catch(err){holder.textContent=err.message;}
+  const f=document.querySelector('#staff-create');if(!f)return;
+  f.onsubmit=async e=>{
+    e.preventDefault();const display_name=document.querySelector('#staff-name').value.trim(),staffNumber=document.querySelector('#staff-number').value.trim(),password=document.querySelector('#staff-password').value,role=document.querySelector('#staff-role').value;
+    if(display_name.length<2){notice('שם האחראי קצר מדי','error');return}
+    if(!/^\d{4,10}$/.test(staffNumber)){notice('מספר אישי חייב להכיל 4 עד 10 ספרות','error');return}
+    if(password.length<8){notice('סיסמה חייבת להכיל לפחות 8 תווים','error');return}
+    try{await api('admin-staff-create','POST',{display_name,staffNumber,role,password});f.reset();await renderStaffManagement();notice('האחראי נרשם בהצלחה')}catch(err){notice(err.message,'error')}
+  };
 }
 
 async function openRecord(x){
@@ -1283,7 +1400,7 @@ async function openRecord(x){
   const answers=detail.questions||[];
   root.innerHTML=frame('תיק הבחינה',`נבחן/ת: ${escape(c.name)} · בדיקה מקצועית לפני החלטה`,`
     <div class="record-toolbar"><button id="back" type="button" class="secondary-btn">חזרה לרשימת נבחנים</button><span class="status-pill status-${c.status}">${translate[c.status]||escape(c.status)}</span></div>
-    <section class="secure-card record-summary"><div><div class="card-eyebrow">פרטי בחינה</div><h2>${escape(c.name)}</h2><p>מספר מסמך מוסתר: <span dir="ltr">••••${escape(c.identityLast4)}</span></p></div><div class="record-facts"><div><small>ציון</small><strong>${c.correctCount==null?'טרם הוגש':`${c.correctCount} / 30 · ${c.score}%`}</strong></div><div><small>נוצר</small><strong>${when(c.createdAt)}</strong></div><div><small>הוגש</small><strong>${when(c.submittedAt)}</strong></div><div><small>החלטה</small><strong>${translate[c.decision]||'ממתין להחלטה'}</strong></div></div></section>
+    <section class="secure-card record-summary"><div><div class="card-eyebrow">פרטי בחינה</div><h2>${escape(c.name)}</h2><p>מספר מסמך מוסתר: <span dir="ltr">••••${escape(c.identityLast4)}</span></p><p class="responsible-line">אחראי: ${escape(c.responsible||'—')}</p></div><div class="record-facts"><div><small>ציון</small><strong>${c.correctCount==null?'טרם הוגש':`${c.correctCount} / 30 · ${c.score}%`}</strong></div><div><small>נוצר</small><strong>${when(c.createdAt)}</strong></div><div><small>הוגש</small><strong>${when(c.submittedAt)}</strong></div><div><small>החלטה</small><strong>${translate[c.decision]||'ממתין להחלטה'}</strong></div></div></section>
     ${c.decision?`<section class="secure-card decision-readonly"><div class="card-eyebrow">החלטה מתועדת</div><h2>${translate[c.decision]}</h2><p>${escape(c.decisionNotes||'לא צורף נימוק')}</p><small>תאריך החלטה: ${when(c.reviewedAt)}</small></section>`:''}
     ${c.status==='submitted'?`<section class="secure-card review-questions"><div class="card-eyebrow">בדיקת המבחן</div><h2>פירוט תשובות · 30 שאלות</h2><p>פירוט זה מוצג למנהל בלבד. ציון הבחינה אינו קובע אוטומטית התאמה לעבודה.</p>${answers.length?`<div class="review-answers">${answers.map((q,i)=>`<details class="review-answer"><summary><span>שאלה ${i+1}</span><strong>${escape(q.question)}</strong><span class="response-tag ${q.selectedOption==null?'response-none':q.correct?'response-right':'response-wrong'}">${q.selectedOption==null?'אין נתון':q.correct?'נכון':'לא נכון'}</span></summary><div class="review-answer-body"><p>תשובת העובד: <strong>${q.selectedOption==null?'לא נענתה':escape(q.options[q.selectedOption])}</strong></p><p>התשובה הנכונה: <strong>${escape(q.options[q.correctOption])}</strong></p><p class="answer-explanation">${escape(q.explanation)}</p></div></details>`).join('')}</div>`:'<p class="activity-empty">נתוני שאלות מפורטים אינם זמינים לרשומת הדוגמה הזאת.</p>'}</section>`:''}
     ${reviewAllowed?`<section class="secure-card review-decision"><div class="card-eyebrow">אישור אנושי</div><h2>החלטת המנהל</h2><p>יש לבחור החלטה ולצרף הסבר מקצועי. הציון הוא מידע מסייע, לא אישור אוטומטי.</p><form id="review-form" novalidate><label class="secure-field"><span>החלטה</span><select id="decision"><option value="" selected disabled>בחירת החלטה</option><option value="accepted">מתאים</option><option value="rejected">לא מתאים</option><option value="follow_up">נדרשת בדיקה נוספת</option></select></label><label class="secure-field"><span>נימוק מקצועי (חובה)</span><textarea id="notes" rows="4" minlength="3" maxlength="1000" placeholder="מהם הנימוקים המקצועיים להחלטה?"></textarea></label><button type="submit" class="primary-btn">שמירת החלטה</button></form></section>`:c.status!=='submitted'?'<section class="secure-card pending-note"><p>עדיין לא ניתן להחליט על התאמה: הנבחן טרם הגיש את הבחינה.</p></section>':''}
@@ -1301,7 +1418,7 @@ async function loadExam(){
   const m=await api('worker-me');candidate=m.candidate;
   if(candidate.status==='submitted'){
     if(timer)clearInterval(timer);
-    root.innerHTML=frame('המבחן הוגש בהצלחה','הטופס הושלם ונשמר בדפדפן ההדגמה',`<section class="secure-card exam-done"><div class="done-mark">✓</div><h2>הבחינה של ${escape(candidate.name)} הושלמה</h2><div class="done-score">${candidate.correctCount} / 30 <small>תשובות נכונות · ${candidate.score}%</small></div><p>ההחלטה לגבי התאמה לתפקיד מתקבלת בנפרד על ידי מנהל מוסמך. אין כאן אישור העסקה אוטומטי.</p><button type="button" class="secondary-btn" id="exit-worker">התנתקות</button></section>`);
+    root.innerHTML=frame('המבחן הוגש בהצלחה','הטופס הושלם ונשמר בדפדפן ההדגמה',`<section class="secure-card exam-done"><div class="done-mark">✓</div><h2>הבחינה של ${escape(candidate.name)} הושלמה</h2><div class="worker-receipt" role="status"><strong>המבחן הושלם ונשלח לבדיקה</strong><span>תוצאות הבחינה מוצגות לגורם האחראי בלבד</span></div><p>ההחלטה לגבי התאמה לתפקיד מתקבלת בנפרד על ידי מנהל מוסמך. אין כאן אישור העסקה אוטומטי.</p><button type="button" class="secondary-btn" id="exit-worker">התנתקות</button></section>`);
     document.querySelector('#exit-worker').onclick=async()=>{try{await api('worker-logout','POST');candidate=null;location.hash='worker';startPage()}catch(err){notice(err.message,'error')}};return;
   }
   const r=await api('worker-questions');questions=r.questions;answers=r.answers||{};deadline=Date.now()+m.remainingSeconds*1000;
@@ -1352,7 +1469,8 @@ function renderExam(){
   };
 }
 async function submit(){clearInterval(timer);try{await api('worker-submit','POST');await loadExam()}catch(err){notice(err.message,'error')}}
-async function init(){try{const m=await api('admin-me');admin=m.admin;location.hash='admin';await loadAdmin();return}catch{}try{const m=await api('worker-me');candidate=m.candidate;location.hash='worker';await loadExam();return}catch{}location.hash=location.hash==='#admin'?'admin':'worker';startPage()};init();
+window.addEventListener('hashchange',()=>{if(!admin&&!candidate)startPage()});
+async function init(){try{const m=await api('admin-me');admin=m.admin;location.hash='admin';await loadAdmin();return}catch{}try{const m=await api('worker-me');candidate=m.candidate;location.hash='worker';await loadExam();return}catch{}location.hash=location.hash==='#worker'?'worker':'admin';startPage()};init();
 
 </script>
 <script defer>document.addEventListener('DOMContentLoaded',()=>{document.getElementById('reset-demo').onclick=()=>{const box=document.createElement('div');box.className='demo-reset';box.innerHTML='<p>לאפס את כל נתוני ההדגמה בדפדפן הזה?</p><button id="reset-yes" type="button">אפס נתוני דוגמה</button><button id="reset-no" type="button">ביטול</button>';document.querySelector('.demo-banner').append(box);document.getElementById('reset-yes').onclick=()=>window.AfikimDemoInfo.reset();document.getElementById('reset-no').onclick=()=>box.remove()}})</script>
