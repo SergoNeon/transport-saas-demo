@@ -128,7 +128,7 @@ const assertNoOverflow=async(p,width,where)=>{
   await manager.locator('#manager-notes').fill('בדיקה ידנית של תוצאות ומענה לכל השאלות');
   await manager.locator('#manager-decision-form button[type=submit]').click();
   await manager.locator('.manager-decision-record').waitFor({timeout:12000});
-  assert.ok((await manager.locator('.manager-decision-record').innerText()).includes('אישור'));
+  assert.ok((await manager.locator('.manager-decision-record').innerText()).includes('אושר'));
   const reviewed=await pool.query('SELECT reviewer_decision,correct_count FROM exam_candidates WHERE id=$1',[candidateId]);
   assert.equal(reviewed.rows[0].reviewer_decision,'accepted');
   console.log('PASS authorized manager approves only manually after checking all answers');
