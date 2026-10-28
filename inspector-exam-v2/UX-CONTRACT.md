@@ -2,7 +2,7 @@
 
 - Roles: owner, manager (מנהל), HR (משאבי אנוש), examinee.
 - Authentication: owner/supervisor via staff number + password. Examinee via invitation code + nine-digit Israeli identity number (תעודת זהות). Staging accepts synthetic 000000XXX only.
-- The login presents worker and manager entries as explicit role tabs. Tabs do not grant server permissions.
+- Worker enters at `/` (its own worker-only HTML page); owner, manager and HR enter at `/admin.html` (a separate admin-only HTML page). No role switching tabs exist on either page. The backend enforces access separately from the visual route.
 - Staff passwords must be changed after first login, and server sessions use HttpOnly Secure cookies.
 - Owner manages staff access. A manager sees only exams that they assigned; owner sees all.
 - Manager invites worker -> worker signs in -> answers 30 questions with server-side persistence -> submits -> authorized manager reviews and manually records a decision.
