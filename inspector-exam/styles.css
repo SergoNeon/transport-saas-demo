@@ -298,3 +298,21 @@ button:disabled {cursor:not-allowed;opacity:.5}
   .print-only.detail-table{display:table}
   @page{size:A4;margin:18mm}
 }
+/* Electra Afikim branding */
+.afikim-brand{gap:16px;min-width:0}
+.afikim-logo{display:block;object-fit:contain;object-position:right center;width:clamp(175px,22vw,250px);height:auto;max-height:58px;flex-shrink:0}
+.afikim-logo[hidden],.afikim-logo-fallback[hidden]{display:none}
+.afikim-logo-fallback{font-weight:900;font-size:23px;color:#173a52;white-space:nowrap}
+.afikim-logo-fallback strong{color:#25a951}
+.afikim-brand .brand-copy{border-right:1px solid #dce6e9;padding-right:15px}
+.afikim-brand .brand-copy strong{font-size:16px;letter-spacing:0}
+.afikim-brand .brand-copy small{font-size:11px}
+@media(max-width:760px){
+  .afikim-logo{width:clamp(128px,38vw,205px);max-height:48px}
+  .afikim-brand{gap:9px}
+  .afikim-brand .brand-copy{padding-right:9px}
+  .afikim-brand .brand-copy strong{font-size:12px;line-height:1.25}
+  .afikim-brand .brand-copy small{font-size:9px}
+  .afikim-logo-fallback{font-size:18px}
+}
+@media(max-width:410px){.afikim-brand .brand-copy small{display:none}.training-chip{display:none}}
