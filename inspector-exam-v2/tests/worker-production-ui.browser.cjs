@@ -52,6 +52,7 @@ async function call(path,method,body,cookie=''){
   const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:1});
   const worker=await context.newPage();
   worker.on('pageerror',e=>errors.push(e.message));
+  worker.on('console',msg=>{if(msg.text().startsWith('AFIKIM_NAV'))console.log('BROWSER_NAV',msg.text())});
   await worker.goto(BASE,{waitUntil:'networkidle'});
   await worker.locator('#exam-code').fill(code);
   await worker.locator('#exam-id').fill(fakeId);
