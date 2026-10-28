@@ -52,7 +52,18 @@ const app=http.createServer(async(req,res)=>{
  let url;try{url=new URL(req.url,'http://localhost')}catch{return fail(res,400,'Invalid URL')}
  if(url.pathname.startsWith('/api/'))return api(req,res,url);
  if(req.method!=='GET'&&req.method!=='HEAD')return fail(res,405,'Method not allowed');
- const asset=assets.get(url.pathname);
+ // Separate official hostnames, distinct entry points, shared authenticated API.
+ const hostname=String(req.headers.host||'').split(':')[0].toLowerCase();
+ let pathname=url.pathname;
+ if(hostname==='adm.brillteamp.com'){
+  if(pathname==='/'||pathname==='/index.html')pathname='/admin.html';
+ }else if(hostname==='test.brillteamp.com'){
+  if(pathname==='/admin.html'){
+   res.writeHead(302,{Location:'https://adm.brillteamp.com/'});
+   return res.end();
+  }
+ }
+ const asset=assets.get(pathname);
  if(!asset)return fail(res,404,'Not found');
  try{
   const body=await readFile(join(root,asset[0]));
