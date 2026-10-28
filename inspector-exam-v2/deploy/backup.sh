@@ -2,10 +2,10 @@
 # BRILL TEAM PROJECT — encrypted local backup of Electra Afikim examination database.
 set -euo pipefail
 umask 077
-OUT=/var/backups/afikim-exam
-KEY=/etc/afikim-exam/backup.pass
+OUT=${AFIKIM_BACKUP_DIR:-/var/backups/afikim-exam}
+KEY=${AFIKIM_BACKUP_KEY:-/etc/afikim-exam/backup.pass}
 CONTAINER=afikim-exam-postgres
-DATABASE=afikim_exam
+DATABASE=${AFIKIM_BACKUP_DATABASE:-afikim_exam}
 USER=afikim_exam
 test -r "$KEY" || { echo 'Backup encryption key missing' >&2; exit 1; }
 install -d -m 0700 "$OUT"
