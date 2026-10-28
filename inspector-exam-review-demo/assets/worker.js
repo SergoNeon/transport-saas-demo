@@ -12,17 +12,17 @@ function startPage(){
     <section class="secure-card worker-login-card">
       <div class="card-eyebrow">כניסה למבחן</div>
       <h2>פרטי הבחינה שלך</h2>
-      <p>יש להזין את קוד ההזמנה ואת מספר המסמך שהוזן במעמד רישום הבחינה.</p>
+      <p>יש להזין את קוד ההזמנה ואת מספר תעודת הזהות שנרשם בעת יצירת הבחינה.</p>
       <form id="entry" novalidate>
         ${field('קוד הזמנה','login-code','text','autocomplete="off" autocapitalize="characters" maxlength="32"')}
-        ${field('מספר תעודה / דרכון','login-doc','text','autocomplete="off" maxlength="24"')}
+        ${field('תעודת זהות','login-doc','text','autocomplete="off" inputmode="numeric" pattern="[0-9]{9}" maxlength="9"')}
         ${btn('כניסה למבחן')}
       </form>
       <p class="secure-help">גרסת הדגמה: אין להזין פרטים אישיים אמיתיים.</p>
-      <div class="demo-quick"><strong>מבחן ניסיון</strong><span>קוד: DEMO2026WORKER · תעודה: TEST654321</span>
+      <div class="demo-quick"><strong>מבחן ניסיון</strong><span>קוד: DEMO2026WORKER · תעודת זהות לדוגמה: 000000123</span>
         <button type="button" id="demo-fill" class="secondary-btn">מילוי פרטי דוגמה</button></div>
     </section>`);
-  document.querySelector('#demo-fill').onclick=()=>{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='TEST654321'};
+  document.querySelector('#demo-fill').onclick=()=>{document.querySelector('#login-code').value='DEMO2026WORKER';document.querySelector('#login-doc').value='000000123'};
   document.querySelector('#entry').onsubmit=async e=>{e.preventDefault();try{
     const x=await api('worker-login','POST',{code:document.querySelector('#login-code').value,document:document.querySelector('#login-doc').value});candidate=x;await loadExam()
   }catch(e){notice(e.message,'error')}};
