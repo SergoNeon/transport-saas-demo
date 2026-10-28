@@ -12,6 +12,8 @@ const assets=new Map([
  ['/index.html', ['index.html','text/html; charset=utf-8']],
  ['/admin.html', ['admin.html','text/html; charset=utf-8']],
  ['/secure.js', ['secure.js','text/javascript; charset=utf-8']],
+ ['/worker.js', ['worker.js','text/javascript; charset=utf-8']],
+ ['/worker.css', ['worker.css','text/css; charset=utf-8']],
  ['/styles.css', ['styles.css','text/css; charset=utf-8']]
 ]);
 const harden=(res)=>{
