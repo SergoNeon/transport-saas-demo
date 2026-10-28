@@ -78,4 +78,7 @@ async function init(){
   }
   try{await loadExam();return}catch{startPage()}
 }
-init();
+// Legacy links from the former combined portal now navigate to the correct standalone HTML page.
+if(portal==='worker'&&location.hash==='#admin')location.replace('/admin.html');
+else if(portal==='admin'&&location.hash==='#worker')location.replace('/');
+else init();
