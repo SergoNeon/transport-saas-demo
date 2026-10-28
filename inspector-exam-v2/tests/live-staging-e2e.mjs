@@ -39,8 +39,16 @@ const staff=check(await owner.call('admin-staff-list'),200,'Owner lists authoriz
 if(!staff.items.some(x=>x.staffNumber===creds.manager.username))check(await owner.call('admin-staff-create','POST',{staffNumber:creds.manager.username,display_name:'מנהל בדיקה א',password:creds.manager.password,role:'manager'}),200,'Create primary manager');
 if(!staff.items.some(x=>x.staffNumber===creds.outsider.username))check(await owner.call('admin-staff-create','POST',{staffNumber:creds.outsider.username,display_name:'מנהל בדיקה ב',password:creds.outsider.password,role:'manager'}),200,'Create isolated second manager');
 if(!existsSync(output))writeFileSync(output,JSON.stringify(creds,null,2),{mode:0o600,flag:'wx'});
-check(await manager.call('admin-login','POST',creds.manager),200,'First manager session');
-check(await outsider.call('admin-login','POST',creds.outsider),200,'Independent second manager session');
+const primaryLogin=check(await manager.call('admin-login','POST',creds.manager),200,'First manager session');
+const otherLogin=check(await outsider.call('admin-login','POST',creds.outsider),200,'Independent second manager session');
+for(const [client,login,account] of [[manager,primaryLogin,creds.manager],[outsider,otherLogin,creds.outsider]]){
+ if(login.mustChangePassword){
+  const next=pass();
+  check(await client.call('admin-password','POST',{current:account.password,next}),200,'Required password change for '+client.name);
+  account.password=next;
+  writeFileSync(output,JSON.stringify(creds,null,2),{mode:0o600});
+ }
+}
 const assignment=check(await manager.call('admin-assign','POST',{name:'עובד בדיקה פיקטיבי',document:'000000123'}),200,'Manager assigns exam');
 const candidateId=assignment.candidate.id,code=assignment.code;
 assert.ok(candidateId&&code);
