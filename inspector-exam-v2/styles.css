@@ -436,3 +436,66 @@ main.auth-view{display:flex;align-items:center;justify-content:center}
   .password-change-card .form-actions{flex-direction:column;align-items:stretch}
   .password-change-card .form-actions button{width:100%}
 }
+
+/* Official-grade mobile examination and detailed supervisor review */
+.exam-secure{max-width:920px;margin-inline:auto;padding:clamp(21px,4vw,39px)}
+.exam-secure .exam-top{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.exam-timer{display:inline-flex;align-items:center;justify-content:center;min-width:100px;padding:9px 14px;border-radius:11px;background:#ecf5f6;color:#0a4e5b;font-weight:800;font-size:19px;font-variant-numeric:tabular-nums;direction:ltr}
+.exam-answer-count{font-size:13px;color:#607788;margin:9px 0 23px}
+.exam-secure .secure-progress{height:8px;border-radius:12px;overflow:hidden;background:#e5edf1;margin-top:18px}
+.exam-secure .secure-progress span{height:100%;background:#158a82;border-radius:12px;display:block;transition:width .2s}
+.exam-secure h2{font-size:clamp(19px,2.4vw,27px);line-height:1.5;font-weight:790;color:#13394c;margin-bottom:21px}
+.exam-secure .choice{display:flex;align-items:center;gap:15px;text-align:right;line-height:1.5;min-height:61px;border-radius:13px;padding:12px 16px}
+.exam-secure .choice span{flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid #c9dade;border-radius:9px;font-weight:800}
+.exam-secure .choice.selected{border-color:#10877f;background:#eaf7f4}
+.exam-secure .choice.selected span{background:#0f827b;color:white;border-color:#0f827b}
+.exam-live-save{font-size:12px;color:#627989;line-height:1.5;margin:18px 0 12px}
+.exam-secure .form-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.review-page,.review-decision{max-width:1090px;margin:0 auto 22px}
+.review-summary{display:grid;grid-template-columns:minmax(170px,220px) 1fr;gap:25px;align-items:stretch;margin:20px 0 12px}
+.review-score{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#edf7f5;border:1px solid #d3ebe6;padding:22px;border-radius:17px;color:#144a55}
+.review-score span{font-size:13px;font-weight:750}
+.review-score strong{font-size:clamp(43px,5vw,60px);line-height:1.2;font-weight:850;font-variant-numeric:tabular-nums}
+.review-score small{font-size:12px;color:#49717b}
+.review-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.review-metrics>div{border:1px solid #e0e9ee;background:#fbfdfd;border-radius:14px;padding:20px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center}
+.review-metrics strong{font-size:28px;color:#1b4255;font-variant-numeric:tabular-nums}
+.review-metrics span{font-size:12px;color:#657d8e}
+.review-help{font-size:12px;color:#64798a;margin:15px 0 22px;line-height:1.65}
+.review-list{display:grid;gap:14px}
+.review-question{border:1px solid #dce6eb;border-radius:14px;padding:20px;background:#fff}
+.review-question.is-correct{border-right:4px solid #168a70}
+.review-question.is-wrong{border-right:4px solid #c46b43}
+.review-question-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px}
+.review-number{color:#6d8090;font-weight:700}
+.review-verdict{padding:6px 11px;border-radius:999px;font-weight:800;white-space:nowrap}
+.is-correct .review-verdict{color:#14785f;background:#e9f7f1}
+.is-wrong .review-verdict{color:#ad5633;background:#fdf0eb}
+.review-question h3{font-size:17px;font-weight:760;color:#14384b;line-height:1.6;margin:13px 0 19px}
+.review-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.review-answer{border-radius:10px;padding:13px 16px;background:#f0f5f7}
+.review-answer.right{background:#edf8f3}
+.review-answer.wrong{background:#fff3ec}
+.review-answer dt{font-size:11px;font-weight:800;margin:0 0 5px;color:#607888}
+.review-answer dd{font-size:14px;line-height:1.55;font-weight:680;margin:0;color:#173d50;overflow-wrap:anywhere}
+.review-explanation{background:#f6f8fa;padding:11px 14px;border-radius:9px;font-size:12px;color:#657b8a;line-height:1.55;margin:14px 0 0}
+.review-decision{padding:clamp(22px,3vw,35px)}
+.review-decision form{display:grid;gap:15px}
+@media(max-width:720px){
+ .exam-secure{padding:19px 17px}
+ .exam-secure .choice{min-height:57px;padding:11px 12px}
+ .exam-secure .form-actions{display:grid;grid-template-columns:1fr 1fr}
+ .exam-secure .form-actions button{width:100%;min-width:0}
+ .review-summary{display:block;margin:16px 0 12px}
+ .review-score{padding:16px;margin-bottom:12px}
+ .review-metrics{gap:7px}
+ .review-metrics>div{padding:14px 6px}
+ .review-metrics strong{font-size:24px}
+ .review-metrics span{font-size:10px}
+ .review-question{padding:15px 14px}
+ .review-question h3{font-size:15px}
+ .review-answers{grid-template-columns:1fr;gap:8px}
+ .review-question-head{align-items:flex-start}
+ .review-verdict{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.exam-secure .secure-progress span{transition:none}}
