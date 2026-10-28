@@ -1,0 +1,22 @@
+name: afikim-exam-staging
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: afikim-exam-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: afikim_exam
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}
+      POSTGRES_DB: afikim_exam
+    ports:
+      - '127.0.0.1:15543:5432'
+    volumes:
+      - exam_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U afikim_exam -d afikim_exam']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    mem_limit: 512m
+volumes:
+  exam_db:
