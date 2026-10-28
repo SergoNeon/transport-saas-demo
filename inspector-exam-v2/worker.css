@@ -114,11 +114,11 @@ body.worker-portal{background:var(--w-canvas);color:var(--w-ink);font-family:Ari
  .worker-login-panel{padding:30px 35px}
  .worker-login-panel h2{font-size:24px}
  .worker-login-description{margin-bottom:22px}
- .worker-exam-layout{grid-template-columns:1fr;gap:14px}
- .worker-navigator{order:-1;position:relative;top:auto;display:flex;align-items:center;gap:16px;padding:12px 14px}
+ .worker-exam-layout{grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
+ .worker-navigator{order:-1;position:relative;top:auto;display:flex;align-items:center;gap:16px;padding:12px 14px;min-width:0;max-width:100%;overflow:hidden}
  .worker-nav-head{flex:none;margin:0;min-width:100px}
  .worker-nav-head small{display:none}
- .worker-nav-grid{display:flex;flex:1;gap:7px;overflow-x:auto;min-width:0;scrollbar-gutter:stable;padding-bottom:6px}
+ .worker-nav-grid{display:flex;flex:1;gap:7px;overflow-x:auto;min-width:0;max-width:100%;scrollbar-gutter:stable;padding-bottom:6px}
  .worker-nav-item{flex:0 0 35px;height:35px}
  .worker-nav-legend{display:none}
  .worker-question-card{padding:26px}
@@ -171,3 +171,7 @@ body.worker-portal{background:var(--w-canvas);color:var(--w-ink);font-family:Ari
 @media(prefers-reduced-motion:reduce){
  .worker-choice,.worker-primary,.worker-secondary,.worker-progress-track span{transition:none!important}
 }
+
+/* Prevent intrinsic-width expansion from horizontal exam navigation. */
+.worker-exam-layout,.worker-question-card,.worker-navigator,.worker-choice-list,.worker-choice,.worker-choice-text{min-width:0;max-width:100%}
+.worker-choice-text{overflow-wrap:anywhere}
