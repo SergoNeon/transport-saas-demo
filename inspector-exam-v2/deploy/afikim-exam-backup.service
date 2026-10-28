@@ -1,0 +1,12 @@
+[Unit]
+Description=Encrypted Electra Afikim PostgreSQL backup
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/bin/bash /opt/afikim-exam-staging/inspector-exam-v2/deploy/backup.sh
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
