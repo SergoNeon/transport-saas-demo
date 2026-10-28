@@ -261,3 +261,14 @@ body.admin-portal{background:#f3f6f9;color:var(--m-ink);font-family:Arial,"Noto 
  .manager-decision-card{padding:19px 16px}
 }
 @media(prefers-reduced-motion:reduce){.manager-root button,.manager-field input,.manager-field select,.manager-field textarea{transition:none!important}}
+
+/* Staff's fifth column is an access-control action, not a date: always show it on phones. */
+@media(max-width:640px){
+ .manager-staff-list .manager-data-table td:nth-child(5){
+  display:block;grid-column:1/-1;text-align:left;margin-top:6px;
+ }
+ .manager-staff-list .manager-data-table td:nth-child(4){grid-column:1/-1}
+ .manager-staff-list .manager-data-table td:nth-child(5) .manager-link{
+  min-height:36px;padding:7px 0;font-size:12px;
+ }
+}
