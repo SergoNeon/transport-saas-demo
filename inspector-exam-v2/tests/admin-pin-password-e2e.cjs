@@ -31,7 +31,8 @@ const check=(r,status,label)=>{assert.equal(r.status,status,label+' got '+r.stat
   const salt=crypto.randomBytes(16).toString('hex'),digest=crypto.scryptSync(ownerPin,salt,64).toString('hex');
   const created=await pool.query("INSERT INTO exam_admins(username,display_name,role,password_salt,password_hash,must_change_password,is_active) VALUES($1,'מנהל מבחן סינתטי בלבד','owner',$2,$3,false,true) RETURNING id",[username,salt,digest]);
   ownerId=created.rows[0].id;
-  const ownerLogin=check(await api('admin-login','POST',{username,password:ownerPin}),200,'Synthetic owner authenticated');
+  const ownerLogin=await api('admin-login','POST',{username,password:ownerPin});
+  check(ownerLogin,200,'Synthetic owner authenticated');
   const ownerCookie=ownerLogin.cookie;
   assert.ok(ownerCookie.startsWith('afikim_admin='));
   check(await api('admin-staff-create','POST',{staffNumber:managerNumber,display_name:'מנהל בדיקת קוד',password:'12345',role:'manager'},ownerCookie),400,'Five-digit new staff PIN rejected');
@@ -51,7 +52,8 @@ const check=(r,status,label)=>{assert.equal(r.status,status,label+' got '+r.stat
   assert.equal(await page.locator('#next').getAttribute('pattern'),'[0-9]{6,24}');
   assert.equal(await page.locator('#next').evaluate(el=>{el.value='12345';return el.checkValidity()}),false);
   console.log('PASS browser shows numeric six-digit minimum, rejects five');
-  const login=check(await api('admin-login','POST',{username:managerNumber,password:managerOldPin}),200,'Independent API manager session for invalid PIN check');
+  const login=await api('admin-login','POST',{username:managerNumber,password:managerOldPin});
+  check(login,200,'Independent API manager session for invalid PIN check');
   const cookie=login.cookie;
   check(await api('admin-password','POST',{current:managerOldPin,next:'12345'},cookie),400,'API rejects five-digit new PIN');
   check(await api('admin-password','POST',{current:managerOldPin,next:'abcd12'},cookie),400,'API rejects non-numeric new PIN');
