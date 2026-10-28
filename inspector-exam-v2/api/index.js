@@ -35,8 +35,16 @@ if(path==='admin-logout'&&method==='POST'){const s=getCookies(req).afikim_admin;
 if(path==='worker-logout'&&method==='POST'){const s=getCookies(req).afikim_worker;if(s)await db('DELETE FROM exam_candidate_sessions WHERE session_digest=$1',[H(s)]);res.setHeader('Set-Cookie',cookie('afikim_worker','',0));return res.json({ok:true})}
 if(path==='worker-login'&&method==='POST'){
 const code=clean(b.code,100).toUpperCase(),doc=clean(b.document,30);if(!validDoc(doc)||code.length<12)return fail(res,400,'פרטי כניסה אינם תקינים');if(!(await limit('worker',code,10)))return fail(res,429,'יותר מדי ניסיונות');
-const r=await db('SELECT * FROM exam_candidates WHERE access_digest=$1 AND identity_digest=$2 AND expires_at>now()',[H(code),H(doc)]);const c=r.rows[0];if(!c||!['assigned','in_progress'].includes(c.status)||(c.started_at&&new Date(c.started_at).getTime()+c.time_limit_seconds*1000<=Date.now()))return fail(res,401,'פרטי כניסה אינם תקינים או שהמבחן אינו זמין');
-await db(`UPDATE exam_candidates SET status='in_progress',started_at=COALESCE(started_at,now()) WHERE id=$1`,[c.id]);const t=token();await db(`DELETE FROM exam_candidate_sessions WHERE candidate_id=$1`,[c.id]);await db(`INSERT INTO exam_candidate_sessions(candidate_id,session_digest,expires_at) VALUES($1,$2,now()+interval '2 hours')`,[c.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_worker',t,7200));return res.json({ok:true,name:c.name})}
+// Bind every one-time invitation to exactly one identity and enforce the exam state atomically.
+// Re-entry is allowed only while a previously started exam is still in progress.
+// After 'submitted' the code is permanently rejected, even if the worker logged out.
+const r=await db(`UPDATE exam_candidates SET status='in_progress',started_at=COALESCE(started_at,now())
+ WHERE access_digest=$1 AND identity_digest=$2 AND expires_at>now()
+ AND (status='assigned' OR (status='in_progress' AND started_at IS NOT NULL
+ AND now()<started_at+(time_limit_seconds*interval '1 second')))
+ RETURNING id,name`,[H(code),H(doc)]);const c=r.rows[0];
+if(!c)return fail(res,401,'הקוד אינו תואם לתעודת הזהות, פג תוקפו או שהמבחן כבר הוגש');
+const t=token();await db(`DELETE FROM exam_candidate_sessions WHERE candidate_id=$1`,[c.id]);await db(`INSERT INTO exam_candidate_sessions(candidate_id,session_digest,expires_at) VALUES($1,$2,now()+interval '2 hours')`,[c.id,H(t)]);res.setHeader('Set-Cookie',cookie('afikim_worker',t,7200));return res.json({ok:true,name:c.name})}
 const a=await admin(req);if(path==='admin-me'&&method==='GET')return a?res.json({admin:a}):fail(res,401,'נדרשת כניסה של מנהל');
 if(path==='admin-password'&&method==='POST'){
 if(!a)return fail(res,401,'נדרשת כניסה');const r=await db('SELECT * FROM exam_admins WHERE id=$1',[a.id]);const user=r.rows[0];if(!eq(hashPassword(String(b.current||''),user.password_salt),user.password_hash)||String(b.next||'').length<14)return fail(res,400,'סיסמה לא תקינה');const salt=crypto.randomBytes(16).toString('hex');await db('UPDATE exam_admins SET password_salt=$2,password_hash=$3,must_change_password=false WHERE id=$1',[a.id,salt,hashPassword(b.next,salt)]);await db('DELETE FROM exam_staff_sessions WHERE staff_id=$1 AND session_digest<>$2',[a.id,H(getCookies(req).afikim_admin)]);return res.json({ok:true})}
