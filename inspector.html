@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<meta name="description" content="BRILL INSPECTOR — интерактивная демонстрация управления автобусными контролёрами. Только вымышленные данные.">
+<title>BRILL INSPECTOR — Command Center (DEMO)</title>
+<link rel="preconnect" href="https://basemaps.cartocdn.com">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoK3aU8t55k2wXY=" crossorigin="">
+<link rel="stylesheet" href="./inspector.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar" aria-label="Main menu">
+  <a href="./inspector.html" class="brand" aria-label="Brill Inspector home">
+    <span class="brand-icon"><svg viewBox="0 0 36 36" width="35" height="35" fill="none" aria-hidden="true"><path d="M6 7h13c6 0 9 3 9 8 0 3-1 5-4 6 3 1 5 3 5 6 0 5-4 8-10 8H6V7Z" stroke="#EAC78F" stroke-width="3"/><path d="M10 20h13" stroke="#D94846" stroke-width="3"/></svg></span>
+    <span><strong>BRILL <em>INSPECTOR</em></strong><small>OPERATIONS PLATFORM</small></span>
+  </a>
+  <div class="sidebar-divider"></div>
+  <p class="menu-label" data-i18n="navigation">НАВИГАЦИЯ</p>
+  <nav class="nav">
+    <button class="nav-link selected" data-view="command"><span class="nav-glyph">◈</span><span data-i18n="command">Центр управления</span></button>
+    <button class="nav-link" data-view="field"><span class="nav-glyph">◎</span><span data-i18n="field">Экран контролёра</span></button>
+  </nav>
+  <p class="menu-label" data-i18n="workspaceTitle">РАБОЧАЯ ОБЛАСТЬ</p>
+  <div class="sidebar-detail">
+    <span class="org-avatar">IL</span><span><strong data-i18n="orgName">Центральный округ</strong><small data-i18n="orgDesc">Автобусный контроль · Израиль</small></span>
+  </div>
+  <div class="sidebar-bottom"><div class="privacy-chip"><span class="privacy-dot"></span><span data-i18n="privacyChip">GPS только в рабочую смену</span></div><small class="sidebar-caption" data-i18n="systemDemo">Учебный стенд. Реальных сотрудников нет.</small></div>
+</aside>
+<div class="workspace">
+<header class="topbar">
+  <div class="top-left"><span class="crumb" data-i18n="operations">Операции</span><span class="crumb-sep">/</span><strong id="currentPage" data-i18n="command">Центр управления</strong></div>
+  <div class="top-right"><span class="demo-pill"><i></i> DEMO / SIMULATION</span>
+  <div class="language-toggle" role="group" aria-label="Language"><button data-locale="ru" aria-pressed="true" class="selected">RU</button><button data-locale="he" aria-pressed="false">HE</button><button data-locale="en" aria-pressed="false">EN</button></div>
+  <div class="user-chip"><span class="avatar mini">AD</span><span data-i18n="manager">Руководитель</span></div></div>
+</header>
+<main>
+<section id="commandView">
+  <div class="page-heading">
+    <div><div class="eyebrow"><span class="eyebrow-bar"></span><span data-i18n="oversight">ДИСПЕТЧЕРСКИЙ КОНТРОЛЬ</span></div>
+    <h1 data-i18n="heading">Оперативная карта контролёров</h1>
+    <p class="subtitle" data-i18n="subtitle">Кто на смене, где находится и какие проверки выполняет.</p></div>
+    <div class="heading-actions"><button class="btn muted-button" id="resetBtn"><span>↻</span><span data-i18n="reset">Сбросить сценарий</span></button><button class="btn primary" id="playBtn"><span id="playIcon">▶</span><span id="playText" data-i18n="play">Запустить симуляцию</span></button></div>
+  </div>
+  <div class="demo-banner"><span class="badge-gold" data-i18n="training">УЧЕБНАЯ ВЕРСИЯ</span><span data-i18n="fictional">Все сотрудники, координаты, маршруты и проверки вымышлены. Реального GPS-подключения нет.</span></div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-title"><span data-i18n="metricActive">На смене</span><span class="metric-symbol">◉</span></div><div class="metric-value" id="metricActive">0</div><div class="metric-foot"><span class="tiny-dot green"></span><span data-i18n="metricActiveDetail">Активные контролёры</span></div></div>
+    <div class="metric"><div class="metric-title"><span data-i18n="metricGPS">Свежий GPS</span><span class="metric-symbol">⌖</span></div><div class="metric-value" id="metricGPS">0</div><div class="metric-foot"><span class="tiny-dot green"></span><span data-i18n="metricGPSDetail">Координаты до 5 минут</span></div></div>
+    <div class="metric"><div class="metric-title"><span data-i18n="metricChecks">Проверок за смену</span><span class="metric-symbol">▤</span></div><div class="metric-value" id="metricChecks">0</div><div class="metric-foot"><span data-i18n="metricChecksDetail">Записи в журнале</span></div></div>
+    <div class="metric alert-metric"><div class="metric-title"><span data-i18n="metricAlerts">Требуют внимания</span><span class="metric-symbol red">!</span></div><div class="metric-value" id="metricAlerts">0</div><div class="metric-foot"><span class="tiny-dot red"></span><span data-i18n="metricAlertsDetail">Инциденты и потеря связи</span></div></div>
+  </div>
+  <div class="content-grid">
+    <section class="panel map-panel">
+      <div class="panel-head"><div><h2 data-i18n="liveMap">Карта патрулей</h2><p data-i18n="mapDesc">Центральный округ · активные смены</p></div><span class="map-freshness"><span class="tiny-dot green"></span><span data-i18n="fictitious">Симуляция</span></span></div>
+      <div id="map" role="application" aria-label="Interactive map of simulated inspector locations"><div id="mapFallback"><span class="map-fallback-icon">⌖</span><strong data-i18n="mapLoading">Загрузка карты</strong><small data-i18n="mapLoadingHint">Список сотрудников работает даже без карты</small></div></div>
+      <div class="map-toolbar"><button class="btn tiny" id="zoneBtn" aria-pressed="false"><span>◎</span><span data-i18n="zones">Рабочие зоны</span></button><button class="btn tiny" id="routeBtn" aria-pressed="false"><span>⌁</span><span data-i18n="route">Маршрут выбранного</span></button><div class="map-legend"><span><i class="tiny-dot green"></i><span data-i18n="legendFresh">На связи</span></span><span><i class="tiny-dot amber"></i><span data-i18n="legendPause">Перерыв</span></span><span><i class="tiny-dot red"></i><span data-i18n="legendLost">Нет сигнала</span></span></div></div>
+    </section>
+    <section class="panel roster-panel">
+      <div class="panel-head"><div><h2 data-i18n="roster">Контролёры</h2><p data-i18n="rosterHint">Статусы и рабочие задания</p></div><span class="count-bubble" id="rosterCount">0</span></div>
+      <label class="search"><span class="search-icon">⌕</span><input id="workerSearch" type="search" autocomplete="off" data-i18n-placeholder="search" placeholder="Поиск сотрудника или линии..."></label>
+      <div class="filters" role="group" aria-label="Filter employees"><button data-filter="all" class="selected" data-i18n="filterAll">Все</button><button data-filter="active" data-i18n="filterActive">На смене</button><button data-filter="attention" data-i18n="filterAttention">Внимание</button></div>
+      <div class="roster" id="roster"></div>
+      <div class="roster-note"><span class="tiny-dot green"></span><span data-i18n="lastUpdate">Координаты показываются только при актуальном GPS</span></div>
+    </section>
+  </div>
+  <div class="details-grid">
+    <section class="panel inspector-detail">
+      <div class="panel-head"><div><h2 data-i18n="workerCard">Карточка контролёра</h2><p data-i18n="cardHint">Задание, GPS, последние проверки</p></div><span id="detailBadge" class="status-pill"></span></div>
+      <div id="detailContent" class="detail-content"></div>
+    </section>
+    <section class="panel feed-panel"><div class="panel-head"><div><h2 data-i18n="activity">Журнал событий</h2><p data-i18n="feedHint">Проверки и уведомления в хронологии</p></div><button class="icon-button" id="feedReset" aria-label="Reset events">↻</button></div>
+      <div class="feed" id="feed"></div>
+      <div class="feed-footer" data-i18n="noRealData">Только демонстрационные события</div>
+    </section>
+  </div>
+</section>
+<section id="fieldView" hidden>
+  <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-bar"></span><span data-i18n="fieldEyebrow">МОБИЛЬНОЕ РАБОЧЕЕ МЕСТО</span></div><h1 data-i18n="fieldTitle">Рабочий экран контролёра</h1><p class="subtitle" data-i18n="fieldSubtitle">Смена, задачи, проверка автобуса и офлайн-режим.</p></div>
+  <button class="btn muted-button" id="backToCommand"><span>↶</span><span data-i18n="backToManager">К карте руководителя</span></button></div>
+  <div class="demo-banner"><span class="badge-gold">DEMO</span><span data-i18n="fieldDisclaimer">Это интерактивная симуляция, телефон не передаёт GPS и данные никуда не отправляются.</span></div>
+  <div class="field-grid">
+    <div>
+    <section class="panel field-profile"><div class="profile-row"><span class="avatar field-avatar">DL</span><div><strong id="fieldName"></strong><p data-i18n="fieldEmployee">Контролёр автобусных маршрутов</p></div><span class="status-pill" id="fieldStatus"></span></div>
+    <div class="field-shift"><div><span data-i18n="currentShift">Текущая смена</span><strong id="shiftTime">07:00 – 15:00</strong></div><div><span data-i18n="gpsSharing">Передача координат</span><strong id="gpsSharing"></strong></div></div>
+    <div class="shift-actions"><button class="btn primary" id="fieldShiftBtn"></button><button class="btn muted-button" id="offlineBtn"></button></div>
+    <p class="fineprint" data-i18n="shiftPrivacy">Во время перерыва и после завершения смены GPS не передаётся. В демо геопозиция вообще не запрашивается.</p></section>
+    <section class="panel field-report"><div class="panel-head"><div><h2 data-i18n="newInspection">Зарегистрировать проверку</h2><p data-i18n="newInspectionHint">Автобус, линия, остановка и результат</p></div><span class="small-number">01 / 02</span></div>
+    <form id="reportForm"><div class="form-grid">
+      <label><span data-i18n="busLine">Номер линии</span><input id="reportLine" required maxlength="12" inputmode="numeric" value="66"></label>
+      <label><span data-i18n="busPlate">Номер автобуса</span><input id="reportBus" maxlength="16" value="88-123-45"></label>
+      <label><span data-i18n="reportType">Тип проверки</span><select id="reportType"><option value="regular" data-i18n="regular">Плановая проверка</option><option value="driver" data-i18n="driverBehavior">Поведение водителя</option><option value="skip" data-i18n="stopSkip">Пропуск остановки</option><option value="defect" data-i18n="vehicleDefect">Неисправность автобуса</option></select></label>
+      <label><span data-i18n="reportStatus">Результат</span><select id="reportStatus"><option value="done" data-i18n="completed">Без нарушений</option><option value="incident" data-i18n="violation">Нарушение</option></select></label>
+    </div><label class="notes-label"><span data-i18n="notes">Комментарий</span><textarea id="reportNotes" rows="3" maxlength="300" data-i18n-placeholder="notePlaceholder" placeholder="Описание проверки..."></textarea></label>
+    <div class="form-footer"><span class="fineprint" id="queueState"></span><button type="submit" class="btn primary" id="saveReport"><span>＋</span><span data-i18n="saveReport">Сохранить проверку</span></button></div>
+    </form></section>
+    </div>
+    <div><section class="panel field-task"><div class="panel-head"><div><h2 data-i18n="myAssignments">Мои задания</h2><p data-i18n="myAssignmentsHint">Запланировано на текущую смену</p></div><span class="count-bubble" id="taskCount"></span></div><div id="fieldTasks"></div></section>
+    <section class="panel sync-panel"><div class="panel-head"><div><h2 data-i18n="syncTitle">Состояние связи</h2><p data-i18n="syncDesc">Проверка поведения при плохом интернете</p></div></div><p id="networkStatus"></p><button class="btn muted-button" id="syncBtn" data-i18n="syncNow">Синхронизировать очередь</button><p class="fineprint" data-i18n="demoQueueNote">В демо очередь находится только в памяти вкладки. Production потребует защищённого локального хранилища.</p></section></div>
+  </div>
+</section>
+</main>
+<footer><span>BRILL INSPECTOR</span><span data-i18n="footer">Developed by Brill Team Project · учебная версия · данные вымышлены</span></footer>
+</div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script type="module" src="./inspector-app.mjs"></script>
+</body></html>
