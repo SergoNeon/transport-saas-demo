@@ -1,0 +1,50 @@
+name: BRILL STAFF web preview fast publish
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'staff_mobile/**'
+      - '.github/workflows/brill-staff-web.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brill-staff-web-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Create Flutter web launcher
+        working-directory: staff_mobile
+        run: flutter create --platforms=web --org com.brillteam --project-name brill_staff --no-pub .
+      - name: Resolve dependencies
+        working-directory: staff_mobile
+        run: flutter pub get
+      - name: Validate demo timekeeping
+        working-directory: staff_mobile
+        run: flutter test test/model_test.dart
+      - name: Compile Hebrew Flutter app for GitHub Pages
+        working-directory: staff_mobile
+        run: flutter build web --release --base-href /transport-saas-demo/staff-app/
+      - name: Publish app into existing GitHub Pages main branch
+        run: |
+          mkdir -p staff-app
+          find staff-app -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R staff_mobile/build/web/. staff-app/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add staff-app
+          if ! git diff --cached --quiet; then
+            git commit -m "build: publish BRILL STAFF Hebrew Flutter web demo"
+            git push origin HEAD:main
+          fi
