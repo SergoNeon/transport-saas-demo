@@ -12,7 +12,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(393, 852));
     addTearDown(() async => tester.binding.setSurfaceSize(null));
 
-    await tester.pumpWidget(const ElectraAfikimApp());
+    await tester.pumpWidget(const ElectraAfikimApp(localDemo:true));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('employee-clock-screen')), findsOneWidget);
@@ -35,7 +35,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await tester.binding.setSurfaceSize(const Size(393, 852));
     addTearDown(() async => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(const ElectraAfikimApp());
+    await tester.pumpWidget(const ElectraAfikimApp(localDemo:true));
     await tester.pumpAndSettle();
     await tester.tap(find.text('תחילת משמרת'));
     await tester.pump();
@@ -59,7 +59,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await tester.binding.setSurfaceSize(const Size(360, 640));
     addTearDown(() async => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(const ElectraAfikimApp());
+    await tester.pumpWidget(const ElectraAfikimApp(localDemo:true));
     await tester.pumpAndSettle();
     expect(find.text('תחילת משמרת'), findsOneWidget);
     expect(tester.takeException(), isNull);
