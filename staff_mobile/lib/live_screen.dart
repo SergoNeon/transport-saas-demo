@@ -181,63 +181,123 @@ class _LiveGateState extends State<LiveGate> {
     decoration:BoxDecoration(color:Colors.white,border:Border.all(color:edge),
       borderRadius:BorderRadius.circular(17)),child:child);
 
-  Widget _loginBody()=>Center(child:ConstrainedBox(
-    constraints:const BoxConstraints(maxWidth:410),
-    child:ListView(padding:const EdgeInsets.fromLTRB(21,38,21,24),
-      shrinkWrap:true,children:[
-        Container(width:65,height:65,alignment:Alignment.center,
-          decoration:BoxDecoration(color:accent,borderRadius:BorderRadius.circular(20)),
-          child:const Text('א',style:TextStyle(color:Colors.white,fontSize:40,fontWeight:FontWeight.w900))),
-        const SizedBox(height:18),
-        const Text('אלקטרה אפיקים',style:TextStyle(color:deep,fontSize:29,fontWeight:FontWeight.w900)),
-        const SizedBox(height:4),
-        const Text('סנכרון משמרות בין עובד למנהל',
-          style:TextStyle(color:weak,fontSize:14)),
-        const SizedBox(height:17),
-        badge('שרת בדיקות · חשבונות דוגמה בלבד'),
-        const SizedBox(height:23),
-        section(Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
-          const Text('כניסה מאובטחת',style:TextStyle(
-            color:deep,fontSize:20,fontWeight:FontWeight.w900)),
-          const SizedBox(height:9),
-          Row(children:[
-            Expanded(child:ChoiceChip(label:const Text('מבקר'),
-              selected:email.text.startsWith('worker@'),
-              onSelected:(_)=>setState(()=>email.text='worker@afikim-demo.test'))),
-            const SizedBox(width:9),
-            Expanded(child:ChoiceChip(label:const Text('מנהל'),
-              selected:email.text.startsWith('manager@'),
-              onSelected:(_)=>setState(()=>email.text='manager@afikim-demo.test'))),
+  Widget _loginBody()=>LayoutBuilder(builder:(context,constraints) {
+    // Some in-app browsers provide a desktop-sized layout viewport on phones.
+    // Fill that viewport and enlarge controls rather than centering a
+    // fixed 410px form that becomes tiny on the physical screen.
+    final s=constraints.maxWidth>640
+      ?(constraints.maxWidth/470).clamp(1.0,2.0).toDouble():1.0;
+    final fieldBorder=OutlineInputBorder(
+      borderRadius:BorderRadius.circular(12*s),
+      borderSide:const BorderSide(color:edge));
+    InputDecoration inputStyle(String label,IconData icon)=>InputDecoration(
+      labelText:label,labelStyle:TextStyle(color:weak,fontSize:16*s),
+      prefixIcon:Icon(icon,size:23*s,color:accent),
+      prefixIconConstraints:BoxConstraints(minWidth:53*s),
+      contentPadding:EdgeInsets.symmetric(horizontal:15*s,vertical:19*s),
+      filled:true,fillColor:Colors.white,
+      border:fieldBorder,enabledBorder:fieldBorder);
+    Widget role(String label,bool selected,VoidCallback action)=>
+      Expanded(child:SizedBox(height:55*s,
+        child:FilledButton(
+          onPressed:action,
+          style:FilledButton.styleFrom(
+            backgroundColor:selected?accent:const Color(0xffedf2f4),
+            foregroundColor:selected?Colors.white:deep,
+            shape:RoundedRectangleBorder(
+              borderRadius:BorderRadius.circular(12*s))),
+          child:Text(label,style:TextStyle(
+            fontSize:17*s,fontWeight:FontWeight.w800)))));
+    return ListView(
+      key:const Key('live-phone-login-screen'),
+      padding:EdgeInsets.fromLTRB(16*s,3*s,16*s,26*s),
+      children:[
+        Row(children:[
+          Container(width:39*s,height:39*s,
+            alignment:Alignment.center,
+            decoration:BoxDecoration(color:accent,
+              borderRadius:BorderRadius.circular(13*s)),
+            child:Text('א',style:TextStyle(color:Colors.white,
+              fontSize:24*s,fontWeight:FontWeight.w900))),
+          SizedBox(width:12*s),
+          Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
+            children:[
+              Text('אלקטרה אפיקים',
+                style:TextStyle(color:deep,fontSize:23*s,
+                  fontWeight:FontWeight.w900)),
+              Text('כניסת עובד או מנהל · הדגמה',
+                style:TextStyle(color:weak,fontSize:14*s)),
+            ])),
+        ]),
+        SizedBox(height:5*s),
+        Container(
+          key:const Key('live-login-form-panel'),
+          width:double.infinity,
+          padding:EdgeInsets.all(17*s),
+          decoration:BoxDecoration(
+            color:Colors.white,border:Border.all(color:edge),
+            borderRadius:BorderRadius.circular(19*s)),
+          child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+            Text('כניסה למערכת',style:TextStyle(
+              color:deep,fontSize:23*s,fontWeight:FontWeight.w900)),
+            SizedBox(height:6*s),
+            Text('בחרו תפקיד והזינו את הסיסמה',
+              style:TextStyle(color:weak,fontSize:15*s)),
+            SizedBox(height:18*s),
+            Row(children:[
+              role('מבקר',email.text.startsWith('worker@'),
+                ()=>setState(()=>email.text='worker@afikim-demo.test')),
+              SizedBox(width:10*s),
+              role('מנהל',email.text.startsWith('manager@'),
+                ()=>setState(()=>email.text='manager@afikim-demo.test')),
+            ]),
+            SizedBox(height:16*s),
+            TextField(key:const Key('live-login-email'),
+              controller:email,keyboardType:TextInputType.emailAddress,
+              textDirection:TextDirection.ltr,
+              style:TextStyle(color:deep,fontSize:17*s),
+              decoration:inputStyle('דוא"ל משתמש',Icons.person_outline)),
+            SizedBox(height:13*s),
+            TextField(key:const Key('live-login-password'),
+              controller:password,obscureText:true,
+              style:TextStyle(color:deep,fontSize:17*s),
+              onSubmitted:(_)=>login(),
+              decoration:inputStyle('סיסמה',Icons.lock_outline)),
+            if(message!=null)Padding(
+              padding:EdgeInsets.only(top:11*s),
+              child:Text(message!,style:TextStyle(
+                color:Colors.red,fontSize:15*s,fontWeight:FontWeight.w700))),
+            SizedBox(height:18*s),
+            SizedBox(height:62*s,child:FilledButton.icon(
+              key:const Key('live-login-submit'),
+              onPressed:signingIn?null:login,
+              style:FilledButton.styleFrom(
+                backgroundColor:accent,foregroundColor:Colors.white,
+                shape:RoundedRectangleBorder(
+                  borderRadius:BorderRadius.circular(14*s))),
+              icon:Icon(Icons.login_rounded,size:25*s),
+              label:Text(signingIn?'מתחבר...':'כניסה למערכת',
+                style:TextStyle(fontSize:19*s,fontWeight:FontWeight.w900)))),
           ]),
-          const SizedBox(height:13),
-          TextField(controller:email,
-            keyboardType:TextInputType.emailAddress,
-            textDirection:TextDirection.ltr,
-            decoration:const InputDecoration(labelText:'דוא"ל משתמש',border:OutlineInputBorder())),
-          const SizedBox(height:12),
-          TextField(controller:password,obscureText:true,
-            onSubmitted:(_)=>login(),
-            decoration:const InputDecoration(labelText:'סיסמה',border:OutlineInputBorder())),
-          if(message!=null)Padding(padding:const EdgeInsets.only(top:10),
-            child:Text(message!,style:const TextStyle(color:Colors.red,fontSize:12))),
-          const SizedBox(height:15),
-          SizedBox(height:55,child:FilledButton.icon(
-            onPressed:signingIn?null:login,
-            icon:const Icon(Icons.lock_open_outlined),
-            label:Text(signingIn?'מתחבר...':'כניסה לסנכרון חי',
-              style:const TextStyle(fontWeight:FontWeight.w800,fontSize:16)))),
-        ])),
-        const SizedBox(height:18),
-        OutlinedButton.icon(
-          onPressed:()=>Navigator.of(context).push(MaterialPageRoute(
-            builder:(_)=>const StaffScreen())),
-          icon:const Icon(Icons.science_outlined),
-          label:const Text('צפייה בדמו מקומי ללא חשבון')),
-        const SizedBox(height:13),
-        const Text('הסנכרון משתמש בשרת PostgreSQL משותף. המערכת כוללת אך ורק נתוני בדיקה.',
+        ),
+        SizedBox(height:15*s),
+        SizedBox(height:51*s,child:OutlinedButton.icon(
+          onPressed:()=>Navigator.of(context).push(
+            MaterialPageRoute(builder:(_)=>const StaffScreen())),
+          icon:Icon(Icons.science_outlined,size:21*s),
+          label:Text('צפייה בדמו מקומי ללא חשבון',
+            style:TextStyle(fontSize:15*s,fontWeight:FontWeight.w700)),
+          style:OutlinedButton.styleFrom(foregroundColor:accent,
+            side:const BorderSide(color:edge),
+            shape:RoundedRectangleBorder(
+              borderRadius:BorderRadius.circular(13*s))))),
+        SizedBox(height:14*s),
+        Text('סנכרון בין מנהל לעובד · נתוני בדיקה בלבד',
           textAlign:TextAlign.center,
-          style:TextStyle(color:weak,fontSize:11)),
-      ])));
+          style:TextStyle(color:weak,fontSize:13*s)),
+      ],
+    );
+  });
 
   Widget _shiftClock(String label,DateTime time,IconData icon) => Expanded(
     child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -480,22 +540,26 @@ class _LiveGateState extends State<LiveGate> {
     ),
   );
 
-  @override Widget build(BuildContext context)=>Scaffold(
+  @override Widget build(BuildContext context) {
+    final width=MediaQuery.sizeOf(context).width;
+    final s=width>640?(width/470).clamp(1.0,2.0).toDouble():1.0;
+    return Scaffold(
     backgroundColor:paper,
     appBar:AppBar(backgroundColor:Colors.white,automaticallyImplyLeading:false,
-      toolbarHeight:72,titleSpacing:14,
+      toolbarHeight:72*s,titleSpacing:14*s,
       title:Row(children:[
-        Container(width:44,height:44,alignment:Alignment.center,
-          decoration:BoxDecoration(color:accent,borderRadius:BorderRadius.circular(10)),
-          child:const Text('א',style:TextStyle(color:Colors.white,
-            fontSize:27,fontWeight:FontWeight.w900))),
-        const SizedBox(width:11),
-        const Expanded(child:Text('אלקטרה אפיקים',
-          style:TextStyle(fontSize:20,color:deep,fontWeight:FontWeight.w900))),
+        Container(width:44*s,height:44*s,alignment:Alignment.center,
+          decoration:BoxDecoration(color:accent,borderRadius:BorderRadius.circular(10*s)),
+          child:Text('א',style:TextStyle(color:Colors.white,
+            fontSize:27*s,fontWeight:FontWeight.w900))),
+        SizedBox(width:11*s),
+        Expanded(child:Text('אלקטרה אפיקים',
+          style:TextStyle(fontSize:20*s,color:deep,fontWeight:FontWeight.w900))),
         if(session!=null)IconButton(
           onPressed:logout,tooltip:'התנתקות',
           icon:const Icon(Icons.logout,color:weak)),
       ])),
     body:session==null?_loginBody():_dashboard(),
   );
+  }
 }
