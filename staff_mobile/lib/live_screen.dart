@@ -210,15 +210,15 @@ class _LiveGateState extends State<LiveGate> {
             fontSize:17*s,fontWeight:FontWeight.w800)))));
     return ListView(
       key:const Key('live-phone-login-screen'),
-      padding:EdgeInsets.fromLTRB(16*s,13*s,16*s,26*s),
+      padding:EdgeInsets.fromLTRB(16*s,3*s,16*s,26*s),
       children:[
         Row(children:[
-          Container(width:45*s,height:45*s,
+          Container(width:39*s,height:39*s,
             alignment:Alignment.center,
             decoration:BoxDecoration(color:accent,
               borderRadius:BorderRadius.circular(13*s)),
             child:Text('א',style:TextStyle(color:Colors.white,
-              fontSize:28*s,fontWeight:FontWeight.w900))),
+              fontSize:24*s,fontWeight:FontWeight.w900))),
           SizedBox(width:12*s),
           Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
             children:[
@@ -229,7 +229,7 @@ class _LiveGateState extends State<LiveGate> {
                 style:TextStyle(color:weak,fontSize:14*s)),
             ])),
         ]),
-        SizedBox(height:12*s),
+        SizedBox(height:5*s),
         Container(
           key:const Key('live-login-form-panel'),
           width:double.infinity,
