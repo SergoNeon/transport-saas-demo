@@ -1,0 +1,78 @@
+name: BRILL STAFF Android and web demo
+on:
+  pull_request:
+    paths:
+      - 'staff_mobile/**'
+      - '.github/workflows/brill-staff.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'staff_mobile/**'
+      - '.github/workflows/brill-staff.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brill-staff-build
+  cancel-in-progress: false
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate native Android and web scaffolding
+        working-directory: staff_mobile
+        run: |
+          flutter create --platforms=android,web --org com.brillteam --project-name brill_staff --no-pub .
+          rm -f test/widget_test.dart
+      - name: Install dependencies
+        working-directory: staff_mobile
+        run: flutter pub get
+      - name: Dart static analysis
+        working-directory: staff_mobile
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings lib test
+      - name: Unit tests
+        working-directory: staff_mobile
+        run: flutter test test/model_test.dart
+      - name: Build installable Android APK
+        working-directory: staff_mobile
+        run: flutter build apk --release
+      - name: Build same app for online preview
+        working-directory: staff_mobile
+        run: flutter build web --release --base-href /transport-saas-demo/staff-app/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brill-staff-android-apk
+          path: staff_mobile/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+      - name: Publish GitHub Pages preview
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p staff-app
+          find staff-app -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R staff_mobile/build/web/. staff-app/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add staff-app
+          if ! git diff --cached --quiet; then
+            git commit -m "build: publish Hebrew BRILL STAFF web demo"
+            git push origin HEAD:main
+          fi
+      - name: Attach APK to public demo release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: brill-staff-demo
+          name: BRILL STAFF - Android test app
+          body: 'Hebrew RTL demo APK. Fictional staff and coordinates only. No production backend or real GPS tracking.'
+          prerelease: true
+          files: staff_mobile/build/app/outputs/flutter-apk/app-release.apk
+          overwrite_files: true
