@@ -1,4 +1,4 @@
-name: BRILL STAFF Android and web demo
+name: Electra Afikim Android and web demo
 on:
   pull_request:
     paths:
@@ -50,7 +50,7 @@ jobs:
         run: flutter build web --release --base-href /transport-saas-demo/staff-app/
       - uses: actions/upload-artifact@v4
         with:
-          name: brill-staff-android-apk
+          name: electra-afikim-attendance-apk
           path: staff_mobile/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
       - name: Publish GitHub Pages preview
@@ -63,15 +63,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add staff-app
           if ! git diff --cached --quiet; then
-            git commit -m "build: publish Hebrew BRILL STAFF web demo"
+            git commit -m "build: publish Hebrew Electra Afikim web demo"
             git push origin HEAD:main
           fi
       - name: Attach APK to public demo release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: brill-staff-demo
-          name: BRILL STAFF - Android test app
+          tag_name: electra-afikim-attendance-demo
+          name: Electra Afikim - Android test app
           body: 'Hebrew RTL demo APK. Fictional staff and coordinates only. No production backend or real GPS tracking.'
           prerelease: true
           files: staff_mobile/build/app/outputs/flutter-apk/app-release.apk
