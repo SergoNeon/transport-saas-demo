@@ -43,6 +43,33 @@ class StaffDemoState extends ChangeNotifier {
     return null;
   }
 
+  // Manager-only UI action in this demo. Production requires authenticated RBAC.
+  bool rescheduleAssignment({
+    required String assignmentId,
+    required DateTime start,
+    required DateTime end,
+    required String site,
+    required String lines,
+    required String instructions,
+  }) {
+    if (!end.isAfter(start) || site.trim().isEmpty ||
+        lines.trim().isEmpty || instructions.trim().isEmpty) return false;
+    final index = assignments.indexWhere((a) => a.id == assignmentId);
+    if (index < 0) return false;
+    final old = assignments[index];
+    assignments[index] = WorkAssignment(
+      id: old.id, workerId: old.workerId, region: old.region,
+      scheduledStart: start, scheduledEnd: end,
+      site: site.trim(), busLines: lines.trim(),
+      instructions: instructions.trim(),
+      confirmedAt: null, // any change requires a fresh acknowledgment
+    );
+    events.insert(0, ShiftEvent(old.workerId, 'עדכון סידור עבודה', now));
+    notifyListeners();
+    save();
+    return true;
+  }
+
   bool confirmAssignment(String assignmentId) {
     for (final a in assignments) {
       if (a.id == assignmentId && a.workerId == selectedId) {

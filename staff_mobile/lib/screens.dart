@@ -616,6 +616,99 @@ class _StaffScreenState extends State<StaffScreen> {
       ]);
   }
 
+  Future<void> _editAssignment(WorkAssignment assignment) async {
+    final siteController=TextEditingController(text:assignment.site);
+    final linesController=TextEditingController(text:assignment.busLines);
+    final instructionsController=TextEditingController(text:assignment.instructions);
+    var start=TimeOfDay.fromDateTime(assignment.scheduledStart);
+    var end=TimeOfDay.fromDateTime(assignment.scheduledEnd);
+    await showModalBottomSheet<void>(
+      context:context,
+      backgroundColor:Colors.white,
+      isScrollControlled:true,
+      showDragHandle:true,
+      builder:(sheetContext)=>StatefulBuilder(
+        builder:(sheetContext,update)=>SafeArea(child:Padding(
+          padding:EdgeInsets.fromLTRB(20,8,20,
+            MediaQuery.viewInsetsOf(sheetContext).bottom+22),
+          child:SingleChildScrollView(child:Column(
+            mainAxisSize:MainAxisSize.min,
+            crossAxisAlignment:CrossAxisAlignment.stretch,
+            children:[
+              const Text('עריכת סידור עבודה',
+                style:TextStyle(color:ink,fontSize:21,fontWeight:FontWeight.w900)),
+              const SizedBox(height:6),
+              const Text('שינוי משמרת מבטל אישור קודם ודורש אישור חדש.',
+                style:TextStyle(color:muted,fontSize:12)),
+              const SizedBox(height:18),
+              Row(children:[
+                Expanded(child:OutlinedButton.icon(
+                  onPressed:() async {
+                    final choice=await showTimePicker(
+                      context:sheetContext,initialTime:start,
+                      helpText:'שעת התחלה');
+                    if(choice!=null)update(()=>start=choice);
+                  },
+                  icon:const Icon(Icons.schedule),
+                  label:Text('כניסה '+start.format(sheetContext)),
+                )),
+                const SizedBox(width:8),
+                Expanded(child:OutlinedButton.icon(
+                  onPressed:() async {
+                    final choice=await showTimePicker(
+                      context:sheetContext,initialTime:end,
+                      helpText:'שעת סיום');
+                    if(choice!=null)update(()=>end=choice);
+                  },
+                  icon:const Icon(Icons.schedule),
+                  label:Text('יציאה '+end.format(sheetContext)),
+                )),
+              ]),
+              const SizedBox(height:11),
+              TextField(controller:siteController,maxLength:120,
+                decoration:const InputDecoration(
+                  labelText:'מקום עבודה',border:OutlineInputBorder())),
+              const SizedBox(height:8),
+              TextField(controller:linesController,maxLength:80,
+                decoration:const InputDecoration(
+                  labelText:'קווי אוטובוס',border:OutlineInputBorder())),
+              const SizedBox(height:8),
+              TextField(controller:instructionsController,maxLines:2,
+                maxLength:260,decoration:const InputDecoration(
+                  labelText:'הוראות לעובד',border:OutlineInputBorder())),
+              const SizedBox(height:14),
+              _primary('שמירת סידור ושליחה לאישור',
+                Icons.save_outlined,(){
+                  final day=assignment.scheduledStart;
+                  final begin=DateTime(day.year,day.month,day.day,
+                    start.hour,start.minute);
+                  final finish=DateTime(day.year,day.month,day.day,
+                    end.hour,end.minute);
+                  final ok=demo.rescheduleAssignment(
+                    assignmentId:assignment.id,
+                    start:begin,end:finish,
+                    site:siteController.text,
+                    lines:linesController.text,
+                    instructions:instructionsController.text);
+                  if(!ok){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content:Text(
+                        'יש למלא את כל השדות ולוודא שעת סיום אחרי התחלה')));
+                    return;
+                  }
+                  Navigator.pop(sheetContext);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content:Text(
+                      'הסידור עודכן · נדרש אישור חדש מהעובד')));
+                }),
+            ],
+          ))))),
+    );
+    siteController.dispose();
+    linesController.dispose();
+    instructionsController.dispose();
+  }
+
   Widget _assignmentCard(WorkAssignment a,bool employee) {
     final found=demo.members.where((w)=>w.id==a.workerId);
     final name=found.isEmpty?'עובד':found.first.name;
@@ -656,6 +749,15 @@ class _StaffScreenState extends State<StaffScreen> {
         const SizedBox(height:12),
         Text(a.instructions,style:const TextStyle(color:muted,fontSize:12,height:1.5)),
         const SizedBox(height:16),
+        if(!employee) ...[
+          OutlinedButton.icon(
+            key:Key('edit-assignment-'+a.id),
+            onPressed:()=>_editAssignment(a),
+            icon:const Icon(Icons.edit_outlined),
+            label:const Text('עריכת סידור עבודה'),
+          ),
+          const SizedBox(height:10),
+        ],
         if(employee&&!a.isConfirmed)
           _primary('אישור קבלת סידור העבודה',Icons.check_circle_outline,(){
             if(demo.confirmAssignment(a.id)){
