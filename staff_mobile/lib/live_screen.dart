@@ -241,7 +241,6 @@ class _LiveGateState extends State<LiveGate> {
               style:TextStyle(color:accent,fontSize:14*s,
                 fontWeight:FontWeight.w800))),
           ])),
-        ),
         SizedBox(height:17*s),
         Container(
           key:const Key('live-login-form-panel'),
