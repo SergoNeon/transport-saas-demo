@@ -239,7 +239,10 @@ class _StaffScreenState extends State<StaffScreen> {
           const SizedBox(height: 3),
           _secondary('סיום משמרת', () => _endShift(w)),
         ],
-        if (state == ShiftState.finished)
+        if (state == ShiftState.finished) ...[
+          _primary('תחילת משמרת חדשה', Icons.play_arrow_rounded,
+            () => demo.transition(w.id, 'start')),
+          const SizedBox(height: 9),
           Container(
             key: const Key('finished-shift-message'),
             padding: const EdgeInsets.all(15),
@@ -253,6 +256,7 @@ class _StaffScreenState extends State<StaffScreen> {
                   color: teal, fontSize: 14, fontWeight: FontWeight.w800))),
             ]),
           ),
+        ],
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.symmetric(
@@ -524,7 +528,7 @@ class _StaffScreenState extends State<StaffScreen> {
               Expanded(child: Text(w.name,
                 style: const TextStyle(
                   color: ink, fontWeight: FontWeight.w800))),
-              Text(durationText(w.workedDuration(demo.now)),
+              Text(durationText(w.totalWorkedDuration(demo.now)),
                 style: const TextStyle(
                   color: teal, fontWeight: FontWeight.w900)),
             ]),
@@ -541,6 +545,22 @@ class _StaffScreenState extends State<StaffScreen> {
               Text('יציאה ' + timeText(w.endedAt),
                 style: const TextStyle(color: muted, fontSize: 11)),
             ]),
+            if (w.previousShifts.isNotEmpty) ...[
+              const SizedBox(height: 11),
+              Text('משמרות קודמות: ${w.previousShifts.length}',
+                style: const TextStyle(color: teal,
+                  fontSize: 12, fontWeight: FontWeight.w800)),
+              for (final record in w.previousShifts.reversed.take(5))
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    '${timeText(record.startedAt)}–${timeText(record.endedAt)} · '
+                    '${durationText(record.workedDuration)} שעות · '
+                    '${record.workplace}',
+                    style: const TextStyle(color: muted, fontSize: 11),
+                  ),
+                ),
+            ],
             if (w != people.last)
               const Divider(height: 24),
           ],
