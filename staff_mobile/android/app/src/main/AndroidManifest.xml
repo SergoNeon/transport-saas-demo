@@ -2,7 +2,7 @@
     <!-- Only network access for publicly hosted map tiles. No device GPS access in the demo. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="BRILL STAFF"
+        android:label="אלקטרה אפיקים"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
