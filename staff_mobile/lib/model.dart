@@ -41,7 +41,7 @@ class StaffMember {
   Duration breakDuration(DateTime now) {
     final current = breakStartedAt == null
         ? 0
-        : (now.difference(breakStartedAt!).inMilliseconds).clamp(0, 1 << 62);
+        : (now.difference(breakStartedAt!).inMilliseconds).clamp(0, 1 << 62).toInt();
     return Duration(milliseconds: completedBreakMs + current);
   }
 
