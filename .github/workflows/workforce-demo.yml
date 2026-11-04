@@ -1,0 +1,25 @@
+name: Workforce demo validation
+on:
+  pull_request:
+    paths:
+      - 'workforce/**'
+      - '.github/workflows/workforce-demo.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'workforce/**'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check workforce/app.js
+      - run: test -s workforce/index.html && test -s workforce/style.css
+      - run: grep -q 'id="timesheet"' workforce/index.html
+      - run: grep -q 'function paid' workforce/app.js
