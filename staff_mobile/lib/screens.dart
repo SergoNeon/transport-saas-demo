@@ -616,6 +616,10 @@ class _StaffScreenState extends State<StaffScreen> {
       ]);
   }
 
+  String _format24h(TimeOfDay t) =>
+    t.hour.toString().padLeft(2,'0') + ':' +
+    t.minute.toString().padLeft(2,'0');
+
   Future<void> _editAssignment(WorkAssignment assignment) async {
     final siteController=TextEditingController(text:assignment.site);
     final linesController=TextEditingController(text:assignment.busLines);
@@ -650,7 +654,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     if(choice!=null)update(()=>start=choice);
                   },
                   icon:const Icon(Icons.schedule),
-                  label:Text('כניסה '+start.format(sheetContext)),
+                  label:Text('כניסה '+_format24h(start)),
                 )),
                 const SizedBox(width:8),
                 Expanded(child:OutlinedButton.icon(
@@ -661,7 +665,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     if(choice!=null)update(()=>end=choice);
                   },
                   icon:const Icon(Icons.schedule),
-                  label:Text('יציאה '+end.format(sheetContext)),
+                  label:Text('יציאה '+_format24h(end)),
                 )),
               ]),
               const SizedBox(height:11),
