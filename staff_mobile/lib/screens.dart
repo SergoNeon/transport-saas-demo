@@ -119,140 +119,188 @@ class _StaffScreenState extends State<StaffScreen> {
           fontSize: 15, fontWeight: FontWeight.w700)),
       ));
 
-  Widget _employeeHome() => LayoutBuilder(builder: (context, layout) {
-    // Fills a normal phone, scrolls only on unusually short screens.
-    final height = math.max(layout.maxHeight, 604.0);
+  Widget _employeeHome() {
     final w = demo.selected;
-    final duration = w.workedDuration(demo.now);
-    final diameter = math.min(MediaQuery.sizeOf(context).width * .64, 236.0);
-    final active = w.state == ShiftState.working;
-    final paused = w.state == ShiftState.onBreak;
-    final off = w.state == ShiftState.off;
-    return SingleChildScrollView(
-      child: SizedBox(height: height, child: Padding(
-        padding: const EdgeInsets.fromLTRB(23, 12, 23, 14),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Row(children: [
-            Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('שלום, ' + w.name.split(' ').first,
-                  style: const TextStyle(
-                    color: ink, fontSize: 27, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 4),
-                const Text('שעון הנוכחות שלי',
-                  style: TextStyle(color: muted, fontSize: 14)),
-              ])),
-            PopupMenuButton<String>(
-              tooltip: 'בחירת עובד לדוגמה',
-              onSelected: demo.select,
-              itemBuilder: (_) => demo.members.map((person) =>
-                PopupMenuItem<String>(value: person.id,
-                  child: Text(person.name))).toList(),
-              child: Container(width: 43, height: 43,
-                decoration: const BoxDecoration(
-                  color: pale, shape: BoxShape.circle),
-                child: const Icon(Icons.person_outline, color: teal)),
-            ),
-          ]),
-          const Spacer(flex: 1),
-          Center(child: SizedBox(
-            width: diameter, height: diameter,
-            child: Stack(alignment: Alignment.center, children: [
-              SizedBox.expand(child: CircularProgressIndicator(
-                value: active ? .78 : paused ? .51 : .02,
-                strokeWidth: 9, strokeCap: StrokeCap.round,
-                backgroundColor: soft,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  active ? teal : paused ? const Color(0xffc49a50) : border),
-              )),
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(
-                  active ? Icons.directions_walk :
-                  paused ? Icons.coffee_outlined : Icons.schedule,
-                  size: 26, color: active ? teal : muted),
-                const SizedBox(height: 10),
-                const Text('שעות עבודה', style: TextStyle(
-                  color: muted, fontSize: 13)),
-                const SizedBox(height: 5),
-                FittedBox(fit: BoxFit.scaleDown, child: Text(_clock(duration),
-                  style: const TextStyle(
-                    color: ink, fontWeight: FontWeight.w900,
-                    fontSize: 37,
-                    fontFeatures: [FontFeature.tabularFigures()]))),
-                const SizedBox(height: 9),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: active ? pale : soft,
-                    borderRadius: BorderRadius.circular(20)),
-                  child: Text(_status(w), style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w800,
-                    color: _statusColor(w))),
-                ),
-              ]),
-            ]),
+    final state = w.state;
+    final active = state == ShiftState.working;
+    final paused = state == ShiftState.onBreak;
+    final off = state == ShiftState.off;
+
+    return ListView(
+      key: const Key('employee-clock-screen'),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 20),
+      children: [
+        Row(children: [
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('שלום, ' + w.name.split(' ').first,
+                style: const TextStyle(color: ink,
+                  fontSize: 28, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 3),
+              const Text('הנוכחות שלי היום',
+                style: TextStyle(color: muted, fontSize: 14)),
+            ],
           )),
-          const Spacer(flex: 1),
-          Row(children: [
+          PopupMenuButton<String>(
+            tooltip: 'בחירת עובד לצורך הדגמה',
+            onSelected: (value) {
+              if (value == 'reset-demo') {
+                demo.reset();
+              } else {
+                demo.select(value);
+              }
+            },
+            itemBuilder: (_) => [
+              ...demo.members.map((person) => PopupMenuItem<String>(
+                value: person.id, child: Text(person.name))),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: 'reset-demo',
+                child: Text('איפוס נתוני ההדגמה')),
+            ],
+            child: Container(
+              width: 48, height: 48,
+              decoration: const BoxDecoration(
+                color: pale, shape: BoxShape.circle),
+              child: const Icon(Icons.person_outline, color: teal, size: 25),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 17),
+        Container(
+          key: const Key('shift-timer-card'),
+          padding: const EdgeInsets.fromLTRB(20, 19, 20, 20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Color(0xff163d46), Color(0xff102932)]),
+            borderRadius: BorderRadius.circular(23),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Row(children: [
+                Icon(Icons.access_time_rounded,
+                  color: Color(0xffa5d7cd), size: 19),
+                SizedBox(width: 8),
+                Text('שעון נוכחות',
+                  style: TextStyle(color: Color(0xffcee6e0),
+                    fontSize: 13, fontWeight: FontWeight.w700)),
+              ]),
+              const SizedBox(height: 22),
+              const Center(child: Text('שעות עבודה נטו',
+                style: TextStyle(color: Color(0xffbfd4d7), fontSize: 14))),
+              const SizedBox(height: 5),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(_clock(w.workedDuration(demo.now)),
+                  key: const Key('shift-timer-value'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white,
+                    fontSize: 48, fontWeight: FontWeight.w900,
+                    letterSpacing: 1.1,
+                    fontFeatures: [FontFeature.tabularFigures()])),
+              ),
+              const SizedBox(height: 14),
+              Center(child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14, vertical: 7),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .12),
+                  borderRadius: BorderRadius.circular(18)),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.circle, color: active ? const Color(0xff89e6bf)
+                    : paused ? const Color(0xfff5cb87) : Colors.white70,
+                    size: 8),
+                  const SizedBox(width: 7),
+                  Text(_status(w), style: const TextStyle(
+                    color: Colors.white, fontSize: 13,
+                    fontWeight: FontWeight.w800)),
+                ]),
+              )),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (off)
+          _primary('תחילת משמרת', Icons.play_arrow_rounded,
+            () => demo.transition(w.id, 'start')),
+        if (active) ...[
+          _primary('יציאה להפסקה', Icons.coffee_outlined,
+            () => demo.transition(w.id, 'pause')),
+          const SizedBox(height: 3),
+          _secondary('סיום משמרת', () => _endShift(w)),
+        ],
+        if (paused) ...[
+          _primary('חזרה לעבודה', Icons.play_arrow_rounded,
+            () => demo.transition(w.id, 'resume')),
+          const SizedBox(height: 3),
+          _secondary('סיום משמרת', () => _endShift(w)),
+        ],
+        if (state == ShiftState.finished)
+          Container(
+            key: const Key('finished-shift-message'),
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: pale, borderRadius: BorderRadius.circular(15)),
+            child: const Row(children: [
+              Icon(Icons.check_circle, color: teal, size: 24),
+              SizedBox(width: 10),
+              Expanded(child: Text('המשמרת הסתיימה. סיכום השעות נשמר.',
+                style: TextStyle(
+                  color: teal, fontSize: 14, fontWeight: FontWeight.w800))),
+            ]),
+          ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10, vertical: 17),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: border),
+            borderRadius: BorderRadius.circular(16)),
+          child: Row(children: [
             _timeDetail('כניסה', timeText(w.startedAt)),
-            Container(height: 32, width: 1, color: border),
+            Container(height: 36, width: 1, color: border),
             _timeDetail('הפסקות', durationText(w.breakDuration(demo.now))),
-            Container(height: 32, width: 1, color: border),
+            Container(height: 36, width: 1, color: border),
             _timeDetail('יציאה', timeText(w.endedAt)),
           ]),
-          const SizedBox(height: 22),
-          if (off) _primary('תחילת משמרת', Icons.play_arrow_rounded,
-            () => demo.transition(w.id, 'start')),
-          if (active) ...[
-            _primary('יציאה להפסקה', Icons.coffee_outlined,
-              () => demo.transition(w.id, 'pause')),
-            _secondary('סיום משמרת', () => _endShift(w)),
-          ],
-          if (paused) ...[
-            _primary('חזרה לעבודה', Icons.play_arrow_rounded,
-              () => demo.transition(w.id, 'resume')),
-            _secondary('סיום משמרת', () => _endShift(w)),
-          ],
-          if (w.state == ShiftState.finished)
-            Container(
-              padding: const EdgeInsets.all(17),
-              decoration: BoxDecoration(
-                color: pale, borderRadius: BorderRadius.circular(16)),
-              child: const Row(children: [
-                Icon(Icons.check_circle, color: teal),
-                SizedBox(width: 9),
-                Expanded(child: Text('המשמרת הסתיימה',
-                  style: TextStyle(color: teal, fontWeight: FontWeight.w800))),
-              ]),
-            ),
-          if (off || w.state == ShiftState.finished)
-            const SizedBox(height: 49),
-          const SizedBox(height: 16),
-          Container(height: 1, color: border),
-          const SizedBox(height: 13),
-          Row(children: [
-            const Icon(Icons.place_outlined, color: teal, size: 21),
-            const SizedBox(width: 8),
+        ),
+        const SizedBox(height: 13),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: border),
+            borderRadius: BorderRadius.circular(16)),
+          child: Row(children: [
+            const Icon(Icons.place_outlined, color: teal, size: 24),
+            const SizedBox(width: 10),
             Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, children: [
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 const Text('מקום עבודה', style: TextStyle(
-                  color: muted, fontSize: 11)),
+                  color: muted, fontSize: 12)),
                 const SizedBox(height: 3),
-                Text(w.workplace, maxLines: 1, overflow: TextOverflow.ellipsis,
+                Text(w.workplace, maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(color: ink,
-                    fontSize: 13, fontWeight: FontWeight.w700)),
+                    fontSize: 14, fontWeight: FontWeight.w800)),
               ],
             )),
           ]),
-          const SizedBox(height: 10),
-          const Text('דמו בלבד · אין איסוף GPS או נתוני נוכחות אמיתיים',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: muted, fontSize: 10)),
-        ]),
-      )),
+        ),
+        const SizedBox(height: 16),
+        const Text('גרסת הדגמה · אין איסוף GPS או דיווחי נוכחות אמיתיים',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: muted, fontSize: 11)),
+      ],
     );
-  });
+  }
 
   Widget _timeDetail(String caption, String value) => Expanded(
     child: Column(children: [

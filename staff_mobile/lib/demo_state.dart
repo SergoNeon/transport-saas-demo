@@ -4,11 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'model.dart';
 
 class StaffDemoState extends ChangeNotifier {
-  static const storageKey = 'brill_staff_demo_v1';
+  static const storageKey = 'electra_afikim_mobile_demo_v2';
   List<StaffMember> members = [];
   List<ShiftEvent> events = [];
   int extraMinutes = 0;
-  String selectedId = 'e1';
+  String selectedId = 'e6';
   bool loaded = false;
 
   DateTime get now => DateTime.now().add(Duration(minutes: extraMinutes));
@@ -120,7 +120,7 @@ class StaffDemoState extends ChangeNotifier {
 
   void reset() {
     extraMinutes = 0;
-    selectedId = 'e1';
+    selectedId = 'e6';
     seed();
     notifyListeners();
     save();
