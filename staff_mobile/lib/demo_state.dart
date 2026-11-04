@@ -21,7 +21,7 @@ class StaffDemoState extends ChangeNotifier {
   int get finishedCount =>
       members.where((w) => w.state == ShiftState.finished).length;
   int get totalMinutes =>
-      members.fold(0, (s, w) => s + w.workedDuration(now).inMinutes);
+      members.fold(0, (s, w) => s + w.totalWorkedDuration(now).inMinutes);
 
   StaffDemoState() {
     load();
