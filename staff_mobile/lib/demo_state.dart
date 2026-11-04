@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model.dart';
+import 'assignment.dart';
 
 class StaffDemoState extends ChangeNotifier {
   static const storageKey = 'electra_afikim_mobile_demo_v2';
   List<StaffMember> members = [];
   List<ShiftEvent> events = [];
+  List<WorkAssignment> assignments = [];
   int extraMinutes = 0;
   String selectedId = 'e6';
   bool loaded = false;
@@ -25,6 +27,33 @@ class StaffDemoState extends ChangeNotifier {
 
   StaffDemoState() {
     load();
+  }
+
+  WorkAssignment? get selectedAssignment {
+    for (final a in assignments) {
+      if (a.workerId == selectedId && a.occursOn(now)) return a;
+    }
+    return null;
+  }
+
+  WorkAssignment? assignmentFor(String workerId) {
+    for (final a in assignments) {
+      if (a.workerId == workerId && a.occursOn(now)) return a;
+    }
+    return null;
+  }
+
+  bool confirmAssignment(String assignmentId) {
+    for (final a in assignments) {
+      if (a.id == assignmentId && a.workerId == selectedId) {
+        if (!a.confirm(now)) return false;
+        events.insert(0, ShiftEvent(a.workerId, 'אישור סידור עבודה', now));
+        notifyListeners();
+        save();
+        return true;
+      }
+    }
+    return false;
   }
 
   void seed() {
@@ -63,6 +92,18 @@ class StaffDemoState extends ChangeNotifier {
         workplace:'מרכזית המפרץ, חיפה', region:'צפון',
         latitude:32.7923, longitude:34.9989),
     ];
+    assignments = [
+      for (final worker in members)
+        WorkAssignment(
+          id: 'assignment-${worker.id}', workerId: worker.id,
+          scheduledStart: DateTime(n.year,n.month,n.day,7,0),
+          scheduledEnd: DateTime(n.year,n.month,n.day,15,0),
+          site: worker.workplace, region: worker.region,
+          busLines: worker.id == 'e6' ? '1, 2, 3' : '66, 25',
+          instructions: 'יש להתייצב בנקודת העבודה ולדווח על תחילת המשמרת.',
+          confirmedAt: worker.id == 'e6' ? null : n.subtract(const Duration(hours:1)),
+        ),
+    ];
     events = [
       ShiftEvent('e3','יציאה להפסקה',n.subtract(const Duration(minutes:15))),
       ShiftEvent('e5','סיום משמרת',n.subtract(const Duration(hours:1))),
@@ -84,10 +125,25 @@ class StaffDemoState extends ChangeNotifier {
             .map((x) => ShiftEvent.fromJson(Map<String,dynamic>.from(x as Map)))
             .toList();
         extraMinutes = decoded['offsetMin'] as int? ?? 0;
+        final entries = decoded['assignments'];
+        if (entries is List) {
+          assignments = entries.map((a) => WorkAssignment.fromJson(
+            Map<String,dynamic>.from(a as Map))).toList();
+        }
+        if (assignments.isEmpty) {
+          final n = now;
+          assignments = [for (final worker in members) WorkAssignment(
+            id:'assignment-${worker.id}',workerId:worker.id,
+            scheduledStart:DateTime(n.year,n.month,n.day,7),
+            scheduledEnd:DateTime(n.year,n.month,n.day,15),
+            site:worker.workplace,region:worker.region,
+            busLines:'66, 25',instructions:'יש לדווח על תחילת המשמרת.')];
+        }
       }
     } catch (_) {
       members = [];
       events = [];
+      assignments = [];
       extraMinutes = 0;
     }
     if (members.isEmpty) seed();
@@ -97,7 +153,9 @@ class StaffDemoState extends ChangeNotifier {
 
   Future<void> save() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(storageKey, encodeDemo(members, events, extraMinutes));
+    final payload = jsonDecode(encodeDemo(members, events, extraMinutes)) as Map<String,dynamic>;
+    payload['assignments'] = assignments.map((a) => a.toJson()).toList();
+    await prefs.setString(storageKey, jsonEncode(payload));
   }
 
   void select(String id) {

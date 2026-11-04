@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'demo_state.dart';
 import 'model.dart';
+import 'assignment.dart';
 
 // Portrait-first field-worker app. There is deliberately no desktop dashboard
 // in the employee home: one clock, one primary action and a worksite line.
@@ -428,7 +429,7 @@ class _StaffScreenState extends State<StaffScreen> {
         ])),
         const SizedBox(height: 16),
         SizedBox(height: 50, child: OutlinedButton.icon(
-          onPressed: () => setState(() => tab = 1),
+          onPressed: () => setState(() => tab = 2),
           icon: const Icon(Icons.map_outlined),
           label: const Text('מפת העובדים'),
         )),
@@ -595,14 +596,100 @@ class _StaffScreenState extends State<StaffScreen> {
       ]);
   }
 
+  Widget _assignmentPage({required bool employee}) {
+    final records=demo.assignments.where((a)=>a.occursOn(demo.now)
+      && (!employee || a.workerId==demo.selectedId)).toList();
+    return ListView(key:const Key('assignment-screen'),
+      padding:const EdgeInsets.fromLTRB(17,20,17,27),
+      children:[
+        _heading(employee?'סידור העבודה שלי':'סידור עבודה',
+          employee?'משמרת, קווים ונקודת התייצבות':'שעות עבודה ואישור קבלת הסידור'),
+        if(records.isEmpty)_surface(const Text('אין סידור עבודה להיום',
+          style:TextStyle(color:muted))),
+        ...records.map((a)=>Padding(
+          padding:const EdgeInsets.only(bottom:13),
+          child:_assignmentCard(a,employee))),
+        const SizedBox(height:12),
+        const Text('נתוני הדגמה בלבד · האישורים נשמרים במכשיר',
+          textAlign:TextAlign.center,
+          style:TextStyle(color:muted,fontSize:11)),
+      ]);
+  }
+
+  Widget _assignmentCard(WorkAssignment a,bool employee) {
+    final found=demo.members.where((w)=>w.id==a.workerId);
+    final name=found.isEmpty?'עובד':found.first.name;
+    return _surface(Column(crossAxisAlignment:CrossAxisAlignment.stretch,
+      children:[
+        Row(children:[
+          const Icon(Icons.event_available,color:teal,size:28),
+          const SizedBox(width:10),
+          Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
+            children:[
+              Text(employee?'המשמרת המתוכננת':name,
+                style:const TextStyle(color:ink,fontSize:17,fontWeight:FontWeight.w900)),
+              Text(a.region,style:const TextStyle(color:muted,fontSize:12)),
+            ])),
+          Icon(a.isConfirmed?Icons.verified:Icons.pending_actions,
+            color:a.isConfirmed?teal:const Color(0xffb48139)),
+        ]),
+        const SizedBox(height:19),
+        Row(children:[
+          _timeDetail('תחילה',timeText(a.scheduledStart)),
+          Container(height:35,width:1,color:border),
+          _timeDetail('סיום',timeText(a.scheduledEnd)),
+        ]),
+        const Divider(height:29),
+        Row(children:[
+          const Icon(Icons.place_outlined,color:teal),
+          const SizedBox(width:8),
+          Expanded(child:Text(a.site,
+            style:const TextStyle(color:ink,fontSize:14,fontWeight:FontWeight.w800))),
+        ]),
+        const SizedBox(height:12),
+        Row(children:[
+          const Icon(Icons.route_outlined,color:teal),
+          const SizedBox(width:8),
+          Expanded(child:Text('קווים: '+a.busLines,
+            style:const TextStyle(color:ink,fontSize:13))),
+        ]),
+        const SizedBox(height:12),
+        Text(a.instructions,style:const TextStyle(color:muted,fontSize:12,height:1.5)),
+        const SizedBox(height:16),
+        if(employee&&!a.isConfirmed)
+          _primary('אישור קבלת סידור העבודה',Icons.check_circle_outline,(){
+            if(demo.confirmAssignment(a.id)){
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content:Text('סידור העבודה אושר')));
+            }
+          }),
+        if(!employee||a.isConfirmed)
+          Container(padding:const EdgeInsets.all(12),
+            decoration:BoxDecoration(color:a.isConfirmed?pale:soft,
+              borderRadius:BorderRadius.circular(12)),
+            child:Row(children:[
+              Icon(a.isConfirmed?Icons.check_circle:Icons.schedule,
+                color:a.isConfirmed?teal:muted),
+              const SizedBox(width:9),
+              Expanded(child:Text(a.isConfirmed
+                  ?'אושר בשעה '+timeText(a.confirmedAt)
+                  :'ממתין לאישור העובד',
+                style:TextStyle(color:a.isConfirmed?teal:muted,
+                  fontSize:12,fontWeight:FontWeight.w800))),
+            ])),
+      ]));
+  }
+
   Widget _body() {
     if (!manager) {
       if (tab == 0) return _employeeHome();
-      if (tab == 1) return _mapPage(employee: true);
+      if (tab == 1) return _assignmentPage(employee: true);
+      if (tab == 2) return _mapPage(employee: true);
       return _reportsPage(employee: true);
     }
     if (tab == 0) return _managerHome();
-    if (tab == 1) return _mapPage(employee: false);
+    if (tab == 1) return _assignmentPage(employee: false);
+    if (tab == 2) return _mapPage(employee: false);
     return _reportsPage(employee: false);
   }
 
@@ -665,6 +752,8 @@ class _StaffScreenState extends State<StaffScreen> {
       destinations: manager ? const [
         NavigationDestination(icon: Icon(Icons.people_outline),
           selectedIcon: Icon(Icons.people, color: teal), label: 'עובדים'),
+        NavigationDestination(icon: Icon(Icons.event_note_outlined),
+          selectedIcon: Icon(Icons.event_note, color: teal), label: 'סידור'),
         NavigationDestination(icon: Icon(Icons.map_outlined),
           selectedIcon: Icon(Icons.map, color: teal), label: 'מפה'),
         NavigationDestination(icon: Icon(Icons.receipt_long_outlined),
@@ -672,6 +761,8 @@ class _StaffScreenState extends State<StaffScreen> {
       ] : const [
         NavigationDestination(icon: Icon(Icons.schedule_outlined),
           selectedIcon: Icon(Icons.schedule, color: teal), label: 'משמרת'),
+        NavigationDestination(icon: Icon(Icons.event_note_outlined),
+          selectedIcon: Icon(Icons.event_note, color: teal), label: 'סידור'),
         NavigationDestination(icon: Icon(Icons.place_outlined),
           selectedIcon: Icon(Icons.place, color: teal), label: 'מקום'),
         NavigationDestination(icon: Icon(Icons.history_outlined),
