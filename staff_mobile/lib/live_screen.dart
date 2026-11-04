@@ -210,38 +210,26 @@ class _LiveGateState extends State<LiveGate> {
             fontSize:17*s,fontWeight:FontWeight.w800)))));
     return ListView(
       key:const Key('live-phone-login-screen'),
-      padding:EdgeInsets.fromLTRB(16*s,24*s,16*s,26*s),
+      padding:EdgeInsets.fromLTRB(16*s,13*s,16*s,26*s),
       children:[
         Row(children:[
-          Container(width:62*s,height:62*s,
+          Container(width:45*s,height:45*s,
             alignment:Alignment.center,
             decoration:BoxDecoration(color:accent,
-              borderRadius:BorderRadius.circular(17*s)),
-            child:Text('א',style:TextStyle(
-              color:Colors.white,fontSize:37*s,fontWeight:FontWeight.w900))),
-          SizedBox(width:14*s),
+              borderRadius:BorderRadius.circular(13*s)),
+            child:Text('א',style:TextStyle(color:Colors.white,
+              fontSize:28*s,fontWeight:FontWeight.w900))),
+          SizedBox(width:12*s),
           Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
             children:[
-              Text('ברוכים הבאים',
-                style:TextStyle(color:deep,fontSize:27*s,fontWeight:FontWeight.w900)),
-              SizedBox(height:4*s),
-              Text('מערכת המשמרות של אלקטרה אפיקים',
-                style:TextStyle(color:weak,fontSize:15*s)),
+              Text('אלקטרה אפיקים',
+                style:TextStyle(color:deep,fontSize:23*s,
+                  fontWeight:FontWeight.w900)),
+              Text('כניסת עובד או מנהל · הדגמה',
+                style:TextStyle(color:weak,fontSize:14*s)),
             ])),
         ]),
-        SizedBox(height:19*s),
-        Container(
-          padding:EdgeInsets.symmetric(horizontal:13*s,vertical:11*s),
-          decoration:BoxDecoration(color:const Color(0xffe0f2ec),
-            borderRadius:BorderRadius.circular(12*s)),
-          child:Row(children:[
-            Icon(Icons.verified_user_outlined,color:accent,size:22*s),
-            SizedBox(width:10*s),
-            Expanded(child:Text('סביבת בדיקה · חשבונות הדגמה בלבד',
-              style:TextStyle(color:accent,fontSize:14*s,
-                fontWeight:FontWeight.w800))),
-          ])),
-        SizedBox(height:17*s),
+        SizedBox(height:12*s),
         Container(
           key:const Key('live-login-form-panel'),
           width:double.infinity,
