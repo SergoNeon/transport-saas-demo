@@ -2,6 +2,39 @@ import 'dart:convert';
 
 enum ShiftState { off, working, onBreak, finished }
 
+class CompletedShift {
+  final DateTime startedAt;
+  final DateTime endedAt;
+  final int breakDurationMs;
+  final String workplace;
+
+  const CompletedShift({
+    required this.startedAt,
+    required this.endedAt,
+    required this.breakDurationMs,
+    required this.workplace,
+  });
+
+  Duration get workedDuration {
+    final duration = endedAt.difference(startedAt).inMilliseconds - breakDurationMs;
+    return Duration(milliseconds: duration < 0 ? 0 : duration);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'startedAt': startedAt.toIso8601String(),
+        'endedAt': endedAt.toIso8601String(),
+        'breakDurationMs': breakDurationMs,
+        'workplace': workplace,
+      };
+
+  factory CompletedShift.fromJson(Map<String, dynamic> x) => CompletedShift(
+        startedAt: DateTime.parse(x['startedAt'] as String),
+        endedAt: DateTime.parse(x['endedAt'] as String),
+        breakDurationMs: (x['breakDurationMs'] as num).toInt(),
+        workplace: x['workplace'] as String,
+      );
+}
+
 class StaffMember {
   final String id;
   final String name;
@@ -15,6 +48,7 @@ class StaffMember {
   DateTime? breakStartedAt;
   int completedBreakMs;
   DateTime? lastSampleAt;
+  final List<CompletedShift> previousShifts;
 
   StaffMember({
     required this.id,
@@ -29,7 +63,8 @@ class StaffMember {
     this.breakStartedAt,
     this.completedBreakMs = 0,
     this.lastSampleAt,
-  });
+    List<CompletedShift>? previousShifts,
+  }) : previousShifts = previousShifts ?? [];
 
   ShiftState get state {
     if (startedAt == null) return ShiftState.off;
@@ -54,7 +89,15 @@ class StaffMember {
   }
 
   bool clockIn(DateTime now) {
-    if (state != ShiftState.off) return false;
+    if (state != ShiftState.off && state != ShiftState.finished) return false;
+    if (state == ShiftState.finished && startedAt != null && endedAt != null) {
+      previousShifts.add(CompletedShift(
+        startedAt: startedAt!,
+        endedAt: endedAt!,
+        breakDurationMs: completedBreakMs,
+        workplace: workplace,
+      ));
+    }
     startedAt = now;
     endedAt = null;
     completedBreakMs = 0;
@@ -89,6 +132,12 @@ class StaffMember {
     return true;
   }
 
+  Duration totalWorkedDuration(DateTime now) {
+    final previous = previousShifts.fold<int>(
+      0, (sum, shift) => sum + shift.workedDuration.inMilliseconds);
+    return Duration(milliseconds: previous + workedDuration(now).inMilliseconds);
+  }
+
   bool get showsSamplePosition => state == ShiftState.working;
 
   Map<String, dynamic> toJson() => {
@@ -104,6 +153,7 @@ class StaffMember {
         'breakStartedAt': breakStartedAt?.toIso8601String(),
         'completedBreakMs': completedBreakMs,
         'lastSampleAt': lastSampleAt?.toIso8601String(),
+        'previousShifts': previousShifts.map((x) => x.toJson()).toList(),
       };
 
   factory StaffMember.fromJson(Map<String, dynamic> x) => StaffMember(
@@ -119,6 +169,10 @@ class StaffMember {
         breakStartedAt: _date(x['breakStartedAt']),
         completedBreakMs: x['completedBreakMs'] as int? ?? 0,
         lastSampleAt: _date(x['lastSampleAt']),
+        previousShifts: (x['previousShifts'] as List<dynamic>? ?? [])
+            .map((record) => CompletedShift.fromJson(
+                Map<String, dynamic>.from(record as Map)))
+            .toList(),
       );
 
   static DateTime? _date(dynamic x) =>
