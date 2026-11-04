@@ -150,6 +150,29 @@ class LiveApi {
       LiveShift.fromJson(Map<String,dynamic>.from(e as Map))).toList();
   }
 
+  Future<Map<String,dynamic>> timesheet(LiveSession session,{
+    required String from,required String to,String? workerId,
+  }) async {
+    final query=<String,String>{'from':from,'to':to};
+    if(workerId!=null)query['workerId']=workerId;
+    final uri=Uri(path:'/api/attendance/timesheet',queryParameters:query);
+    return _request(uri.toString(),method:'GET',session:session);
+  }
+  Future<String> timesheetCsv(LiveSession session,{
+    required String from,required String to,String? workerId,
+  }) async {
+    final query=<String,String>{'from':from,'to':to};
+    if(workerId!=null)query['workerId']=workerId;
+    final uri=Uri(path:'/api/attendance/timesheet.csv',queryParameters:query);
+    final response=await client.get(Uri.parse(base+uri.toString()),
+      headers:{'Authorization':'Bearer '+session.bearer,
+        'Accept':'text/csv'}).timeout(const Duration(seconds:12));
+    if(response.statusCode!=200){
+      throw LiveApiException(response.statusCode,'לא ניתן לייצא דוח');
+    }
+    return utf8.decode(response.bodyBytes);
+  }
+
   Future<void> confirm(LiveSession session,LiveAssignment prior) async {
     await _request('/api/assignments/'+Uri.encodeComponent(prior.id)+'/confirm',
       method:'POST',session:session,data:{'version':prior.version});

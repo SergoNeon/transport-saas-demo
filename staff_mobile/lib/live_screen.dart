@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'live_api.dart';
 import 'attendance_panel.dart';
+import 'timesheet_panel.dart';
 import 'screens.dart';
 
 const accent=Color(0xff08796d);
@@ -26,6 +27,7 @@ class _LiveGateState extends State<LiveGate> {
   List<LiveAssignment> assignments=[];
   LiveAttendance? attendance;
   bool shiftBusy=false;
+  bool showingTimesheet=false;
   Timer? timer;
   bool signingIn=false;
   bool fetching=false;
@@ -50,7 +52,7 @@ class _LiveGateState extends State<LiveGate> {
       final user=await api.login(email.text.trim(),password.text);
       if(!mounted)return;
       password.clear();
-      setState((){session=user;assignments=[];});
+      setState((){session=user;assignments=[];showingTimesheet=false;});
       await refresh(showLoading:true);
       timer?.cancel();
       timer=Timer.periodic(const Duration(seconds:3),(_)=>refresh());
@@ -206,7 +208,7 @@ class _LiveGateState extends State<LiveGate> {
     t.hour.toString().padLeft(2,'0')+':'+t.minute.toString().padLeft(2,'0');
 
   void logout(){
-    timer?.cancel();setState((){session=null;assignments=[];attendance=null;message=null;lastUpdated=null;});
+    timer?.cancel();setState((){session=null;assignments=[];attendance=null;showingTimesheet=false;message=null;lastUpdated=null;});
   }
 
   Widget badge(String text,{Color color=accent})=>Container(
@@ -606,7 +608,41 @@ class _LiveGateState extends State<LiveGate> {
           onPressed:logout,tooltip:'התנתקות',
           icon:const Icon(Icons.logout,color:weak)),
       ])),
-    body:session==null?_loginBody():_dashboard(),
+    body:session==null?_loginBody():Column(children:[
+      Container(
+        color:Colors.white,
+        padding:const EdgeInsets.fromLTRB(14,8,14,9),
+        child:Row(children:[
+          Expanded(child:SizedBox(height:49,child:FilledButton.icon(
+            key:const Key('show-live-attendance'),
+            onPressed:()=>setState(()=>showingTimesheet=false),
+            icon:const Icon(Icons.access_time_outlined,size:23),
+            label:const Text('נוכחות',style:TextStyle(
+              fontWeight:FontWeight.w900,fontSize:16)),
+            style:FilledButton.styleFrom(
+              backgroundColor:showingTimesheet?const Color(0xffedf2f4):accent,
+              foregroundColor:showingTimesheet?deep:Colors.white,
+              shape:RoundedRectangleBorder(
+                borderRadius:BorderRadius.circular(13)))))),
+          const SizedBox(width:9),
+          Expanded(child:SizedBox(height:49,child:FilledButton.icon(
+            key:const Key('show-live-timesheet'),
+            onPressed:()=>setState(()=>showingTimesheet=true),
+            icon:const Icon(Icons.table_chart_outlined,size:23),
+            label:const Text('דוחות שעות',style:TextStyle(
+              fontWeight:FontWeight.w900,fontSize:16)),
+            style:FilledButton.styleFrom(
+              backgroundColor:showingTimesheet?accent:const Color(0xffedf2f4),
+              foregroundColor:showingTimesheet?Colors.white:deep,
+              shape:RoundedRectangleBorder(
+                borderRadius:BorderRadius.circular(13)))))),
+        ]),
+      ),
+      Expanded(child:showingTimesheet
+        ?TimesheetPanel(key:ValueKey('timesheet-'+session!.id),
+          session:session!)
+        :_dashboard()),
+    ]),
   );
   }
 }

@@ -2,6 +2,7 @@ import http from 'node:http';
 import {randomBytes,scryptSync,timingSafeEqual,createHmac} from 'node:crypto';
 import pg from 'pg';
 import {createAttendanceTables,attendanceRoute} from './attendance.mjs';
+import {timesheetRoute} from './timesheet.mjs';
 const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:5});
 const key=process.env.API_SIGNING_KEY;
 if(!process.env.DATABASE_URL || !key || key.length<40)throw Error('DATABASE_URL and API_SIGNING_KEY required');
@@ -52,6 +53,10 @@ if(req.method==='GET'&&url.pathname==='/api/events'){
  const subs=listeners.get(channel)||new Set();subs.add(res);listeners.set(channel,subs);
  const pulse=setInterval(()=>{if(!res.writableEnded)res.write(': heartbeat\n\n')},20000);
  req.on('close',()=>{clearInterval(pulse);subs.delete(res)});return;
+}
+if(url.pathname.startsWith('/api/attendance/timesheet')) {
+ const out=await timesheetRoute(req,res,{pool,user,url,respond,failure});
+ if(out!==false)return out;
 }
 if(url.pathname.startsWith('/api/attendance/')) {
  const result=await attendanceRoute(req,res,{
