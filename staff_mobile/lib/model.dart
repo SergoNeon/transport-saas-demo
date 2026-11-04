@@ -219,7 +219,7 @@ String exportCsv(List<StaffMember> workers, DateTime now) {
       w.workplace,
       timeText(w.startedAt),
       w.breakDuration(now).inMinutes.toString(),
-      w.workedDuration(now).inMinutes.toString(),
+      w.totalWorkedDuration(now).inMinutes.toString(),
       timeText(w.endedAt),
     ]);
   }
