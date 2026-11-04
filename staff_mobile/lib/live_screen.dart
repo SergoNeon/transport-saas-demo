@@ -239,109 +239,259 @@ class _LiveGateState extends State<LiveGate> {
           style:TextStyle(color:weak,fontSize:11)),
       ])));
 
-  Widget _assignmentCard(LiveAssignment a)=>section(
-    Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+  Widget _shiftClock(String label,DateTime time,IconData icon) => Expanded(
+    child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
       Row(children:[
-        const Icon(Icons.event_available,color:accent,size:26),
-        const SizedBox(width:9),
-        Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-          Text(session!.isManager?a.workerName:'המשמרת שלי',
-            style:const TextStyle(color:deep,fontSize:17,fontWeight:FontWeight.w800)),
-          const SizedBox(height:4),
-          Text('גרסה '+a.version.toString(),
-            style:const TextStyle(color:weak,fontSize:11)),
-        ])),
-        badge(a.confirmed?'אושר':'ממתין לאישור',
-          color:a.confirmed?accent:const Color(0xffad7b2d)),
+        Icon(icon,color:const Color(0xffbee4dc),size:19),
+        const SizedBox(width:7),
+        Text(label,style:const TextStyle(
+          color:Color(0xffb8d7d3),fontSize:16,fontWeight:FontWeight.w600)),
       ]),
-      const SizedBox(height:18),
-      Row(children:[
-        Expanded(child:Column(children:[
-          const Text('התחלה',style:TextStyle(color:weak,fontSize:11)),
-          const SizedBox(height:4),
-          Text(readableTime(a.start),style:const TextStyle(
-            fontSize:23,color:deep,fontWeight:FontWeight.w900)),
-        ])),
-        const SizedBox(width:1,height:42,child:ColoredBox(color:edge)),
-        Expanded(child:Column(children:[
-          const Text('סיום',style:TextStyle(color:weak,fontSize:11)),
-          const SizedBox(height:4),
-          Text(readableTime(a.end),style:const TextStyle(
-            fontSize:23,color:deep,fontWeight:FontWeight.w900)),
-        ])),
-      ]),
-      const Divider(height:29),
-      Row(children:[const Icon(Icons.place_outlined,color:accent),
-        const SizedBox(width:8),Expanded(child:Text(a.site,
-          style:const TextStyle(color:deep,fontWeight:FontWeight.w700)))]),
-      const SizedBox(height:12),
-      Row(children:[const Icon(Icons.route_outlined,color:accent),
-        const SizedBox(width:8),Expanded(child:Text('קווים: '+a.lines,
-          style:const TextStyle(color:deep)))]),
-      const SizedBox(height:12),
-      Text(a.instructions,style:const TextStyle(color:weak,fontSize:12,height:1.5)),
-      const SizedBox(height:16),
-      if(!session!.isManager&&!a.confirmed)
-        SizedBox(height:53,child:FilledButton.icon(
+      const SizedBox(height:9),
+      Text(readableTime(time),
+        key:Key(label=='כניסה'?'live-start-time':'live-end-time'),
+        textDirection:TextDirection.ltr,
+        style:const TextStyle(color:Colors.white,
+          fontSize:40,fontWeight:FontWeight.w900,letterSpacing:0.2,
+          fontFeatures:[FontFeature.tabularFigures()])),
+    ]),
+  );
+
+  Widget _assignmentCard(LiveAssignment a) {
+    final isManager=session!.isManager;
+    final date=a.start.day.toString().padLeft(2,'0')+'/' +
+      a.start.month.toString().padLeft(2,'0')+'/' +
+      a.start.year.toString();
+    return Column(
+      key:const Key('live-assignment-card'),
+      crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+      Container(
+        padding:const EdgeInsets.fromLTRB(21,22,21,24),
+        decoration:BoxDecoration(
+          gradient:const LinearGradient(
+            begin:Alignment.topRight,end:Alignment.bottomLeft,
+            colors:[Color(0xff173f46),Color(0xff102c35)]),
+          borderRadius:BorderRadius.circular(24),
+          boxShadow:[BoxShadow(color:const Color(0xff152734).withValues(alpha:.13),
+            blurRadius:18,offset:const Offset(0,7))]),
+        child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+          Row(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            Container(
+              width:46,height:46,alignment:Alignment.center,
+              decoration:BoxDecoration(
+                color:Colors.white.withValues(alpha:.12),
+                borderRadius:BorderRadius.circular(15)),
+              child:const Icon(Icons.event_available_rounded,
+                color:Color(0xffd2f1e8),size:28)),
+            const SizedBox(width:12),
+            Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
+              children:[
+                Text(isManager?a.workerName:'המשמרת שלי',
+                  maxLines:2,overflow:TextOverflow.ellipsis,
+                  style:const TextStyle(color:Colors.white,
+                    fontSize:23,fontWeight:FontWeight.w900,height:1.2)),
+                const SizedBox(height:5),
+                Text(date,style:const TextStyle(
+                  color:Color(0xffbcd9d7),fontSize:15)),
+              ])),
+          ]),
+          const SizedBox(height:19),
+          Container(
+            padding:const EdgeInsets.symmetric(horizontal:13,vertical:9),
+            decoration:BoxDecoration(
+              color:a.confirmed
+                ?const Color(0xffd1f5e5).withValues(alpha:.16)
+                :const Color(0xffffdca5).withValues(alpha:.16),
+              borderRadius:BorderRadius.circular(12),
+              border:Border.all(color:Colors.white.withValues(alpha:.19))),
+            child:Row(children:[
+              Icon(a.confirmed?Icons.check_circle_rounded
+                :Icons.pending_actions_rounded,
+                color:a.confirmed
+                  ?const Color(0xffa3f1ce)
+                  :const Color(0xffffd99d),size:24),
+              const SizedBox(width:10),
+              Expanded(child:Text(a.confirmed
+                ?'הסידור אושר'
+                :'נדרש אישור למשמרת',
+                style:const TextStyle(color:Colors.white,
+                  fontSize:16,fontWeight:FontWeight.w800))),
+              Text('מס׳ '+a.version.toString(),
+                style:const TextStyle(color:Color(0xffb8d7d3),
+                  fontSize:13,fontWeight:FontWeight.w600)),
+            ]),
+          ),
+          const SizedBox(height:23),
+          Row(children:[
+            _shiftClock('כניסה',a.start,Icons.login_rounded),
+            Container(width:1,height:65,
+              color:Colors.white.withValues(alpha:.18)),
+            const SizedBox(width:20),
+            _shiftClock('יציאה',a.end,Icons.logout_rounded),
+          ]),
+        ]),
+      ),
+      const SizedBox(height:15),
+      Container(
+        padding:const EdgeInsets.all(20),
+        decoration:BoxDecoration(color:Colors.white,
+          border:Border.all(color:edge),
+          borderRadius:BorderRadius.circular(21)),
+        child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+          const Text('מקום העבודה',
+            style:TextStyle(color:weak,fontSize:15,fontWeight:FontWeight.w700)),
+          const SizedBox(height:9),
+          Row(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            const Icon(Icons.location_on_rounded,color:accent,size:29),
+            const SizedBox(width:10),
+            Expanded(child:Text(a.site,
+              key:const Key('live-assignment-site'),
+              style:const TextStyle(color:deep,fontSize:20,
+                fontWeight:FontWeight.w900,height:1.35))),
+          ]),
+          const Divider(height:29,color:edge),
+          Row(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            const Icon(Icons.directions_bus_filled_rounded,
+              color:accent,size:27),
+            const SizedBox(width:10),
+            Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,
+              children:[
+                const Text('קווי אוטובוס',
+                  style:TextStyle(color:weak,fontSize:14)),
+                const SizedBox(height:4),
+                Text(a.lines,style:const TextStyle(
+                  color:deep,fontSize:19,fontWeight:FontWeight.w800)),
+              ])),
+          ]),
+          const SizedBox(height:17),
+          Container(
+            padding:const EdgeInsets.symmetric(horizontal:14,vertical:13),
+            decoration:BoxDecoration(color:const Color(0xffeef6f4),
+              borderRadius:BorderRadius.circular(13)),
+            child:Row(crossAxisAlignment:CrossAxisAlignment.start,children:[
+              const Icon(Icons.info_outline_rounded,
+                color:accent,size:23),
+              const SizedBox(width:10),
+              Expanded(child:Text(a.instructions,
+                style:const TextStyle(color:deep,
+                  fontSize:16,height:1.5,fontWeight:FontWeight.w500))),
+            ]),
+          ),
+        ]),
+      ),
+      const SizedBox(height:15),
+      if(!isManager&&!a.confirmed)
+        SizedBox(height:62,child:FilledButton.icon(
+          key:const Key('live-confirm-action'),
           onPressed:updating?null:()=>confirm(a),
-          icon:const Icon(Icons.check_circle_outline),
-          label:const Text('אישור קבלת המשמרת'))),
-      if(session!.isManager)
-        SizedBox(height:50,child:OutlinedButton.icon(
-          key:Key('server-edit-'+a.id),onPressed:updating?null:()=>edit(a),
-          icon:const Icon(Icons.edit_outlined),
-          label:const Text('עריכת משמרת ושליחה לעובד'))),
-      if(a.confirmed)Padding(padding:const EdgeInsets.only(top:10),
-        child:Text('אושר ב־'+readableTime(a.confirmedAt!),
-          textAlign:TextAlign.center,style:const TextStyle(
-            color:accent,fontWeight:FontWeight.w700,fontSize:12))),
-    ]));
+          style:FilledButton.styleFrom(backgroundColor:accent,
+            foregroundColor:Colors.white,
+            shape:RoundedRectangleBorder(
+              borderRadius:BorderRadius.circular(17))),
+          icon:const Icon(Icons.check_circle_outline,size:26),
+          label:const Text('אישור קבלת המשמרת',
+            style:TextStyle(fontSize:18,fontWeight:FontWeight.w900)))),
+      if(isManager)
+        SizedBox(height:62,child:FilledButton.icon(
+          key:Key('server-edit-'+a.id),
+          onPressed:updating?null:()=>edit(a),
+          style:FilledButton.styleFrom(backgroundColor:accent,
+            foregroundColor:Colors.white,
+            shape:RoundedRectangleBorder(
+              borderRadius:BorderRadius.circular(17))),
+          icon:const Icon(Icons.edit_calendar_outlined,size:25),
+          label:const Text('עריכת משמרת ושליחה לעובד',
+            maxLines:1,overflow:TextOverflow.ellipsis,
+            style:TextStyle(fontSize:17,fontWeight:FontWeight.w900)))),
+      if(a.confirmed)
+        Container(
+          padding:const EdgeInsets.symmetric(horizontal:16,vertical:15),
+          decoration:BoxDecoration(
+            color:const Color(0xffe0f3eb),
+            borderRadius:BorderRadius.circular(15)),
+          child:Row(children:[
+            const Icon(Icons.verified_rounded,color:accent,size:25),
+            const SizedBox(width:11),
+            Expanded(child:Text('אושר ב־'+readableTime(a.confirmedAt!),
+              style:const TextStyle(color:deep,
+                fontSize:16,fontWeight:FontWeight.w800))),
+          ]),
+        ),
+    ]);
+  }
 
   Widget _dashboard()=>RefreshIndicator(
     onRefresh:()=>refresh(showLoading:true),
-    child:ListView(padding:const EdgeInsets.fromLTRB(17,18,17,30),children:[
-      Row(children:[
-        Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-          Text('שלום, '+session!.name,style:const TextStyle(
-            fontSize:23,fontWeight:FontWeight.w900,color:deep)),
-          const SizedBox(height:6),
-          Text(session!.isManager?'סידורי העבודה של הצוות':'סידור העבודה האישי',
-            style:const TextStyle(color:weak,fontSize:13)),
-        ])),
-        IconButton(onPressed:()=>refresh(showLoading:true),
-          icon:const Icon(Icons.sync,color:accent),tooltip:'רענון'),
-      ]),
-      const SizedBox(height:12),
-      Row(children:[
-        badge('מחובר לשרת',color:accent),
-        const SizedBox(width:8),
-        if(lastUpdated!=null)Text('עודכן '+readableTime(lastUpdated!),
-          style:const TextStyle(fontSize:11,color:weak)),
-      ]),
-      if(message!=null)Padding(padding:const EdgeInsets.only(top:12),
-        child:Text(message!,style:const TextStyle(color:Colors.red,fontSize:12))),
-      const SizedBox(height:17),
-      if(updating)const LinearProgressIndicator(minHeight:2),
-      if(assignments.isEmpty) section(const Text('עדיין אין שיבוץ להצגה',
-        style:TextStyle(color:weak))),
-      ...assignments.map((a)=>Padding(padding:const EdgeInsets.only(bottom:13),
-        child:_assignmentCard(a))),
-      const SizedBox(height:10),
-      const Center(child:Text('סנכרון אוטומטי כל 3 שניות · נתוני הדגמה',
-        style:TextStyle(color:weak,fontSize:11))),
-    ]));
+    child:ListView(
+      key:const Key('live-mobile-dashboard'),
+      padding:const EdgeInsets.fromLTRB(14,18,14,29),
+      children:[
+        Text('שלום, '+session!.name,
+          style:const TextStyle(color:deep,
+            fontSize:28,fontWeight:FontWeight.w900)),
+        const SizedBox(height:6),
+        Text(session!.isManager
+          ?'ניהול משמרות הצוות'
+          :'סידור העבודה שלך להיום',
+          style:const TextStyle(color:weak,
+            fontSize:16,fontWeight:FontWeight.w600)),
+        const SizedBox(height:15),
+        Row(children:[
+          Container(
+            padding:const EdgeInsets.symmetric(horizontal:13,vertical:10),
+            decoration:BoxDecoration(
+              color:const Color(0xffdff3eb),
+              borderRadius:BorderRadius.circular(13)),
+            child:const Row(mainAxisSize:MainAxisSize.min,children:[
+              Icon(Icons.cloud_done_rounded,color:accent,size:20),
+              SizedBox(width:8),
+              Text('מסונכרן',style:TextStyle(color:accent,
+                fontSize:15,fontWeight:FontWeight.w800)),
+            ]),
+          ),
+          const Spacer(),
+          if(lastUpdated!=null)
+            Text('עודכן '+readableTime(lastUpdated!),
+              style:const TextStyle(color:weak,fontSize:13)),
+          IconButton(
+            onPressed:()=>refresh(showLoading:true),
+            icon:const Icon(Icons.refresh_rounded,color:accent,size:27),
+            tooltip:'רענון מידע',
+            constraints:const BoxConstraints(minWidth:45,minHeight:48)),
+        ]),
+        if(message!=null)Padding(
+          padding:const EdgeInsets.only(top:11),
+          child:Text(message!,style:const TextStyle(
+            color:Colors.red,fontSize:15,fontWeight:FontWeight.w700))),
+        const SizedBox(height:14),
+        if(updating)const LinearProgressIndicator(minHeight:3),
+        if(assignments.isEmpty)
+          section(const Text('עדיין אין שיבוץ להצגה',
+            style:TextStyle(color:weak,fontSize:17))),
+        ...assignments.map((a)=>Padding(
+          padding:const EdgeInsets.only(bottom:15),
+          child:_assignmentCard(a))),
+        const SizedBox(height:7),
+        const Center(child:Text(
+          'בדיקת סנכרון · עדכון אוטומטי כל 3 שניות',
+          textAlign:TextAlign.center,
+          style:TextStyle(color:weak,fontSize:13))),
+      ],
+    ),
+  );
 
   @override Widget build(BuildContext context)=>Scaffold(
     backgroundColor:paper,
     appBar:AppBar(backgroundColor:Colors.white,automaticallyImplyLeading:false,
+      toolbarHeight:72,titleSpacing:14,
       title:Row(children:[
-        Container(width:35,height:35,alignment:Alignment.center,
+        Container(width:44,height:44,alignment:Alignment.center,
           decoration:BoxDecoration(color:accent,borderRadius:BorderRadius.circular(10)),
           child:const Text('א',style:TextStyle(color:Colors.white,
-            fontSize:23,fontWeight:FontWeight.w900))),
-        const SizedBox(width:8),
+            fontSize:27,fontWeight:FontWeight.w900))),
+        const SizedBox(width:11),
         const Expanded(child:Text('אלקטרה אפיקים',
-          style:TextStyle(fontSize:17,color:deep,fontWeight:FontWeight.w900))),
+          style:TextStyle(fontSize:20,color:deep,fontWeight:FontWeight.w900))),
         if(session!=null)IconButton(
           onPressed:logout,tooltip:'התנתקות',
           icon:const Icon(Icons.logout,color:weak)),
