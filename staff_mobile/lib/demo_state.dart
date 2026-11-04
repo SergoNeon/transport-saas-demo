@@ -132,21 +132,20 @@ class StaffDemoState extends ChangeNotifier {
     final n = now;
     String label;
     bool done;
-    switch (action) {
-      case 'start':
-        done = worker.clockIn(n);
-        label = 'תחילת משמרת';
-      case 'pause':
-        done = worker.startBreak(n);
-        label = 'יציאה להפסקה';
-      case 'resume':
-        done = worker.finishBreak(n);
-        label = 'חזרה מהפסקה';
-      case 'end':
-        done = worker.clockOut(n);
-        label = 'סיום משמרת';
-      default:
-        return false;
+    if (action == 'start') {
+      done = worker.clockIn(n);
+      label = 'תחילת משמרת';
+    } else if (action == 'pause') {
+      done = worker.startBreak(n);
+      label = 'יציאה להפסקה';
+    } else if (action == 'resume') {
+      done = worker.finishBreak(n);
+      label = 'חזרה מהפסקה';
+    } else if (action == 'end') {
+      done = worker.clockOut(n);
+      label = 'סיום משמרת';
+    } else {
+      return false;
     }
     if (done) {
       events.insert(0, ShiftEvent(workerId, label, n));
