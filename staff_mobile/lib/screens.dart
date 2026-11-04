@@ -703,7 +703,6 @@ class _StaffScreenState extends State<StaffScreen> {
                 }),
             ],
           ))))),
-      ),
     );
     siteController.dispose();
     linesController.dispose();
