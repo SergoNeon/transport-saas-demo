@@ -1,0 +1,33 @@
+name: Electra mobile UI acceptance
+on:
+  pull_request:
+    paths:
+      - 'staff_mobile/**'
+      - '.github/workflows/electra-mobile-ui.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  phone-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate Flutter test scaffolding
+        working-directory: staff_mobile
+        run: |
+          flutter create --platforms=web --org com.electraafikim --project-name brill_staff --no-pub .
+          rm -f test/widget_test.dart
+      - name: Install packages
+        working-directory: staff_mobile
+        run: flutter pub get
+      - name: Flutter analyzer
+        working-directory: staff_mobile
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings lib test
+      - name: Phone 360 and 393 px layouts plus attendance flow
+        working-directory: staff_mobile
+        run: flutter test test/
