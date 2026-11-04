@@ -32,6 +32,41 @@ class LiveSession {
   bool get isManager=>role=='manager';
 }
 
+class LiveShift {
+  final String id,workerId,state;
+  final DateTime startedAt;
+  final DateTime? endedAt,breakStartedAt;
+  final int completedBreakMs,breakMs,workedMs,version;
+  const LiveShift({required this.id,required this.workerId,required this.state,
+    required this.startedAt,required this.endedAt,required this.breakStartedAt,
+    required this.completedBreakMs,required this.breakMs,required this.workedMs,
+    required this.version});
+  factory LiveShift.fromJson(Map<String,dynamic> d)=>LiveShift(
+    id:d['id'] as String,workerId:d['workerId'] as String,
+    state:d['state'] as String,startedAt:DateTime.parse(d['startedAt'] as String).toLocal(),
+    endedAt:d['endedAt']==null?null:DateTime.parse(d['endedAt'] as String).toLocal(),
+    breakStartedAt:d['breakStartedAt']==null?null:
+      DateTime.parse(d['breakStartedAt'] as String).toLocal(),
+    completedBreakMs:(d['completedBreakMs'] as num).toInt(),
+    breakMs:(d['breakMs'] as num).toInt(),
+    workedMs:(d['workedMs'] as num).toInt(),
+    version:(d['version'] as num).toInt());
+}
+class LiveTeamMember {
+  final String id,name;
+  final LiveShift? shift;
+  const LiveTeamMember(this.id,this.name,this.shift);
+  factory LiveTeamMember.fromJson(Map<String,dynamic> d)=>LiveTeamMember(
+    d['id'] as String,d['name'] as String,
+    d['shift']==null?null:LiveShift.fromJson(Map<String,dynamic>.from(d['shift'] as Map)));
+}
+class LiveAttendance {
+  final LiveShift? own;
+  final List<LiveTeamMember> team;
+  final DateTime serverTime;
+  const LiveAttendance({this.own,required this.team,required this.serverTime});
+}
+
 class LiveApiException implements Exception {
   final int status;final String message;
   const LiveApiException(this.status,this.message);
@@ -90,6 +125,29 @@ class LiveApi {
         'start':start.toUtc().toIso8601String(),
         'end':end.toUtc().toIso8601String(),
       });
+  }
+
+  Future<LiveAttendance> attendance(LiveSession session) async {
+    final result=await _request('/api/attendance/current',
+      method:'GET',session:session);
+    final raw=result['current'];
+    return LiveAttendance(
+      own:raw==null?null:LiveShift.fromJson(Map<String,dynamic>.from(raw as Map)),
+      team:(result['team'] as List<dynamic>? ?? []).map((e)=>
+        LiveTeamMember.fromJson(Map<String,dynamic>.from(e as Map))).toList(),
+      serverTime:DateTime.parse(result['now'] as String).toLocal(),
+    );
+  }
+  Future<LiveShift> transition(LiveSession session,String action) async {
+    final result=await _request('/api/attendance/transition',
+      method:'POST',session:session,data:{'action':action});
+    return LiveShift.fromJson(Map<String,dynamic>.from(result['current'] as Map));
+  }
+  Future<List<LiveShift>> history(LiveSession session) async {
+    final result=await _request('/api/attendance/history',
+      method:'GET',session:session);
+    return (result['history'] as List<dynamic>).map((e)=>
+      LiveShift.fromJson(Map<String,dynamic>.from(e as Map))).toList();
   }
 
   Future<void> confirm(LiveSession session,LiveAssignment prior) async {

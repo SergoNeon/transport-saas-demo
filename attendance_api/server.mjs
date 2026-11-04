@@ -1,6 +1,7 @@
 import http from 'node:http';
 import {randomBytes,scryptSync,timingSafeEqual,createHmac} from 'node:crypto';
 import pg from 'pg';
+import {createAttendanceTables,attendanceRoute} from './attendance.mjs';
 const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:5});
 const key=process.env.API_SIGNING_KEY;
 if(!process.env.DATABASE_URL || !key || key.length<40)throw Error('DATABASE_URL and API_SIGNING_KEY required');
@@ -52,6 +53,12 @@ if(req.method==='GET'&&url.pathname==='/api/events'){
  const pulse=setInterval(()=>{if(!res.writableEnded)res.write(': heartbeat\n\n')},20000);
  req.on('close',()=>{clearInterval(pulse);subs.delete(res)});return;
 }
+if(url.pathname.startsWith('/api/attendance/')) {
+ const result=await attendanceRoute(req,res,{
+   pool,user,url,readBody:body,respond,failure,announce,
+ });
+ if(result!==false)return result;
+}
 const m=url.pathname.match(/^\/api\/assignments\/([a-zA-Z0-9_-]+)(\/confirm)?$/);
 if(m&&req.method==='PUT'&&!m[2]){
  if(user.role!=='manager')return failure(res,403,'Manager only');
@@ -72,6 +79,7 @@ return failure(res,404,'Not found');
 }
 async function setup(){
  await pool.query(sql.schema);
+ await createAttendanceTables(pool);
  const manager=process.env.DEMO_MANAGER_PASSWORD,worker=process.env.DEMO_WORKER_PASSWORD;
  if(!manager||!worker||manager.length<12||worker.length<12)throw Error('Strong demo credentials required');
  for(const [id,email,role,name,password] of [

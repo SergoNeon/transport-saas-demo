@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'live_api.dart';
+import 'attendance_panel.dart';
 import 'screens.dart';
 
 const accent=Color(0xff08796d);
@@ -23,6 +24,8 @@ class _LiveGateState extends State<LiveGate> {
   final password=TextEditingController();
   LiveSession? session;
   List<LiveAssignment> assignments=[];
+  LiveAttendance? attendance;
+  bool shiftBusy=false;
   Timer? timer;
   bool signingIn=false;
   bool fetching=false;
@@ -64,13 +67,49 @@ class _LiveGateState extends State<LiveGate> {
     if(showLoading&&mounted)setState(()=>updating=true);
     try {
       final data=await api.assignments(session!);
-      if(mounted)setState((){assignments=data;message=null;lastUpdated=DateTime.now();});
+      final presence=await api.attendance(session!);
+      if(mounted)setState((){
+        assignments=data;attendance=presence;
+        message=null;lastUpdated=DateTime.now();
+      });
     }on LiveApiException catch(e){
       if(e.status==401&&mounted){timer?.cancel();setState((){session=null;assignments=[];message='פג תוקף ההתחברות. יש להתחבר שוב.';});}
       else if(mounted)setState(()=>message='אין סנכרון: '+e.message);
     }catch(_){
       if(mounted)setState(()=>message='הקשר עם השרת נותק. מתבצע ניסיון חוזר.');
     }finally{fetching=false;if(mounted)setState(()=>updating=false);}
+  }
+
+  Future<void> clock(String action) async {
+    if(session==null||session!.isManager||shiftBusy)return;
+    if(action=='end'){
+      final yes=await showDialog<bool>(
+        context:context,builder:(ctx)=>AlertDialog(
+          title:const Text('סיום משמרת'),
+          content:const Text('לסיים ולשמור את שעות העבודה?'),
+          actions:[
+            TextButton(onPressed:()=>Navigator.pop(ctx,false),
+              child:const Text('ביטול')),
+            FilledButton(onPressed:()=>Navigator.pop(ctx,true),
+              child:const Text('סיום משמרת')),
+          ]));
+      if(!mounted||yes!=true)return;
+    }
+    setState(()=>shiftBusy=true);
+    try {
+      await api.transition(session!,action);
+      await refresh(showLoading:true);
+      inform(switch(action){
+        'start'=>'המשמרת התחילה ונשמרה בשרת',
+        'pause'=>'ההפסקה התחילה',
+        'resume'=>'המשמרת חודשה',
+        _=>'המשמרת הסתיימה והשעות נשמרו',
+      });
+    }on LiveApiException catch(e){
+      inform(e.status==409?'מצב המשמרת השתנה. המידע מתעדכן.':e.message);
+      await refresh();
+    }catch(_){inform('שמירת הפעולה נכשלה. יש לבדוק את החיבור.');}
+    finally{if(mounted)setState(()=>shiftBusy=false);}
   }
 
   Future<void> confirm(LiveAssignment a) async {
@@ -167,7 +206,7 @@ class _LiveGateState extends State<LiveGate> {
     t.hour.toString().padLeft(2,'0')+':'+t.minute.toString().padLeft(2,'0');
 
   void logout(){
-    timer?.cancel();setState((){session=null;assignments=[];message=null;lastUpdated=null;});
+    timer?.cancel();setState((){session=null;assignments=[];attendance=null;message=null;lastUpdated=null;});
   }
 
   Widget badge(String text,{Color color=accent})=>Container(
@@ -525,6 +564,14 @@ class _LiveGateState extends State<LiveGate> {
             color:Colors.red,fontSize:15,fontWeight:FontWeight.w700))),
         const SizedBox(height:14),
         if(updating)const LinearProgressIndicator(minHeight:3),
+        if(attendance!=null)...[
+          AttendancePanel(session:session!,data:attendance!,
+            busy:shiftBusy,onAction:clock),
+          const SizedBox(height:24),
+          Text(session!.isManager?'סידורי עבודה':'סידור העבודה שלי',
+            style:const TextStyle(color:deep,fontSize:22,fontWeight:FontWeight.w900)),
+          const SizedBox(height:14),
+        ],
         if(assignments.isEmpty)
           section(const Text('עדיין אין שיבוץ להצגה',
             style:TextStyle(color:weak,fontSize:17))),
