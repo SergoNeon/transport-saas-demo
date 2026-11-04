@@ -351,7 +351,7 @@ class _StaffScreenState extends State<StaffScreen> {
             style: TextStyle(color: muted, fontSize: 11)),
         ]),
       ),
-    )),
+    ),
   );
 
   Widget _managerHome() {
