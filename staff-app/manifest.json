@@ -1,11 +1,11 @@
 {
-    "name": "brill_staff",
-    "short_name": "brill_staff",
+    "name": "אלקטרה אפיקים",
+    "short_name": "אלקטרה אפיקים",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0e1015",
+    "theme_color": "#0e1015",
+    "description": "אפליקציית נוכחות לעובדים",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
